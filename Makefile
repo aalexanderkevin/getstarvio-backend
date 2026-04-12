@@ -1,5 +1,3 @@
-SHELL := /bin/zsh
-
 APP_NAME := getstarvio
 APP_CMD := ./cmd/getstarvio
 ENV_FILE ?= .env
