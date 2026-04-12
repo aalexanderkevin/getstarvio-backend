@@ -59,8 +59,10 @@ type BusinessProfileUpdateRequestDoc struct {
 }
 
 type BusinessWhatsAppUpdateRequestDoc struct {
-	OwnerWA string `json:"ownerWa" example:"6281234567890"`
-	WANum   string `json:"waNum" example:"6289876543210"`
+	OwnerWA         string `json:"ownerWa" example:"6281234567890"`
+	WANum           string `json:"waNum" example:"6289876543210"`
+	MetaWABAID      string `json:"metaWabaId" example:"1302223415207824"`
+	MetaAccessToken string `json:"metaAccessToken" example:"EAALhDPG71UIBA..."`
 }
 
 type BusinessSettingsUpdateRequestDoc struct {
@@ -84,6 +86,7 @@ type CategoryItemDoc struct {
 	Interval     int    `json:"interval" example:"30"`
 	TemplateID   string `json:"templateId" example:"tpl-a"`
 	TemplateBody string `json:"templateBody" example:"Hai [nama], sudah sebulan sejak Facial Treatment terakhir kamu di [bisnis]."`
+	MetaTemplateID string `json:"metaTemplateId,omitempty" example:"1744775703359541"`
 	IsEnabled    bool   `json:"isEnabled" example:"true"`
 }
 
@@ -110,9 +113,21 @@ type CategoryCreateRequestDoc struct {
 	Name         string `json:"name" example:"Hair Treatment"`
 	Icon         string `json:"icon" example:"💇"`
 	Interval     int    `json:"interval" example:"45"`
-	TemplateID   string `json:"templateId" example:"tpl-d"`
-	TemplateBody string `json:"templateBody" example:"Hai [nama], waktunya hair treatment berikutnya di [bisnis]."`
+	TemplateID   string `json:"templateId" example:"hair_treatment_testing"`
+	TemplateBody string `json:"templateBody" example:"Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"`
 	IsEnabled    *bool  `json:"isEnabled" example:"true"`
+}
+
+type CategoryCreateDataDoc struct {
+	OK             bool   `json:"ok" example:"true"`
+	CategoryID     string `json:"categoryId" example:"0ba9d96c-62e6-4ac8-bc77-b0228066f3ff"`
+	MetaTemplateID string `json:"metaTemplateId" example:"1744775703359541"`
+	MetaStatus     string `json:"metaStatus" example:"PENDING"`
+}
+
+type CategoryCreateResponseDoc struct {
+	Error bool                  `json:"error" example:"false"`
+	Data  CategoryCreateDataDoc `json:"data"`
 }
 
 type CategoryUpdateRequestDoc struct {
@@ -468,12 +483,13 @@ func defaultCategoriesListDoc() {}
 
 // categoriesCreateDoc godoc
 // @Summary Create category
+// @Description Creates WhatsApp template in Meta first. Business must have `metaWabaId` and `metaAccessToken` set via `/v1/business/whatsapp`. Returns error when Meta status is REJECTED.
 // @Tags category
 // @Security BearerAuth
 // @Accept json
 // @Produce json
 // @Param payload body CategoryCreateRequestDoc true "Category payload"
-// @Success 201 {object} OKResponseDoc
+// @Success 201 {object} CategoryCreateResponseDoc
 // @Failure 400 {object} ErrorResponseDoc
 // @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/categories [post]

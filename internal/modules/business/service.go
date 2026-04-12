@@ -68,6 +68,7 @@ func (s *Service) GetBootstrap(userID string) (map[string]interface{}, error) {
 			"interval":     c.IntervalDays,
 			"templateId":   c.TemplateID,
 			"templateBody": c.TemplateBody,
+			"metaTemplateId": c.MetaTemplateID,
 			"isEnabled":    c.IsEnabled,
 		})
 	}
@@ -139,6 +140,8 @@ func (s *Service) GetBootstrap(userID string) (map[string]interface{}, error) {
 		"adminEmail":         biz.AdminEmail,
 		"ownerWa":            biz.OwnerWA,
 		"waNum":              biz.WANum,
+		"metaWabaId":         biz.MetaWABAID,
+		"metaAccessTokenConfigured": strings.TrimSpace(biz.MetaAccessToken) != "",
 		"timezone":           biz.Timezone,
 		"country":            biz.Country,
 		"plan":               plan,
@@ -202,13 +205,21 @@ func (s *Service) UpdateWhatsApp(userID string, req UpdateWhatsAppRequest) error
 	}
 	owner := biz.OwnerWA
 	wanum := biz.WANum
+	metaWabaID := biz.MetaWABAID
+	metaAccessToken := biz.MetaAccessToken
 	if req.OwnerWA != "" {
 		owner = shared.NormalizePhone(req.OwnerWA, "62")
 	}
 	if req.WANum != "" {
 		wanum = shared.NormalizePhone(req.WANum, "62")
 	}
-	return s.repo.UpdateWhatsApp(biz.ID, owner, wanum)
+	if req.MetaWABAID != "" {
+		metaWabaID = strings.TrimSpace(req.MetaWABAID)
+	}
+	if req.MetaAccessToken != "" {
+		metaAccessToken = strings.TrimSpace(req.MetaAccessToken)
+	}
+	return s.repo.UpdateWhatsApp(biz.ID, owner, wanum, metaWabaID, metaAccessToken)
 }
 
 func (s *Service) UpdateSettings(userID string, req UpdateSettingsRequest) error {

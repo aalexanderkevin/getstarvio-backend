@@ -1,0 +1,2 @@
+ALTER TABLE businesses
+ADD COLUMN IF NOT EXISTS meta_waba_id TEXT;

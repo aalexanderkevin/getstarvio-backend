@@ -24,6 +24,23 @@ type SendTemplateInput struct {
 	TemplateName string
 	LanguageCode string
 	Parameters   []string
+	AccessToken  string
+}
+
+type CreateTemplateInput struct {
+	Name                string
+	WABAID              string
+	Category            string
+	Language            string
+	BodyText            string
+	ExampleBodyTextVars []string
+	AccessToken         string
+}
+
+type CreateTemplateResult struct {
+	ID       string
+	Status   string
+	Category string
 }
 
 func NewClient(cfg config.MetaConfig) *Client {
@@ -34,8 +51,11 @@ func NewClient(cfg config.MetaConfig) *Client {
 }
 
 func (c *Client) SendTemplate(ctx context.Context, in SendTemplateInput) (string, error) {
-	if c.cfg.AccessToken == "" || c.cfg.PhoneNumberID == "" {
+	if c.cfg.PhoneNumberID == "" {
 		return "mock-" + ksuid.New().String(), nil
+	}
+	if in.AccessToken == "" {
+		return "", fmt.Errorf("meta access token is required")
 	}
 
 	if in.LanguageCode == "" {
@@ -72,7 +92,7 @@ func (c *Client) SendTemplate(ctx context.Context, in SendTemplateInput) (string
 		return "", err
 	}
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+c.cfg.AccessToken)
+	req.Header.Set("Authorization", "Bearer "+in.AccessToken)
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
@@ -98,4 +118,82 @@ func (c *Client) SendTemplate(ctx context.Context, in SendTemplateInput) (string
 	}
 
 	return out.Messages[0].ID, nil
+}
+
+func (c *Client) CreateTemplate(ctx context.Context, in CreateTemplateInput) (*CreateTemplateResult, error) {
+	if in.WABAID == "" {
+		return nil, fmt.Errorf("meta waba id is required")
+	}
+	if in.AccessToken == "" {
+		return nil, fmt.Errorf("meta access token is required")
+	}
+
+	if in.Name == "" {
+		return nil, fmt.Errorf("template name is required")
+	}
+	if in.Category == "" {
+		in.Category = "UTILITY"
+	}
+	if in.Language == "" {
+		in.Language = "id"
+	}
+	if in.BodyText == "" {
+		return nil, fmt.Errorf("template body is required")
+	}
+	if len(in.ExampleBodyTextVars) == 0 {
+		in.ExampleBodyTextVars = []string{"Pelanggan", "30", "Facial Treatment", "Celestial Spa & Wellness"}
+	}
+
+	payload := map[string]any{
+		"name":     in.Name,
+		"category": in.Category,
+		"language": in.Language,
+		"components": []map[string]any{
+			{
+				"type": "body",
+				"text": in.BodyText,
+				"example": map[string]any{
+					"body_text": [][]string{in.ExampleBodyTextVars},
+				},
+			},
+		},
+	}
+
+	b, _ := json.Marshal(payload)
+	url := fmt.Sprintf("https://graph.facebook.com/%s/%s/message_templates", c.cfg.APIVersion, in.WABAID)
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewBuffer(b))
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+in.AccessToken)
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	body, _ := io.ReadAll(resp.Body)
+	if resp.StatusCode >= 300 {
+		return nil, fmt.Errorf("meta create template failed (%d): %s", resp.StatusCode, string(body))
+	}
+
+	var out struct {
+		ID       string `json:"id"`
+		Status   string `json:"status"`
+		Category string `json:"category"`
+	}
+	if err := json.Unmarshal(body, &out); err != nil {
+		return nil, err
+	}
+	if out.ID == "" {
+		return nil, fmt.Errorf("meta create template response missing id")
+	}
+
+	return &CreateTemplateResult{
+		ID:       out.ID,
+		Status:   out.Status,
+		Category: out.Category,
+	}, nil
 }

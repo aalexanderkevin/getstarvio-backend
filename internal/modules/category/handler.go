@@ -35,11 +35,12 @@ func (h *Handler) Create(c *gin.Context) {
 		response.Error(c, 400, err.Error())
 		return
 	}
-	if err := h.svc.Create(middleware.UserID(c), req); err != nil {
+	res, err := h.svc.Create(middleware.UserID(c), req)
+	if err != nil {
 		response.Error(c, 400, err.Error())
 		return
 	}
-	response.Created(c, map[string]bool{"ok": true})
+	response.Created(c, res)
 }
 
 func (h *Handler) Update(c *gin.Context) {

@@ -33,6 +33,8 @@ type Business struct {
 	AdminEmail string    `gorm:"column:admin_email;not null"`
 	OwnerWA    string    `gorm:"column:owner_wa"`
 	WANum      string    `gorm:"column:wa_num"`
+	MetaWABAID string    `gorm:"column:meta_waba_id"`
+	MetaAccessToken string `gorm:"column:meta_access_token"`
 	Timezone   string    `gorm:"column:timezone;not null"`
 	Country    string    `gorm:"column:country;not null"`
 	CreatedAt  time.Time `gorm:"column:created_at;autoCreateTime"`
@@ -69,6 +71,7 @@ type Category struct {
 	IntervalDays int       `gorm:"column:interval_days;not null"`
 	TemplateID   string    `gorm:"column:template_id;not null"`
 	TemplateBody string    `gorm:"column:template_body;not null"`
+	MetaTemplateID string  `gorm:"column:meta_template_id"`
 	IsEnabled    bool      `gorm:"column:is_enabled;default:true"`
 	CreatedAt    time.Time `gorm:"column:created_at;autoCreateTime"`
 	UpdatedAt    time.Time `gorm:"column:updated_at;autoUpdateTime"`

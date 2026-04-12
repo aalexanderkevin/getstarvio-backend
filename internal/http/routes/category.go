@@ -9,7 +9,7 @@ import (
 
 func registerCategoryRoutes(authed *gin.RouterGroup, c *app.Container) {
 	repo := category.NewRepo(c.DB)
-	svc := category.NewService(repo)
+	svc := category.NewService(repo, c.Meta)
 	h := category.NewHandler(svc)
 
 	authed.GET("/default-categories", h.ListDefault)

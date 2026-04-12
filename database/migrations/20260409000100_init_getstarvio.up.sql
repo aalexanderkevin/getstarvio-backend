@@ -17,6 +17,8 @@ CREATE TABLE IF NOT EXISTS businesses (
   admin_email TEXT NOT NULL,
   owner_wa TEXT,
   wa_num TEXT,
+  meta_waba_id TEXT,
+  meta_access_token TEXT,
   timezone TEXT NOT NULL,
   country TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -62,6 +64,7 @@ CREATE TABLE IF NOT EXISTS categories (
   interval_days INT NOT NULL,
   template_id TEXT NOT NULL,
   template_body TEXT NOT NULL,
+  meta_template_id TEXT,
   is_enabled BOOLEAN NOT NULL DEFAULT TRUE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

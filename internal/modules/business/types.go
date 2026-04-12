@@ -9,8 +9,10 @@ type UpdateProfileRequest struct {
 }
 
 type UpdateWhatsAppRequest struct {
-	OwnerWA string `json:"ownerWa"`
-	WANum   string `json:"waNum"`
+	OwnerWA         string `json:"ownerWa"`
+	WANum           string `json:"waNum"`
+	MetaWABAID      string `json:"metaWabaId"`
+	MetaAccessToken string `json:"metaAccessToken"`
 }
 
 type UpdateSettingsRequest struct {

@@ -83,11 +83,13 @@ func (r *Repo) UpdateProfile(businessID string, payload map[string]interface{}) 
 	return r.db.Model(&models.Business{}).Where("id = ?", businessID).Updates(payload).Error
 }
 
-func (r *Repo) UpdateWhatsApp(businessID string, ownerWA string, waNum string) error {
+func (r *Repo) UpdateWhatsApp(businessID string, ownerWA string, waNum string, metaWabaID string, metaAccessToken string) error {
 	return r.db.Model(&models.Business{}).Where("id = ?", businessID).Updates(map[string]interface{}{
-		"owner_wa":   ownerWA,
-		"wa_num":     waNum,
-		"updated_at": time.Now().UTC(),
+		"owner_wa":          ownerWA,
+		"wa_num":            waNum,
+		"meta_waba_id":      metaWabaID,
+		"meta_access_token": metaAccessToken,
+		"updated_at":        time.Now().UTC(),
 	}).Error
 }
 

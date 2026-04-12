@@ -1,17 +1,27 @@
 package category
 
 import (
+	"context"
 	"fmt"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 
 	"github.com/aalexanderkevin/getstarvio-backend/internal/models"
+	"github.com/aalexanderkevin/getstarvio-backend/internal/platform/meta"
 )
 
-type Service struct{ repo *Repo }
+type Service struct {
+	repo *Repo
+	meta *meta.Client
+}
 
-func NewService(repo *Repo) *Service { return &Service{repo: repo} }
+func NewService(repo *Repo, metaClient *meta.Client) *Service {
+	return &Service{repo: repo, meta: metaClient}
+}
 
 func (s *Service) ListDefault() ([]map[string]interface{}, error) {
 	cats, err := s.repo.ListDefaults()
@@ -44,44 +54,87 @@ func (s *Service) List(userID string) ([]map[string]interface{}, error) {
 	out := make([]map[string]interface{}, 0, len(cats))
 	for _, c := range cats {
 		out = append(out, map[string]interface{}{
-			"id":           c.ID,
-			"name":         c.Name,
-			"icon":         c.Icon,
-			"interval":     c.IntervalDays,
-			"templateId":   c.TemplateID,
-			"templateBody": c.TemplateBody,
-			"isEnabled":    c.IsEnabled,
+			"id":             c.ID,
+			"name":           c.Name,
+			"icon":           c.Icon,
+			"interval":       c.IntervalDays,
+			"templateId":     c.TemplateID,
+			"templateBody":   c.TemplateBody,
+			"metaTemplateId": c.MetaTemplateID,
+			"isEnabled":      c.IsEnabled,
 		})
 	}
 	return out, nil
 }
 
-func (s *Service) Create(userID string, req CreateCategoryRequest) error {
+func (s *Service) Create(userID string, req CreateCategoryRequest) (map[string]interface{}, error) {
 	if req.Name == "" || req.Interval <= 0 {
-		return fmt.Errorf("name and interval are required")
+		return nil, fmt.Errorf("name and interval are required")
 	}
 	biz, err := s.repo.FindBusinessByUser(userID)
 	if err != nil {
-		return err
+		return nil, err
+	}
+	if strings.TrimSpace(biz.MetaWABAID) == "" {
+		return nil, fmt.Errorf("business metaWabaId is required")
+	}
+	if strings.TrimSpace(biz.MetaAccessToken) == "" {
+		return nil, fmt.Errorf("business metaAccessToken is required")
 	}
 	enabled := true
 	if req.IsEnabled != nil {
 		enabled = *req.IsEnabled
 	}
+
+	templateName := req.TemplateID
+	if templateName == "" {
+		templateName = defaultTemplateName(req.Name)
+	}
+	templateBody := req.TemplateBody
+	if templateBody == "" {
+		templateBody = "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"
+	}
+
+	metaTemplate, err := s.meta.CreateTemplate(context.Background(), meta.CreateTemplateInput{
+		Name:                templateName,
+		WABAID:              biz.MetaWABAID,
+		AccessToken:         biz.MetaAccessToken,
+		Category:            "UTILITY",
+		Language:            "id",
+		BodyText:            templateBody,
+		ExampleBodyTextVars: []string{"Pelanggan", strconv.Itoa(req.Interval), req.Name, biz.BizName},
+	})
+	if err != nil {
+		return nil, err
+	}
+	if strings.EqualFold(metaTemplate.Status, "REJECTED") {
+		return nil, fmt.Errorf("meta template rejected")
+	}
+
 	cat := models.Category{
-		ID: uuid.NewString(), BusinessID: biz.ID, Name: req.Name, Icon: req.Icon,
-		IntervalDays: req.Interval, TemplateID: req.TemplateID, TemplateBody: req.TemplateBody, IsEnabled: enabled,
+		ID:             uuid.NewString(),
+		BusinessID:     biz.ID,
+		Name:           req.Name,
+		Icon:           req.Icon,
+		IntervalDays:   req.Interval,
+		TemplateID:     templateName,
+		TemplateBody:   templateBody,
+		IsEnabled:      enabled,
+		MetaTemplateID: metaTemplate.ID,
 	}
 	if cat.Icon == "" {
 		cat.Icon = "✨"
 	}
-	if cat.TemplateID == "" {
-		cat.TemplateID = "reminder_return"
+	if err := s.repo.Create(cat); err != nil {
+		return nil, err
 	}
-	if cat.TemplateBody == "" {
-		cat.TemplateBody = "Hai {customer_name}, sudah waktunya untuk {service} di {business_name}."
-	}
-	return s.repo.Create(cat)
+
+	return map[string]interface{}{
+		"ok":             true,
+		"categoryId":     cat.ID,
+		"metaTemplateId": metaTemplate.ID,
+		"metaStatus":     metaTemplate.Status,
+	}, nil
 }
 
 func (s *Service) Update(userID, id string, req UpdateCategoryRequest) error {
@@ -126,4 +179,19 @@ func (s *Service) Delete(userID, id string) error {
 		return err
 	}
 	return s.repo.Delete(biz.ID, id)
+}
+
+func defaultTemplateName(categoryName string) string {
+	s := strings.ToLower(strings.TrimSpace(categoryName))
+	s = strings.ReplaceAll(s, " ", "_")
+	s = strings.Map(func(r rune) rune {
+		if (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') || r == '_' {
+			return r
+		}
+		return -1
+	}, s)
+	if s == "" {
+		s = "category_reminder"
+	}
+	return fmt.Sprintf("%s_%d", s, time.Now().Unix())
 }
