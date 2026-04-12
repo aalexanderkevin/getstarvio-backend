@@ -1,0 +1,17 @@
+.git
+.gitignore
+.DS_Store
+.env
+.env.*
+.vscode
+.idea
+
+# Frontend prototype and docs not required in backend image
+getstarvio intro/
+
+# Build/test artifacts
+*.out
+coverage.*
+
+# Optional local modules cache
+vendor/

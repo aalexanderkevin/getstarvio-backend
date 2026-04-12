@@ -7,13 +7,16 @@ include $(ENV_FILE)
 export
 endif
 
-.PHONY: help setup up down logs-db stack-up stack-down logs-app logs-worker migrate migrate-docker migrate-down-one run-api run-worker test fmt lint tidy swagger swagger-docker
+.PHONY: help setup dep build up down logs-db stack-build stack-up stack-down logs-app logs-worker migrate migrate-docker migrate-down-one run-api run-worker test fmt lint tidy swagger swagger-docker
 
 help:
 	@echo "Available targets:"
 	@echo "  make setup            # create .env from .env.example if missing"
+	@echo "  make dep              # download Go dependencies"
+	@echo "  make build            # build binary to ./bin/getstarvio"
 	@echo "  make up               # start postgres via docker compose"
 	@echo "  make down             # stop docker compose services"
+	@echo "  make stack-build      # build backend image (plain progress)"
 	@echo "  make stack-up         # start app + worker + db via docker compose"
 	@echo "  make stack-down       # stop full docker compose stack"
 	@echo "  make logs-db          # tail postgres logs"
@@ -34,6 +37,15 @@ help:
 setup:
 	@if [ ! -f .env ]; then cp .env.example .env; echo ".env created from .env.example"; else echo ".env already exists"; fi
 
+dep:
+	@echo ">> Downloading dependencies"
+	@go mod download
+
+build: dep
+	@echo ">> Building binary"
+	@mkdir -p bin
+	@CGO_ENABLED=0 GOOS=linux go build -v -buildvcs=false -trimpath -ldflags="-s -w" -o ./bin/getstarvio ./cmd/getstarvio
+
 up:
 	@docker compose up -d db
 
@@ -43,8 +55,11 @@ down:
 logs-db:
 	@docker compose logs -f db
 
+stack-build:
+	@docker compose build --progress=plain app
+
 stack-up:
-	@docker compose up --build -d app worker db
+	@docker compose up --build -d db app worker
 
 stack-down:
 	@docker compose down
@@ -59,7 +74,7 @@ migrate:
 	@go run $(APP_CMD) migrate
 
 migrate-docker:
-	@docker compose run --rm app /app/getstarvio migrate
+	@docker compose run --rm app migrate
 
 migrate-down-one:
 	@go run $(APP_CMD) migrate --down-one

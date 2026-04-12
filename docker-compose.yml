@@ -1,25 +1,31 @@
-version: '3.8'
-
 services:
   app:
+    image: getstarvio-backend:local
     build:
       context: .
-    command: ["/app/getstarvio", "server"]
+    command: ["server"]
     env_file:
       - .env
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
     ports:
       - "${SERVICE_PORT:-8080}:${SERVICE_PORT:-8080}"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   worker:
-    build:
-      context: .
-    command: ["/app/getstarvio", "worker"]
+    image: getstarvio-backend:local
+    command: ["worker"]
     env_file:
       - .env
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   db:
     image: postgres:16
@@ -32,6 +38,11 @@ services:
       - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-getstarvio}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
 volumes:
   pgdata:
