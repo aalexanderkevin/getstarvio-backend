@@ -11,6 +11,15 @@ type Handler struct{ svc *Service }
 
 func NewHandler(svc *Service) *Handler { return &Handler{svc: svc} }
 
+func (h *Handler) ListDefault(c *gin.Context) {
+	res, err := h.svc.ListDefault()
+	if err != nil {
+		response.Error(c, 500, err.Error())
+		return
+	}
+	response.Success(c, res)
+}
+
 func (h *Handler) List(c *gin.Context) {
 	res, err := h.svc.List(middleware.UserID(c))
 	if err != nil {

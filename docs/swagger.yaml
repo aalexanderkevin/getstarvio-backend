@@ -1,23 +1,771 @@
 basePath: /
 definitions:
-  routes.GenericBody:
-    additionalProperties: true
+  routes.AuthGoogleLoginRequestDoc:
+    properties:
+      email:
+        example: owner@getstarvio.com
+        type: string
+      googleSub:
+        example: "109876543210987654321"
+        type: string
+      idToken:
+        example: eyJhbGciOiJSUzI1NiIs...
+        type: string
+      name:
+        example: Alexandra Kevin
+        type: string
+    type: object
+  routes.AuthLogoutRequestDoc:
+    properties:
+      refreshToken:
+        example: eyJhbGciOiJIUzI1NiIs...
+        type: string
+    type: object
+  routes.AuthRefreshRequestDoc:
+    properties:
+      refreshToken:
+        example: eyJhbGciOiJIUzI1NiIs...
+        type: string
+    type: object
+  routes.AuthTokenBodyDoc:
+    properties:
+      accessToken:
+        example: eyJhbGciOiJIUzI1NiIs...
+        type: string
+      refreshToken:
+        example: eyJhbGciOiJIUzI1NiIs...
+        type: string
+      userId:
+        example: 7f810c87-1528-4f67-b6c8-0ca01d08860c
+        type: string
+    type: object
+  routes.AuthTokenResponseDoc:
+    properties:
+      data:
+        $ref: '#/definitions/routes.AuthTokenBodyDoc'
+      error:
+        example: false
+        type: boolean
+    type: object
+  routes.BillingCheckoutDataDoc:
+    properties:
+      checkoutUrl:
+        example: https://checkout.xendit.co/web/64f2c6ab...
+        type: string
+      externalId:
+        example: topup-6f2f4ea7-45e7-4f8f-af3a-bfcba1f3f8db
+        type: string
+      invoiceId:
+        example: 64f2c6ab-0194-4d33-81e2-42847eb9190d
+        type: string
+      orderId:
+        example: 3cdfa11e-ae03-4ddd-93c2-bcb6219f9859
+        type: string
+      status:
+        example: PENDING
+        type: string
+    type: object
+  routes.BillingCheckoutRequestDoc:
+    properties:
+      packageId:
+        example: p1
+        type: string
+    type: object
+  routes.BillingCheckoutResponseDoc:
+    properties:
+      data:
+        $ref: '#/definitions/routes.BillingCheckoutDataDoc'
+      error:
+        example: false
+        type: boolean
+    type: object
+  routes.BillingHistoryItemDoc:
+    properties:
+      balanceAfter:
+        example: 100
+        type: integer
+      createdAt:
+        example: "2026-04-12T09:00:00Z"
+        type: string
+      delta:
+        example: 100
+        type: integer
+      id:
+        example: tx-1
+        type: string
+      label:
+        example: Welcome Bonus
+        type: string
+      note:
+        example: Bonus kredit pendaftaran
+        type: string
+      type:
+        example: welcome
+        type: string
+    type: object
+  routes.BillingHistoryResponseDoc:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/routes.BillingHistoryItemDoc'
+        type: array
+      error:
+        example: false
+        type: boolean
+    type: object
+  routes.BillingPlanConfigDoc:
+    properties:
+      freeBonus:
+        example: 100
+        type: integer
+      subCredits:
+        example: 250
+        type: integer
+      subPrice:
+        example: 250000
+        type: integer
+      tiers:
+        items:
+          $ref: '#/definitions/routes.BillingTierDoc'
+        type: array
+      topupPrice:
+        example: 1000
+        type: integer
+    type: object
+  routes.BillingSummaryDataDoc:
+    properties:
+      plan:
+        example: free
+        type: string
+      planConfig:
+        $ref: '#/definitions/routes.BillingPlanConfigDoc'
+      remLeft:
+        example: 100
+        type: integer
+      subCreditsLeft:
+        example: 0
+        type: integer
+      subCreditsMax:
+        example: 250
+        type: integer
+      subscriptionEndsAt:
+        example: ""
+        type: string
+      subscriptionStatus:
+        example: none
+        type: string
+      topupCreditsLeft:
+        example: 0
+        type: integer
+      trialEndsAt:
+        example: "2026-05-02T00:00:00Z"
+        type: string
+      welcomeCreditsLeft:
+        example: 100
+        type: integer
+    type: object
+  routes.BillingSummaryResponseDoc:
+    properties:
+      data:
+        $ref: '#/definitions/routes.BillingSummaryDataDoc'
+      error:
+        example: false
+        type: boolean
+    type: object
+  routes.BillingTierDoc:
+    properties:
+      credits:
+        example: 300
+        type: integer
+      price:
+        example: 250000
+        type: integer
+    type: object
+  routes.BusinessProfileUpdateRequestDoc:
+    properties:
+      bizName:
+        example: Glow Beauty Studio
+        type: string
+      bizSlug:
+        example: glow-beauty-studio
+        type: string
+      bizType:
+        example: salon_kecantikan
+        type: string
+      country:
+        example: ID
+        type: string
+      timezone:
+        example: Asia/Jakarta
+        type: string
+    type: object
+  routes.BusinessSettingsUpdateRequestDoc:
+    properties:
+      autoTopup:
+        example: false
+        type: boolean
+      autoTopupPackage:
+        example: p1
+        type: string
+      autoTopupThreshold:
+        example: 10
+        type: integer
+      automationEnabled:
+        example: true
+        type: boolean
+      billingNotifCritical:
+        example: true
+        type: boolean
+      billingNotifLow:
+        example: true
+        type: boolean
+      billingNotifPreRenewal:
+        example: true
+        type: boolean
+      billingNotifSubLow:
+        example: true
+        type: boolean
+      defaultInterval:
+        example: 30
+        type: integer
+      sendTime:
+        example: "09:00"
+        type: string
+      timezone:
+        example: Asia/Jakarta
+        type: string
+    type: object
+  routes.BusinessWhatsAppUpdateRequestDoc:
+    properties:
+      ownerWa:
+        example: "6281234567890"
+        type: string
+      waNum:
+        example: "6289876543210"
+        type: string
+    type: object
+  routes.CategoryCreateRequestDoc:
+    properties:
+      icon:
+        example: "\U0001F487"
+        type: string
+      interval:
+        example: 45
+        type: integer
+      isEnabled:
+        example: true
+        type: boolean
+      name:
+        example: Hair Treatment
+        type: string
+      templateBody:
+        example: Hai [nama], waktunya hair treatment berikutnya di [bisnis].
+        type: string
+      templateId:
+        example: tpl-d
+        type: string
+    type: object
+  routes.CategoryItemDoc:
+    properties:
+      icon:
+        example: "\U0001F486"
+        type: string
+      id:
+        example: defcat-facial-treatment
+        type: string
+      interval:
+        example: 30
+        type: integer
+      isEnabled:
+        example: true
+        type: boolean
+      name:
+        example: Facial Treatment
+        type: string
+      templateBody:
+        example: Hai [nama], sudah sebulan sejak Facial Treatment terakhir kamu di
+          [bisnis].
+        type: string
+      templateId:
+        example: tpl-a
+        type: string
+    type: object
+  routes.CategoryListResponseDoc:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/routes.CategoryItemDoc'
+        type: array
+      error:
+        example: false
+        type: boolean
+    type: object
+  routes.CategoryUpdateRequestDoc:
+    properties:
+      icon:
+        example: "\U0001F487"
+        type: string
+      interval:
+        example: 60
+        type: integer
+      isEnabled:
+        example: true
+        type: boolean
+      name:
+        example: Hair Treatment Premium
+        type: string
+      templateBody:
+        example: Hai [nama], waktunya hair treatment premium lagi di [bisnis].
+        type: string
+      templateId:
+        example: tpl-d
+        type: string
+    type: object
+  routes.CheckinLookupCustomerDoc:
+    properties:
+      id:
+        example: c9e53f5d-6dc7-4db5-8504-3625e0d737f5
+        type: string
+      name:
+        example: Anisa Putri
+        type: string
+      services:
+        items:
+          $ref: '#/definitions/routes.CustomerServiceDoc'
+        type: array
+      via:
+        example: manual
+        type: string
+      wa:
+        example: "6281234567890"
+        type: string
+    type: object
+  routes.CheckinLookupDataDoc:
+    properties:
+      customer:
+        $ref: '#/definitions/routes.CheckinLookupCustomerDoc'
+      found:
+        example: true
+        type: boolean
+    type: object
+  routes.CheckinLookupRequestDoc:
+    properties:
+      wa:
+        example: "6281234567890"
+        type: string
+    type: object
+  routes.CheckinLookupResponseDoc:
+    properties:
+      data:
+        $ref: '#/definitions/routes.CheckinLookupDataDoc'
+      error:
+        example: false
+        type: boolean
+    type: object
+  routes.CheckinSubmitRequestDoc:
+    properties:
+      categoryIds:
+        example:
+        - '["defcat-facial-treatment"]'
+        items:
+          type: string
+        type: array
+      date:
+        example: "2026-04-12T09:00:00Z"
+        type: string
+      name:
+        example: Anisa Putri
+        type: string
+      wa:
+        example: "6281234567890"
+        type: string
+    type: object
+  routes.CustomerCreateRequestDoc:
+    properties:
+      name:
+        example: Anisa Putri
+        type: string
+      services:
+        items:
+          $ref: '#/definitions/routes.CustomerServiceInputDoc'
+        type: array
+      via:
+        example: manual
+        type: string
+      wa:
+        example: "6281234567890"
+        type: string
+    type: object
+  routes.CustomerListItemDoc:
+    properties:
+      createdAt:
+        example: "2026-04-12T08:30:00Z"
+        type: string
+      id:
+        example: c9e53f5d-6dc7-4db5-8504-3625e0d737f5
+        type: string
+      name:
+        example: Anisa Putri
+        type: string
+      overdueDays:
+        example: 0
+        type: integer
+      services:
+        items:
+          $ref: '#/definitions/routes.CustomerServiceDoc'
+        type: array
+      status:
+        example: aktif
+        type: string
+      via:
+        example: manual
+        type: string
+      wa:
+        example: "6281234567890"
+        type: string
+    type: object
+  routes.CustomerListResponseDoc:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/routes.CustomerListItemDoc'
+        type: array
+      error:
+        example: false
+        type: boolean
+    type: object
+  routes.CustomerServiceDoc:
+    properties:
+      date:
+        example: "2026-04-12T09:00:00Z"
+        type: string
+      days:
+        example: 30
+        type: integer
+      icon:
+        example: "\U0001F486"
+        type: string
+      name:
+        example: Facial Treatment
+        type: string
+      status:
+        example: aktif
+        type: string
+    type: object
+  routes.CustomerServiceInputDoc:
+    properties:
+      categoryId:
+        example: defcat-facial-treatment
+        type: string
+      date:
+        example: "2026-04-12T09:00:00Z"
+        type: string
+      name:
+        example: Facial Treatment
+        type: string
+    type: object
+  routes.CustomerUpdateRequestDoc:
+    properties:
+      name:
+        example: Anisa Putri
+        type: string
+      services:
+        items:
+          $ref: '#/definitions/routes.CustomerServiceInputDoc'
+        type: array
+      via:
+        example: manual
+        type: string
+      wa:
+        example: "6281234567890"
+        type: string
+    type: object
+  routes.DashboardCreditSummaryDoc:
+    properties:
+      subscription:
+        example: 0
+        type: integer
+      topup:
+        example: 0
+        type: integer
+      total:
+        example: 100
+        type: integer
+      welcome:
+        example: 100
+        type: integer
+    type: object
+  routes.DashboardSummaryDataDoc:
+    properties:
+      credits:
+        $ref: '#/definitions/routes.DashboardCreditSummaryDoc'
+      date:
+        example: "2026-04-12"
+        type: string
+      failedToday:
+        example: 1
+        type: integer
+      pendingReminders:
+        example: 4
+        type: integer
+      sentToday:
+        example: 8
+        type: integer
+      subscriptionStatus:
+        example: none
+        type: string
+      timezone:
+        example: Asia/Jakarta
+        type: string
+      totalCustomers:
+        example: 12
+        type: integer
+      trialEndsAt:
+        example: "2026-05-02T00:00:00Z"
+        type: string
+    type: object
+  routes.DashboardSummaryResponseDoc:
+    properties:
+      data:
+        $ref: '#/definitions/routes.DashboardSummaryDataDoc'
+      error:
+        example: false
+        type: boolean
+    type: object
+  routes.DefaultCategoryItemDoc:
+    properties:
+      icon:
+        example: "\U0001F486"
+        type: string
+      id:
+        example: defcat-facial-treatment
+        type: string
+      interval:
+        example: 30
+        type: integer
+      name:
+        example: Facial Treatment
+        type: string
+      templateBody:
+        example: Hai [nama], sudah sebulan sejak Facial Treatment terakhir kamu di
+          [bisnis].
+        type: string
+      templateId:
+        example: tpl-a
+        type: string
+    type: object
+  routes.DefaultCategoryListResponseDoc:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/routes.DefaultCategoryItemDoc'
+        type: array
+      error:
+        example: false
+        type: boolean
+    type: object
+  routes.ErrorResponseDoc:
+    properties:
+      error:
+        example: true
+        type: boolean
+      message:
+        example: invalid request payload
+        type: string
     type: object
   routes.HealthResponse:
     properties:
       ok:
+        example: true
         type: boolean
       service:
+        example: getstarvio-backend
         type: string
       time:
+        example: "2026-04-12T10:00:00Z"
         type: string
     type: object
-  routes.SwaggerEnvelope:
+  routes.InternalPlanConfigResponseDoc:
     properties:
-      data: {}
+      data:
+        properties:
+          businessId:
+            example: biz-1
+            type: string
+          freeBonus:
+            example: 100
+            type: integer
+          subCredits:
+            example: 250
+            type: integer
+          subPrice:
+            example: 250000
+            type: integer
+          tier1Credits:
+            example: 300
+            type: integer
+          tier1Price:
+            example: 250000
+            type: integer
+          tier2Credits:
+            example: 625
+            type: integer
+          tier2Price:
+            example: 500000
+            type: integer
+          tier3Credits:
+            example: 1500
+            type: integer
+          tier3Price:
+            example: 1000000
+            type: integer
+          topupPrice:
+            example: 1000
+            type: integer
+        type: object
       error:
+        example: false
         type: boolean
-      message:
+    type: object
+  routes.InternalPlanConfigUpdateRequestDoc:
+    properties:
+      freeBonus:
+        example: 100
+        type: integer
+      subCredits:
+        example: 250
+        type: integer
+      subPrice:
+        example: 250000
+        type: integer
+      tier1Credits:
+        example: 300
+        type: integer
+      tier1Price:
+        example: 250000
+        type: integer
+      tier2Credits:
+        example: 625
+        type: integer
+      tier2Price:
+        example: 500000
+        type: integer
+      tier3Credits:
+        example: 1500
+        type: integer
+      tier3Price:
+        example: 1000000
+        type: integer
+      topupPrice:
+        example: 1000
+        type: integer
+    type: object
+  routes.MetaWebhookPayloadDoc:
+    properties:
+      object:
+        example: whatsapp_business_account
+        type: string
+    type: object
+  routes.OKDataDoc:
+    properties:
+      ok:
+        example: true
+        type: boolean
+    type: object
+  routes.OKResponseDoc:
+    properties:
+      data:
+        $ref: '#/definitions/routes.OKDataDoc'
+      error:
+        example: false
+        type: boolean
+    type: object
+  routes.ReminderLogItemDoc:
+    properties:
+      businessId:
+        example: biz-1
+        type: string
+      categoryId:
+        example: cat-1
+        type: string
+      customerId:
+        example: cx-1
+        type: string
+      cxName:
+        example: Anisa Putri
+        type: string
+      errorReason:
+        example: ""
+        type: string
+      id:
+        example: rem-1
+        type: string
+      kredit:
+        example: 1
+        type: integer
+      metaMessageId:
+        example: wamid.HBgM...
+        type: string
+      retryCount:
+        example: 0
+        type: integer
+      scheduledAt:
+        example: "2026-04-12T09:00:00Z"
+        type: string
+      sentAt:
+        example: "2026-04-12T09:00:05Z"
+        type: string
+      status:
+        example: terkirim
+        type: string
+      svcName:
+        example: Facial Treatment
+        type: string
+    type: object
+  routes.ReminderLogResponseDoc:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/routes.ReminderLogItemDoc'
+        type: array
+      error:
+        example: false
+        type: boolean
+    type: object
+  routes.VisitRequestDoc:
+    properties:
+      categoryIds:
+        example:
+        - '["defcat-facial-treatment"]'
+        items:
+          type: string
+        type: array
+      customerId:
+        example: c9e53f5d-6dc7-4db5-8504-3625e0d737f5
+        type: string
+      customerName:
+        example: Anisa Putri
+        type: string
+      customerWa:
+        example: "6281234567890"
+        type: string
+      date:
+        example: "2026-04-12T09:00:00Z"
+        type: string
+    type: object
+  routes.XenditWebhookPayloadDoc:
+    properties:
+      external_id:
+        example: topup-6f2f4ea7-45e7-4f8f-af3a-bfcba1f3f8db
+        type: string
+      id:
+        example: 64f2c6ab-0194-4d33-81e2-42847eb9190d
+        type: string
+      paid_at:
+        example: "2026-04-12T10:20:00Z"
+        type: string
+      status:
+        example: PAID
         type: string
     type: object
 info:
@@ -48,22 +796,22 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/routes.GenericBody'
+          $ref: '#/definitions/routes.AuthGoogleLoginRequestDoc'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.AuthTokenResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       summary: Login with Google
       tags:
       - auth
@@ -77,18 +825,18 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/routes.GenericBody'
+          $ref: '#/definitions/routes.AuthLogoutRequestDoc'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.OKResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       summary: Logout
       tags:
       - auth
@@ -102,22 +850,22 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/routes.GenericBody'
+          $ref: '#/definitions/routes.AuthRefreshRequestDoc'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.AuthTokenResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       summary: Refresh access token
       tags:
       - auth
@@ -129,11 +877,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.BillingHistoryResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Billing history
@@ -148,15 +896,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.OKResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Activate subscription
@@ -170,15 +918,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.OKResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Cancel subscription
@@ -192,11 +940,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.BillingSummaryResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Billing summary
@@ -212,22 +960,22 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/routes.GenericBody'
+          $ref: '#/definitions/routes.BillingCheckoutRequestDoc'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.BillingCheckoutResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Create top-up checkout (Xendit)
@@ -243,22 +991,22 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/routes.GenericBody'
+          $ref: '#/definitions/routes.BusinessProfileUpdateRequestDoc'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.OKResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Update business profile
@@ -274,22 +1022,22 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/routes.GenericBody'
+          $ref: '#/definitions/routes.BusinessSettingsUpdateRequestDoc'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.OKResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Update business settings
@@ -305,22 +1053,22 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/routes.GenericBody'
+          $ref: '#/definitions/routes.BusinessWhatsAppUpdateRequestDoc'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.OKResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Update business WhatsApp fields
@@ -334,11 +1082,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.CategoryListResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: List categories
@@ -353,22 +1101,22 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/routes.GenericBody'
+          $ref: '#/definitions/routes.CategoryCreateRequestDoc'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.OKResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Create category
@@ -388,15 +1136,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.OKResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Delete category
@@ -416,22 +1164,22 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/routes.GenericBody'
+          $ref: '#/definitions/routes.CategoryUpdateRequestDoc'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.OKResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Update category
@@ -447,22 +1195,22 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/routes.GenericBody'
+          $ref: '#/definitions/routes.CheckinLookupRequestDoc'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.CheckinLookupResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Lookup customer for check-in
@@ -478,22 +1226,22 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/routes.GenericBody'
+          $ref: '#/definitions/routes.CheckinSubmitRequestDoc'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.OKResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Submit check-in
@@ -521,11 +1269,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.CustomerListResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: List customers
@@ -540,22 +1288,22 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/routes.GenericBody'
+          $ref: '#/definitions/routes.CustomerCreateRequestDoc'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.OKResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Create customer
@@ -575,15 +1323,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.OKResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Delete customer
@@ -603,22 +1351,22 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/routes.GenericBody'
+          $ref: '#/definitions/routes.CustomerUpdateRequestDoc'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.OKResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Update customer
@@ -632,16 +1380,34 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.DashboardSummaryResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Dashboard summary
       tags:
       - reminder
+  /v1/default-categories:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.DefaultCategoryListResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: List default categories
+      tags:
+      - category
   /v1/internal/plan-config:
     get:
       parameters:
@@ -656,11 +1422,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.InternalPlanConfigResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       summary: Get internal plan config
       tags:
       - internal
@@ -678,22 +1444,22 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/routes.GenericBody'
+          $ref: '#/definitions/routes.InternalPlanConfigUpdateRequestDoc'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.OKResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       summary: Update internal plan config
       tags:
       - internal
@@ -705,11 +1471,12 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            additionalProperties: true
+            type: object
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Get bootstrap payload
@@ -729,15 +1496,15 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.OKResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Retry reminder
@@ -761,11 +1528,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ReminderLogResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: List reminder logs
@@ -782,22 +1549,22 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/routes.GenericBody'
+          $ref: '#/definitions/routes.VisitRequestDoc'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.OKResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       security:
       - BearerAuth: []
       summary: Create manual visit
@@ -813,18 +1580,18 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/routes.GenericBody'
+          $ref: '#/definitions/routes.MetaWebhookPayloadDoc'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.OKResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       summary: Meta webhook
       tags:
       - webhook
@@ -842,22 +1609,22 @@ paths:
         name: payload
         required: true
         schema:
-          $ref: '#/definitions/routes.GenericBody'
+          $ref: '#/definitions/routes.XenditWebhookPayloadDoc'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.OKResponseDoc'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
         "401":
           description: Unauthorized
           schema:
-            $ref: '#/definitions/routes.SwaggerEnvelope'
+            $ref: '#/definitions/routes.ErrorResponseDoc'
       summary: Xendit webhook
       tags:
       - webhook

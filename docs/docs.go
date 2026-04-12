@@ -53,7 +53,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/routes.GenericBody"
+                            "$ref": "#/definitions/routes.AuthGoogleLoginRequestDoc"
                         }
                     }
                 ],
@@ -61,19 +61,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.AuthTokenResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -98,7 +98,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/routes.GenericBody"
+                            "$ref": "#/definitions/routes.AuthLogoutRequestDoc"
                         }
                     }
                 ],
@@ -106,13 +106,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.OKResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -137,7 +137,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/routes.GenericBody"
+                            "$ref": "#/definitions/routes.AuthRefreshRequestDoc"
                         }
                     }
                 ],
@@ -145,19 +145,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.AuthTokenResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -181,13 +181,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.BillingHistoryResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -212,19 +212,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.OKResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -248,19 +248,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.OKResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -284,13 +284,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.BillingSummaryResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -320,7 +320,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/routes.GenericBody"
+                            "$ref": "#/definitions/routes.BillingCheckoutRequestDoc"
                         }
                     }
                 ],
@@ -328,19 +328,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.BillingCheckoutResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -370,7 +370,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/routes.GenericBody"
+                            "$ref": "#/definitions/routes.BusinessProfileUpdateRequestDoc"
                         }
                     }
                 ],
@@ -378,19 +378,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.OKResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -420,7 +420,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/routes.GenericBody"
+                            "$ref": "#/definitions/routes.BusinessSettingsUpdateRequestDoc"
                         }
                     }
                 ],
@@ -428,19 +428,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.OKResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -470,7 +470,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/routes.GenericBody"
+                            "$ref": "#/definitions/routes.BusinessWhatsAppUpdateRequestDoc"
                         }
                     }
                 ],
@@ -478,19 +478,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.OKResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -514,13 +514,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.CategoryListResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -548,7 +548,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/routes.GenericBody"
+                            "$ref": "#/definitions/routes.CategoryCreateRequestDoc"
                         }
                     }
                 ],
@@ -556,19 +556,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.OKResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -601,19 +601,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.OKResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -648,7 +648,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/routes.GenericBody"
+                            "$ref": "#/definitions/routes.CategoryUpdateRequestDoc"
                         }
                     }
                 ],
@@ -656,19 +656,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.OKResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -698,7 +698,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/routes.GenericBody"
+                            "$ref": "#/definitions/routes.CheckinLookupRequestDoc"
                         }
                     }
                 ],
@@ -706,19 +706,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.CheckinLookupResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -748,7 +748,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/routes.GenericBody"
+                            "$ref": "#/definitions/routes.CheckinSubmitRequestDoc"
                         }
                     }
                 ],
@@ -756,19 +756,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.OKResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -813,13 +813,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.CustomerListResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -847,7 +847,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/routes.GenericBody"
+                            "$ref": "#/definitions/routes.CustomerCreateRequestDoc"
                         }
                     }
                 ],
@@ -855,19 +855,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.OKResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -900,19 +900,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.OKResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -947,7 +947,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/routes.GenericBody"
+                            "$ref": "#/definitions/routes.CustomerUpdateRequestDoc"
                         }
                     }
                 ],
@@ -955,19 +955,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.OKResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -991,13 +991,43 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.DashboardSummaryResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/default-categories": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "category"
+                ],
+                "summary": "List default categories",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.DefaultCategoryListResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -1025,13 +1055,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.InternalPlanConfigResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -1061,7 +1091,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/routes.GenericBody"
+                            "$ref": "#/definitions/routes.InternalPlanConfigUpdateRequestDoc"
                         }
                     }
                 ],
@@ -1069,19 +1099,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.OKResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -1105,13 +1135,14 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -1150,13 +1181,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ReminderLogResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -1189,19 +1220,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.OKResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -1232,7 +1263,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/routes.GenericBody"
+                            "$ref": "#/definitions/routes.VisitRequestDoc"
                         }
                     }
                 ],
@@ -1240,19 +1271,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.OKResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -1277,7 +1308,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/routes.GenericBody"
+                            "$ref": "#/definitions/routes.MetaWebhookPayloadDoc"
                         }
                     }
                 ],
@@ -1285,13 +1316,13 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.OKResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -1322,7 +1353,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/routes.GenericBody"
+                            "$ref": "#/definitions/routes.XenditWebhookPayloadDoc"
                         }
                     }
                 ],
@@ -1330,19 +1361,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.OKResponseDoc"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     },
                     "401": {
                         "description": "Unauthorized",
                         "schema": {
-                            "$ref": "#/definitions/routes.SwaggerEnvelope"
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
                         }
                     }
                 }
@@ -1350,33 +1381,1085 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "routes.GenericBody": {
+        "routes.AuthGoogleLoginRequestDoc": {
             "type": "object",
-            "additionalProperties": true
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "owner@getstarvio.com"
+                },
+                "googleSub": {
+                    "type": "string",
+                    "example": "109876543210987654321"
+                },
+                "idToken": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJSUzI1NiIs..."
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Alexandra Kevin"
+                }
+            }
+        },
+        "routes.AuthLogoutRequestDoc": {
+            "type": "object",
+            "properties": {
+                "refreshToken": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIs..."
+                }
+            }
+        },
+        "routes.AuthRefreshRequestDoc": {
+            "type": "object",
+            "properties": {
+                "refreshToken": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIs..."
+                }
+            }
+        },
+        "routes.AuthTokenBodyDoc": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIs..."
+                },
+                "refreshToken": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIs..."
+                },
+                "userId": {
+                    "type": "string",
+                    "example": "7f810c87-1528-4f67-b6c8-0ca01d08860c"
+                }
+            }
+        },
+        "routes.AuthTokenResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/routes.AuthTokenBodyDoc"
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "routes.BillingCheckoutDataDoc": {
+            "type": "object",
+            "properties": {
+                "checkoutUrl": {
+                    "type": "string",
+                    "example": "https://checkout.xendit.co/web/64f2c6ab..."
+                },
+                "externalId": {
+                    "type": "string",
+                    "example": "topup-6f2f4ea7-45e7-4f8f-af3a-bfcba1f3f8db"
+                },
+                "invoiceId": {
+                    "type": "string",
+                    "example": "64f2c6ab-0194-4d33-81e2-42847eb9190d"
+                },
+                "orderId": {
+                    "type": "string",
+                    "example": "3cdfa11e-ae03-4ddd-93c2-bcb6219f9859"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "PENDING"
+                }
+            }
+        },
+        "routes.BillingCheckoutRequestDoc": {
+            "type": "object",
+            "properties": {
+                "packageId": {
+                    "type": "string",
+                    "example": "p1"
+                }
+            }
+        },
+        "routes.BillingCheckoutResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/routes.BillingCheckoutDataDoc"
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "routes.BillingHistoryItemDoc": {
+            "type": "object",
+            "properties": {
+                "balanceAfter": {
+                    "type": "integer",
+                    "example": 100
+                },
+                "createdAt": {
+                    "type": "string",
+                    "example": "2026-04-12T09:00:00Z"
+                },
+                "delta": {
+                    "type": "integer",
+                    "example": 100
+                },
+                "id": {
+                    "type": "string",
+                    "example": "tx-1"
+                },
+                "label": {
+                    "type": "string",
+                    "example": "Welcome Bonus"
+                },
+                "note": {
+                    "type": "string",
+                    "example": "Bonus kredit pendaftaran"
+                },
+                "type": {
+                    "type": "string",
+                    "example": "welcome"
+                }
+            }
+        },
+        "routes.BillingHistoryResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/routes.BillingHistoryItemDoc"
+                    }
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "routes.BillingPlanConfigDoc": {
+            "type": "object",
+            "properties": {
+                "freeBonus": {
+                    "type": "integer",
+                    "example": 100
+                },
+                "subCredits": {
+                    "type": "integer",
+                    "example": 250
+                },
+                "subPrice": {
+                    "type": "integer",
+                    "example": 250000
+                },
+                "tiers": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/routes.BillingTierDoc"
+                    }
+                },
+                "topupPrice": {
+                    "type": "integer",
+                    "example": 1000
+                }
+            }
+        },
+        "routes.BillingSummaryDataDoc": {
+            "type": "object",
+            "properties": {
+                "plan": {
+                    "type": "string",
+                    "example": "free"
+                },
+                "planConfig": {
+                    "$ref": "#/definitions/routes.BillingPlanConfigDoc"
+                },
+                "remLeft": {
+                    "type": "integer",
+                    "example": 100
+                },
+                "subCreditsLeft": {
+                    "type": "integer",
+                    "example": 0
+                },
+                "subCreditsMax": {
+                    "type": "integer",
+                    "example": 250
+                },
+                "subscriptionEndsAt": {
+                    "type": "string",
+                    "example": ""
+                },
+                "subscriptionStatus": {
+                    "type": "string",
+                    "example": "none"
+                },
+                "topupCreditsLeft": {
+                    "type": "integer",
+                    "example": 0
+                },
+                "trialEndsAt": {
+                    "type": "string",
+                    "example": "2026-05-02T00:00:00Z"
+                },
+                "welcomeCreditsLeft": {
+                    "type": "integer",
+                    "example": 100
+                }
+            }
+        },
+        "routes.BillingSummaryResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/routes.BillingSummaryDataDoc"
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "routes.BillingTierDoc": {
+            "type": "object",
+            "properties": {
+                "credits": {
+                    "type": "integer",
+                    "example": 300
+                },
+                "price": {
+                    "type": "integer",
+                    "example": 250000
+                }
+            }
+        },
+        "routes.BusinessProfileUpdateRequestDoc": {
+            "type": "object",
+            "properties": {
+                "bizName": {
+                    "type": "string",
+                    "example": "Glow Beauty Studio"
+                },
+                "bizSlug": {
+                    "type": "string",
+                    "example": "glow-beauty-studio"
+                },
+                "bizType": {
+                    "type": "string",
+                    "example": "salon_kecantikan"
+                },
+                "country": {
+                    "type": "string",
+                    "example": "ID"
+                },
+                "timezone": {
+                    "type": "string",
+                    "example": "Asia/Jakarta"
+                }
+            }
+        },
+        "routes.BusinessSettingsUpdateRequestDoc": {
+            "type": "object",
+            "properties": {
+                "autoTopup": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "autoTopupPackage": {
+                    "type": "string",
+                    "example": "p1"
+                },
+                "autoTopupThreshold": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "automationEnabled": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "billingNotifCritical": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "billingNotifLow": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "billingNotifPreRenewal": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "billingNotifSubLow": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "defaultInterval": {
+                    "type": "integer",
+                    "example": 30
+                },
+                "sendTime": {
+                    "type": "string",
+                    "example": "09:00"
+                },
+                "timezone": {
+                    "type": "string",
+                    "example": "Asia/Jakarta"
+                }
+            }
+        },
+        "routes.BusinessWhatsAppUpdateRequestDoc": {
+            "type": "object",
+            "properties": {
+                "ownerWa": {
+                    "type": "string",
+                    "example": "6281234567890"
+                },
+                "waNum": {
+                    "type": "string",
+                    "example": "6289876543210"
+                }
+            }
+        },
+        "routes.CategoryCreateRequestDoc": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string",
+                    "example": "💇"
+                },
+                "interval": {
+                    "type": "integer",
+                    "example": 45
+                },
+                "isEnabled": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Hair Treatment"
+                },
+                "templateBody": {
+                    "type": "string",
+                    "example": "Hai [nama], waktunya hair treatment berikutnya di [bisnis]."
+                },
+                "templateId": {
+                    "type": "string",
+                    "example": "tpl-d"
+                }
+            }
+        },
+        "routes.CategoryItemDoc": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string",
+                    "example": "💆"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "defcat-facial-treatment"
+                },
+                "interval": {
+                    "type": "integer",
+                    "example": 30
+                },
+                "isEnabled": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Facial Treatment"
+                },
+                "templateBody": {
+                    "type": "string",
+                    "example": "Hai [nama], sudah sebulan sejak Facial Treatment terakhir kamu di [bisnis]."
+                },
+                "templateId": {
+                    "type": "string",
+                    "example": "tpl-a"
+                }
+            }
+        },
+        "routes.CategoryListResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/routes.CategoryItemDoc"
+                    }
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "routes.CategoryUpdateRequestDoc": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string",
+                    "example": "💇"
+                },
+                "interval": {
+                    "type": "integer",
+                    "example": 60
+                },
+                "isEnabled": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Hair Treatment Premium"
+                },
+                "templateBody": {
+                    "type": "string",
+                    "example": "Hai [nama], waktunya hair treatment premium lagi di [bisnis]."
+                },
+                "templateId": {
+                    "type": "string",
+                    "example": "tpl-d"
+                }
+            }
+        },
+        "routes.CheckinLookupCustomerDoc": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "c9e53f5d-6dc7-4db5-8504-3625e0d737f5"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Anisa Putri"
+                },
+                "services": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/routes.CustomerServiceDoc"
+                    }
+                },
+                "via": {
+                    "type": "string",
+                    "example": "manual"
+                },
+                "wa": {
+                    "type": "string",
+                    "example": "6281234567890"
+                }
+            }
+        },
+        "routes.CheckinLookupDataDoc": {
+            "type": "object",
+            "properties": {
+                "customer": {
+                    "$ref": "#/definitions/routes.CheckinLookupCustomerDoc"
+                },
+                "found": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "routes.CheckinLookupRequestDoc": {
+            "type": "object",
+            "properties": {
+                "wa": {
+                    "type": "string",
+                    "example": "6281234567890"
+                }
+            }
+        },
+        "routes.CheckinLookupResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/routes.CheckinLookupDataDoc"
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "routes.CheckinSubmitRequestDoc": {
+            "type": "object",
+            "properties": {
+                "categoryIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"defcat-facial-treatment\"]"
+                    ]
+                },
+                "date": {
+                    "type": "string",
+                    "example": "2026-04-12T09:00:00Z"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Anisa Putri"
+                },
+                "wa": {
+                    "type": "string",
+                    "example": "6281234567890"
+                }
+            }
+        },
+        "routes.CustomerCreateRequestDoc": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Anisa Putri"
+                },
+                "services": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/routes.CustomerServiceInputDoc"
+                    }
+                },
+                "via": {
+                    "type": "string",
+                    "example": "manual"
+                },
+                "wa": {
+                    "type": "string",
+                    "example": "6281234567890"
+                }
+            }
+        },
+        "routes.CustomerListItemDoc": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string",
+                    "example": "2026-04-12T08:30:00Z"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "c9e53f5d-6dc7-4db5-8504-3625e0d737f5"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Anisa Putri"
+                },
+                "overdueDays": {
+                    "type": "integer",
+                    "example": 0
+                },
+                "services": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/routes.CustomerServiceDoc"
+                    }
+                },
+                "status": {
+                    "type": "string",
+                    "example": "aktif"
+                },
+                "via": {
+                    "type": "string",
+                    "example": "manual"
+                },
+                "wa": {
+                    "type": "string",
+                    "example": "6281234567890"
+                }
+            }
+        },
+        "routes.CustomerListResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/routes.CustomerListItemDoc"
+                    }
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "routes.CustomerServiceDoc": {
+            "type": "object",
+            "properties": {
+                "date": {
+                    "type": "string",
+                    "example": "2026-04-12T09:00:00Z"
+                },
+                "days": {
+                    "type": "integer",
+                    "example": 30
+                },
+                "icon": {
+                    "type": "string",
+                    "example": "💆"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Facial Treatment"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "aktif"
+                }
+            }
+        },
+        "routes.CustomerServiceInputDoc": {
+            "type": "object",
+            "properties": {
+                "categoryId": {
+                    "type": "string",
+                    "example": "defcat-facial-treatment"
+                },
+                "date": {
+                    "type": "string",
+                    "example": "2026-04-12T09:00:00Z"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Facial Treatment"
+                }
+            }
+        },
+        "routes.CustomerUpdateRequestDoc": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Anisa Putri"
+                },
+                "services": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/routes.CustomerServiceInputDoc"
+                    }
+                },
+                "via": {
+                    "type": "string",
+                    "example": "manual"
+                },
+                "wa": {
+                    "type": "string",
+                    "example": "6281234567890"
+                }
+            }
+        },
+        "routes.DashboardCreditSummaryDoc": {
+            "type": "object",
+            "properties": {
+                "subscription": {
+                    "type": "integer",
+                    "example": 0
+                },
+                "topup": {
+                    "type": "integer",
+                    "example": 0
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 100
+                },
+                "welcome": {
+                    "type": "integer",
+                    "example": 100
+                }
+            }
+        },
+        "routes.DashboardSummaryDataDoc": {
+            "type": "object",
+            "properties": {
+                "credits": {
+                    "$ref": "#/definitions/routes.DashboardCreditSummaryDoc"
+                },
+                "date": {
+                    "type": "string",
+                    "example": "2026-04-12"
+                },
+                "failedToday": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "pendingReminders": {
+                    "type": "integer",
+                    "example": 4
+                },
+                "sentToday": {
+                    "type": "integer",
+                    "example": 8
+                },
+                "subscriptionStatus": {
+                    "type": "string",
+                    "example": "none"
+                },
+                "timezone": {
+                    "type": "string",
+                    "example": "Asia/Jakarta"
+                },
+                "totalCustomers": {
+                    "type": "integer",
+                    "example": 12
+                },
+                "trialEndsAt": {
+                    "type": "string",
+                    "example": "2026-05-02T00:00:00Z"
+                }
+            }
+        },
+        "routes.DashboardSummaryResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/routes.DashboardSummaryDataDoc"
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "routes.DefaultCategoryItemDoc": {
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string",
+                    "example": "💆"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "defcat-facial-treatment"
+                },
+                "interval": {
+                    "type": "integer",
+                    "example": 30
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Facial Treatment"
+                },
+                "templateBody": {
+                    "type": "string",
+                    "example": "Hai [nama], sudah sebulan sejak Facial Treatment terakhir kamu di [bisnis]."
+                },
+                "templateId": {
+                    "type": "string",
+                    "example": "tpl-a"
+                }
+            }
+        },
+        "routes.DefaultCategoryListResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/routes.DefaultCategoryItemDoc"
+                    }
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "routes.ErrorResponseDoc": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "message": {
+                    "type": "string",
+                    "example": "invalid request payload"
+                }
+            }
         },
         "routes.HealthResponse": {
             "type": "object",
             "properties": {
                 "ok": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "example": true
                 },
                 "service": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "getstarvio-backend"
                 },
                 "time": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2026-04-12T10:00:00Z"
                 }
             }
         },
-        "routes.SwaggerEnvelope": {
+        "routes.InternalPlanConfigResponseDoc": {
             "type": "object",
             "properties": {
-                "data": {},
-                "error": {
-                    "type": "boolean"
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "businessId": {
+                            "type": "string",
+                            "example": "biz-1"
+                        },
+                        "freeBonus": {
+                            "type": "integer",
+                            "example": 100
+                        },
+                        "subCredits": {
+                            "type": "integer",
+                            "example": 250
+                        },
+                        "subPrice": {
+                            "type": "integer",
+                            "example": 250000
+                        },
+                        "tier1Credits": {
+                            "type": "integer",
+                            "example": 300
+                        },
+                        "tier1Price": {
+                            "type": "integer",
+                            "example": 250000
+                        },
+                        "tier2Credits": {
+                            "type": "integer",
+                            "example": 625
+                        },
+                        "tier2Price": {
+                            "type": "integer",
+                            "example": 500000
+                        },
+                        "tier3Credits": {
+                            "type": "integer",
+                            "example": 1500
+                        },
+                        "tier3Price": {
+                            "type": "integer",
+                            "example": 1000000
+                        },
+                        "topupPrice": {
+                            "type": "integer",
+                            "example": 1000
+                        }
+                    }
                 },
-                "message": {
-                    "type": "string"
+                "error": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "routes.InternalPlanConfigUpdateRequestDoc": {
+            "type": "object",
+            "properties": {
+                "freeBonus": {
+                    "type": "integer",
+                    "example": 100
+                },
+                "subCredits": {
+                    "type": "integer",
+                    "example": 250
+                },
+                "subPrice": {
+                    "type": "integer",
+                    "example": 250000
+                },
+                "tier1Credits": {
+                    "type": "integer",
+                    "example": 300
+                },
+                "tier1Price": {
+                    "type": "integer",
+                    "example": 250000
+                },
+                "tier2Credits": {
+                    "type": "integer",
+                    "example": 625
+                },
+                "tier2Price": {
+                    "type": "integer",
+                    "example": 500000
+                },
+                "tier3Credits": {
+                    "type": "integer",
+                    "example": 1500
+                },
+                "tier3Price": {
+                    "type": "integer",
+                    "example": 1000000
+                },
+                "topupPrice": {
+                    "type": "integer",
+                    "example": 1000
+                }
+            }
+        },
+        "routes.MetaWebhookPayloadDoc": {
+            "type": "object",
+            "properties": {
+                "object": {
+                    "type": "string",
+                    "example": "whatsapp_business_account"
+                }
+            }
+        },
+        "routes.OKDataDoc": {
+            "type": "object",
+            "properties": {
+                "ok": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "routes.OKResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/routes.OKDataDoc"
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "routes.ReminderLogItemDoc": {
+            "type": "object",
+            "properties": {
+                "businessId": {
+                    "type": "string",
+                    "example": "biz-1"
+                },
+                "categoryId": {
+                    "type": "string",
+                    "example": "cat-1"
+                },
+                "customerId": {
+                    "type": "string",
+                    "example": "cx-1"
+                },
+                "cxName": {
+                    "type": "string",
+                    "example": "Anisa Putri"
+                },
+                "errorReason": {
+                    "type": "string",
+                    "example": ""
+                },
+                "id": {
+                    "type": "string",
+                    "example": "rem-1"
+                },
+                "kredit": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "metaMessageId": {
+                    "type": "string",
+                    "example": "wamid.HBgM..."
+                },
+                "retryCount": {
+                    "type": "integer",
+                    "example": 0
+                },
+                "scheduledAt": {
+                    "type": "string",
+                    "example": "2026-04-12T09:00:00Z"
+                },
+                "sentAt": {
+                    "type": "string",
+                    "example": "2026-04-12T09:00:05Z"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "terkirim"
+                },
+                "svcName": {
+                    "type": "string",
+                    "example": "Facial Treatment"
+                }
+            }
+        },
+        "routes.ReminderLogResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/routes.ReminderLogItemDoc"
+                    }
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "routes.VisitRequestDoc": {
+            "type": "object",
+            "properties": {
+                "categoryIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "[\"defcat-facial-treatment\"]"
+                    ]
+                },
+                "customerId": {
+                    "type": "string",
+                    "example": "c9e53f5d-6dc7-4db5-8504-3625e0d737f5"
+                },
+                "customerName": {
+                    "type": "string",
+                    "example": "Anisa Putri"
+                },
+                "customerWa": {
+                    "type": "string",
+                    "example": "6281234567890"
+                },
+                "date": {
+                    "type": "string",
+                    "example": "2026-04-12T09:00:00Z"
+                }
+            }
+        },
+        "routes.XenditWebhookPayloadDoc": {
+            "type": "object",
+            "properties": {
+                "external_id": {
+                    "type": "string",
+                    "example": "topup-6f2f4ea7-45e7-4f8f-af3a-bfcba1f3f8db"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "64f2c6ab-0194-4d33-81e2-42847eb9190d"
+                },
+                "paid_at": {
+                    "type": "string",
+                    "example": "2026-04-12T10:20:00Z"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "PAID"
                 }
             }
         }

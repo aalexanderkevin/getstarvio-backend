@@ -76,6 +76,20 @@ type Category struct {
 
 func (Category) TableName() string { return "categories" }
 
+type DefaultCategory struct {
+	ID           string    `gorm:"column:id;primaryKey"`
+	Name         string    `gorm:"column:name;not null"`
+	Icon         string    `gorm:"column:icon;not null"`
+	IntervalDays int       `gorm:"column:interval_days;not null"`
+	TemplateID   string    `gorm:"column:template_id;not null"`
+	TemplateBody string    `gorm:"column:template_body;not null"`
+	IsActive     bool      `gorm:"column:is_active;default:true"`
+	CreatedAt    time.Time `gorm:"column:created_at;autoCreateTime"`
+	UpdatedAt    time.Time `gorm:"column:updated_at;autoUpdateTime"`
+}
+
+func (DefaultCategory) TableName() string { return "default_categories" }
+
 type Customer struct {
 	ID         string    `gorm:"column:id;primaryKey"`
 	BusinessID string    `gorm:"column:business_id;index;not null"`

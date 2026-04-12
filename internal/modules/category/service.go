@@ -13,6 +13,25 @@ type Service struct{ repo *Repo }
 
 func NewService(repo *Repo) *Service { return &Service{repo: repo} }
 
+func (s *Service) ListDefault() ([]map[string]interface{}, error) {
+	cats, err := s.repo.ListDefaults()
+	if err != nil {
+		return nil, err
+	}
+	out := make([]map[string]interface{}, 0, len(cats))
+	for _, c := range cats {
+		out = append(out, map[string]interface{}{
+			"id":           c.ID,
+			"name":         c.Name,
+			"icon":         c.Icon,
+			"interval":     c.IntervalDays,
+			"templateId":   c.TemplateID,
+			"templateBody": c.TemplateBody,
+		})
+	}
+	return out, nil
+}
+
 func (s *Service) List(userID string) ([]map[string]interface{}, error) {
 	biz, err := s.repo.FindBusinessByUser(userID)
 	if err != nil {

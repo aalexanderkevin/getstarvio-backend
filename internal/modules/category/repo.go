@@ -26,6 +26,12 @@ func (r *Repo) List(businessID string) ([]models.Category, error) {
 	return out, err
 }
 
+func (r *Repo) ListDefaults() ([]models.DefaultCategory, error) {
+	var out []models.DefaultCategory
+	err := r.db.Where("is_active = ?", true).Order("name asc").Find(&out).Error
+	return out, err
+}
+
 func (r *Repo) Create(c models.Category) error {
 	return r.db.Create(&c).Error
 }

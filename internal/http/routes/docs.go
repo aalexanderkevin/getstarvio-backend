@@ -1,32 +1,357 @@
 package routes
 
-// SwaggerEnvelope is the common API response shape.
-type SwaggerEnvelope struct {
-	Error   bool        `json:"error"`
-	Message string      `json:"message,omitempty"`
-	Data    interface{} `json:"data,omitempty"`
+// ErrorResponseDoc describes standard error response payload.
+type ErrorResponseDoc struct {
+	Error   bool   `json:"error" example:"true"`
+	Message string `json:"message" example:"invalid request payload"`
+}
+
+// OKDataDoc is common success marker.
+type OKDataDoc struct {
+	OK bool `json:"ok" example:"true"`
+}
+
+// OKResponseDoc describes standard success response for mutation endpoints.
+type OKResponseDoc struct {
+	Error bool      `json:"error" example:"false"`
+	Data  OKDataDoc `json:"data"`
 }
 
 // HealthResponse is the health check payload.
 type HealthResponse struct {
-	OK      bool   `json:"ok"`
-	Service string `json:"service"`
-	Time    string `json:"time"`
+	OK      bool   `json:"ok" example:"true"`
+	Service string `json:"service" example:"getstarvio-backend"`
+	Time    string `json:"time" example:"2026-04-12T10:00:00Z"`
 }
 
-// GenericBody is a flexible request payload placeholder for docs.
-type GenericBody map[string]interface{}
-
-// AuthTokenBody is login/refresh response payload.
-type AuthTokenBody struct {
-	AccessToken  string `json:"accessToken"`
-	RefreshToken string `json:"refreshToken"`
-	UserID       string `json:"userId"`
+type AuthGoogleLoginRequestDoc struct {
+	IDToken   string `json:"idToken" example:"eyJhbGciOiJSUzI1NiIs..."`
+	GoogleSub string `json:"googleSub" example:"109876543210987654321"`
+	Email     string `json:"email" example:"owner@getstarvio.com"`
+	Name      string `json:"name" example:"Alexandra Kevin"`
 }
 
-// InternalTokenHeader documents internal API token header.
-type InternalTokenHeader struct {
-	XInternalToken string `json:"X-Internal-Token"`
+type AuthRefreshRequestDoc struct {
+	RefreshToken string `json:"refreshToken" example:"eyJhbGciOiJIUzI1NiIs..."`
+}
+
+type AuthLogoutRequestDoc struct {
+	RefreshToken string `json:"refreshToken" example:"eyJhbGciOiJIUzI1NiIs..."`
+}
+
+type AuthTokenBodyDoc struct {
+	AccessToken  string `json:"accessToken" example:"eyJhbGciOiJIUzI1NiIs..."`
+	RefreshToken string `json:"refreshToken" example:"eyJhbGciOiJIUzI1NiIs..."`
+	UserID       string `json:"userId" example:"7f810c87-1528-4f67-b6c8-0ca01d08860c"`
+}
+
+type AuthTokenResponseDoc struct {
+	Error bool             `json:"error" example:"false"`
+	Data  AuthTokenBodyDoc `json:"data"`
+}
+
+type BusinessProfileUpdateRequestDoc struct {
+	BizName  string `json:"bizName" example:"Glow Beauty Studio"`
+	BizType  string `json:"bizType" example:"salon_kecantikan"`
+	BizSlug  string `json:"bizSlug" example:"glow-beauty-studio"`
+	Timezone string `json:"timezone" example:"Asia/Jakarta"`
+	Country  string `json:"country" example:"ID"`
+}
+
+type BusinessWhatsAppUpdateRequestDoc struct {
+	OwnerWA string `json:"ownerWa" example:"6281234567890"`
+	WANum   string `json:"waNum" example:"6289876543210"`
+}
+
+type BusinessSettingsUpdateRequestDoc struct {
+	AutomationEnabled      *bool  `json:"automationEnabled" example:"true"`
+	DefaultInterval        *int   `json:"defaultInterval" example:"30"`
+	SendTime               string `json:"sendTime" example:"09:00"`
+	Timezone               string `json:"timezone" example:"Asia/Jakarta"`
+	BillingNotifLow        *bool  `json:"billingNotifLow" example:"true"`
+	BillingNotifCritical   *bool  `json:"billingNotifCritical" example:"true"`
+	BillingNotifSubLow     *bool  `json:"billingNotifSubLow" example:"true"`
+	BillingNotifPreRenewal *bool  `json:"billingNotifPreRenewal" example:"true"`
+	AutoTopup              *bool  `json:"autoTopup" example:"false"`
+	AutoTopupThreshold     *int   `json:"autoTopupThreshold" example:"10"`
+	AutoTopupPackage       string `json:"autoTopupPackage" example:"p1"`
+}
+
+type CategoryItemDoc struct {
+	ID           string `json:"id" example:"defcat-facial-treatment"`
+	Name         string `json:"name" example:"Facial Treatment"`
+	Icon         string `json:"icon" example:"💆"`
+	Interval     int    `json:"interval" example:"30"`
+	TemplateID   string `json:"templateId" example:"tpl-a"`
+	TemplateBody string `json:"templateBody" example:"Hai [nama], sudah sebulan sejak Facial Treatment terakhir kamu di [bisnis]."`
+	IsEnabled    bool   `json:"isEnabled" example:"true"`
+}
+
+type CategoryListResponseDoc struct {
+	Error bool              `json:"error" example:"false"`
+	Data  []CategoryItemDoc `json:"data"`
+}
+
+type DefaultCategoryItemDoc struct {
+	ID           string `json:"id" example:"defcat-facial-treatment"`
+	Name         string `json:"name" example:"Facial Treatment"`
+	Icon         string `json:"icon" example:"💆"`
+	Interval     int    `json:"interval" example:"30"`
+	TemplateID   string `json:"templateId" example:"tpl-a"`
+	TemplateBody string `json:"templateBody" example:"Hai [nama], sudah sebulan sejak Facial Treatment terakhir kamu di [bisnis]."`
+}
+
+type DefaultCategoryListResponseDoc struct {
+	Error bool                     `json:"error" example:"false"`
+	Data  []DefaultCategoryItemDoc `json:"data"`
+}
+
+type CategoryCreateRequestDoc struct {
+	Name         string `json:"name" example:"Hair Treatment"`
+	Icon         string `json:"icon" example:"💇"`
+	Interval     int    `json:"interval" example:"45"`
+	TemplateID   string `json:"templateId" example:"tpl-d"`
+	TemplateBody string `json:"templateBody" example:"Hai [nama], waktunya hair treatment berikutnya di [bisnis]."`
+	IsEnabled    *bool  `json:"isEnabled" example:"true"`
+}
+
+type CategoryUpdateRequestDoc struct {
+	Name         *string `json:"name" example:"Hair Treatment Premium"`
+	Icon         *string `json:"icon" example:"💇"`
+	Interval     *int    `json:"interval" example:"60"`
+	TemplateID   *string `json:"templateId" example:"tpl-d"`
+	TemplateBody *string `json:"templateBody" example:"Hai [nama], waktunya hair treatment premium lagi di [bisnis]."`
+	IsEnabled    *bool   `json:"isEnabled" example:"true"`
+}
+
+type CustomerServiceInputDoc struct {
+	CategoryID string `json:"categoryId" example:"defcat-facial-treatment"`
+	Name       string `json:"name" example:"Facial Treatment"`
+	Date       string `json:"date" example:"2026-04-12T09:00:00Z"`
+}
+
+type CustomerCreateRequestDoc struct {
+	Name     string                    `json:"name" example:"Anisa Putri"`
+	WA       string                    `json:"wa" example:"6281234567890"`
+	Via      string                    `json:"via" example:"manual"`
+	Services []CustomerServiceInputDoc `json:"services"`
+}
+
+type CustomerUpdateRequestDoc struct {
+	Name     *string                   `json:"name" example:"Anisa Putri"`
+	WA       *string                   `json:"wa" example:"6281234567890"`
+	Via      *string                   `json:"via" example:"manual"`
+	Services []CustomerServiceInputDoc `json:"services"`
+}
+
+type CustomerServiceDoc struct {
+	Name   string `json:"name" example:"Facial Treatment"`
+	Icon   string `json:"icon" example:"💆"`
+	Date   string `json:"date" example:"2026-04-12T09:00:00Z"`
+	Days   int    `json:"days" example:"30"`
+	Status string `json:"status" example:"aktif"`
+}
+
+type CustomerListItemDoc struct {
+	ID          string               `json:"id" example:"c9e53f5d-6dc7-4db5-8504-3625e0d737f5"`
+	Name        string               `json:"name" example:"Anisa Putri"`
+	WA          string               `json:"wa" example:"6281234567890"`
+	Via         string               `json:"via" example:"manual"`
+	Status      string               `json:"status" example:"aktif"`
+	OverdueDays int                  `json:"overdueDays" example:"0"`
+	CreatedAt   string               `json:"createdAt" example:"2026-04-12T08:30:00Z"`
+	Services    []CustomerServiceDoc `json:"services"`
+}
+
+type CustomerListResponseDoc struct {
+	Error bool                  `json:"error" example:"false"`
+	Data  []CustomerListItemDoc `json:"data"`
+}
+
+type VisitRequestDoc struct {
+	CustomerID   string   `json:"customerId" example:"c9e53f5d-6dc7-4db5-8504-3625e0d737f5"`
+	CustomerName string   `json:"customerName" example:"Anisa Putri"`
+	CustomerWA   string   `json:"customerWa" example:"6281234567890"`
+	Date         string   `json:"date" example:"2026-04-12T09:00:00Z"`
+	CategoryIDs  []string `json:"categoryIds" example:"[\"defcat-facial-treatment\"]"`
+}
+
+type CheckinLookupRequestDoc struct {
+	WA string `json:"wa" example:"6281234567890"`
+}
+
+type CheckinLookupCustomerDoc struct {
+	ID       string               `json:"id" example:"c9e53f5d-6dc7-4db5-8504-3625e0d737f5"`
+	Name     string               `json:"name" example:"Anisa Putri"`
+	WA       string               `json:"wa" example:"6281234567890"`
+	Via      string               `json:"via" example:"manual"`
+	Services []CustomerServiceDoc `json:"services"`
+}
+
+type CheckinLookupDataDoc struct {
+	Found    bool                      `json:"found" example:"true"`
+	Customer *CheckinLookupCustomerDoc `json:"customer,omitempty"`
+}
+
+type CheckinLookupResponseDoc struct {
+	Error bool                 `json:"error" example:"false"`
+	Data  CheckinLookupDataDoc `json:"data"`
+}
+
+type CheckinSubmitRequestDoc struct {
+	WA          string   `json:"wa" example:"6281234567890"`
+	Name        string   `json:"name" example:"Anisa Putri"`
+	Date        string   `json:"date" example:"2026-04-12T09:00:00Z"`
+	CategoryIDs []string `json:"categoryIds" example:"[\"defcat-facial-treatment\"]"`
+}
+
+type ReminderLogItemDoc struct {
+	ID            string `json:"id" example:"rem-1"`
+	BusinessID    string `json:"businessId" example:"biz-1"`
+	CustomerID    string `json:"customerId" example:"cx-1"`
+	CategoryID    string `json:"categoryId" example:"cat-1"`
+	CxName        string `json:"cxName" example:"Anisa Putri"`
+	SvcName       string `json:"svcName" example:"Facial Treatment"`
+	ScheduledAt   string `json:"scheduledAt" example:"2026-04-12T09:00:00Z"`
+	SentAt        string `json:"sentAt" example:"2026-04-12T09:00:05Z"`
+	Status        string `json:"status" example:"terkirim"`
+	Kredit        int    `json:"kredit" example:"1"`
+	ErrorReason   string `json:"errorReason,omitempty" example:""`
+	RetryCount    int    `json:"retryCount" example:"0"`
+	MetaMessageID string `json:"metaMessageId,omitempty" example:"wamid.HBgM..."`
+}
+
+type ReminderLogResponseDoc struct {
+	Error bool                 `json:"error" example:"false"`
+	Data  []ReminderLogItemDoc `json:"data"`
+}
+
+type DashboardCreditSummaryDoc struct {
+	Welcome      int `json:"welcome" example:"100"`
+	Subscription int `json:"subscription" example:"0"`
+	Topup        int `json:"topup" example:"0"`
+	Total        int `json:"total" example:"100"`
+}
+
+type DashboardSummaryDataDoc struct {
+	Date               string                    `json:"date" example:"2026-04-12"`
+	Timezone           string                    `json:"timezone" example:"Asia/Jakarta"`
+	TotalCustomers     int                       `json:"totalCustomers" example:"12"`
+	PendingReminders   int                       `json:"pendingReminders" example:"4"`
+	SentToday          int                       `json:"sentToday" example:"8"`
+	FailedToday        int                       `json:"failedToday" example:"1"`
+	Credits            DashboardCreditSummaryDoc `json:"credits"`
+	TrialEndsAt        string                    `json:"trialEndsAt" example:"2026-05-02T00:00:00Z"`
+	SubscriptionStatus string                    `json:"subscriptionStatus" example:"none"`
+}
+
+type DashboardSummaryResponseDoc struct {
+	Error bool                    `json:"error" example:"false"`
+	Data  DashboardSummaryDataDoc `json:"data"`
+}
+
+type BillingTierDoc struct {
+	Price   int `json:"price" example:"250000"`
+	Credits int `json:"credits" example:"300"`
+}
+
+type BillingPlanConfigDoc struct {
+	FreeBonus  int              `json:"freeBonus" example:"100"`
+	SubCredits int              `json:"subCredits" example:"250"`
+	SubPrice   int              `json:"subPrice" example:"250000"`
+	TopupPrice int              `json:"topupPrice" example:"1000"`
+	Tiers      []BillingTierDoc `json:"tiers"`
+}
+
+type BillingSummaryDataDoc struct {
+	Plan               string               `json:"plan" example:"free"`
+	SubscriptionStatus string               `json:"subscriptionStatus" example:"none"`
+	TrialEndsAt        string               `json:"trialEndsAt" example:"2026-05-02T00:00:00Z"`
+	SubscriptionEndsAt string               `json:"subscriptionEndsAt,omitempty" example:""`
+	WelcomeCreditsLeft int                  `json:"welcomeCreditsLeft" example:"100"`
+	SubCreditsLeft     int                  `json:"subCreditsLeft" example:"0"`
+	TopupCreditsLeft   int                  `json:"topupCreditsLeft" example:"0"`
+	SubCreditsMax      int                  `json:"subCreditsMax" example:"250"`
+	RemLeft            int                  `json:"remLeft" example:"100"`
+	PlanConfig         BillingPlanConfigDoc `json:"planConfig"`
+}
+
+type BillingSummaryResponseDoc struct {
+	Error bool                  `json:"error" example:"false"`
+	Data  BillingSummaryDataDoc `json:"data"`
+}
+
+type BillingHistoryItemDoc struct {
+	ID           string `json:"id" example:"tx-1"`
+	Type         string `json:"type" example:"welcome"`
+	Label        string `json:"label" example:"Welcome Bonus"`
+	Delta        int    `json:"delta" example:"100"`
+	BalanceAfter int    `json:"balanceAfter" example:"100"`
+	Note         string `json:"note" example:"Bonus kredit pendaftaran"`
+	CreatedAt    string `json:"createdAt" example:"2026-04-12T09:00:00Z"`
+}
+
+type BillingHistoryResponseDoc struct {
+	Error bool                    `json:"error" example:"false"`
+	Data  []BillingHistoryItemDoc `json:"data"`
+}
+
+type BillingCheckoutRequestDoc struct {
+	PackageID string `json:"packageId" example:"p1"`
+}
+
+type BillingCheckoutDataDoc struct {
+	OrderID     string `json:"orderId" example:"3cdfa11e-ae03-4ddd-93c2-bcb6219f9859"`
+	ExternalID  string `json:"externalId" example:"topup-6f2f4ea7-45e7-4f8f-af3a-bfcba1f3f8db"`
+	InvoiceID   string `json:"invoiceId" example:"64f2c6ab-0194-4d33-81e2-42847eb9190d"`
+	CheckoutURL string `json:"checkoutUrl" example:"https://checkout.xendit.co/web/64f2c6ab..."`
+	Status      string `json:"status" example:"PENDING"`
+}
+
+type BillingCheckoutResponseDoc struct {
+	Error bool                   `json:"error" example:"false"`
+	Data  BillingCheckoutDataDoc `json:"data"`
+}
+
+type XenditWebhookPayloadDoc struct {
+	ID         string `json:"id" example:"64f2c6ab-0194-4d33-81e2-42847eb9190d"`
+	ExternalID string `json:"external_id" example:"topup-6f2f4ea7-45e7-4f8f-af3a-bfcba1f3f8db"`
+	Status     string `json:"status" example:"PAID"`
+	PaidAt     string `json:"paid_at" example:"2026-04-12T10:20:00Z"`
+}
+
+type MetaWebhookPayloadDoc struct {
+	Object string `json:"object" example:"whatsapp_business_account"`
+}
+
+type InternalPlanConfigResponseDoc struct {
+	Error bool `json:"error" example:"false"`
+	Data  struct {
+		BusinessID string `json:"businessId" example:"biz-1"`
+		FreeBonus  int    `json:"freeBonus" example:"100"`
+		SubCredits int    `json:"subCredits" example:"250"`
+		SubPrice   int    `json:"subPrice" example:"250000"`
+		TopupPrice int    `json:"topupPrice" example:"1000"`
+		Tier1Price int    `json:"tier1Price" example:"250000"`
+		Tier1Creds int    `json:"tier1Credits" example:"300"`
+		Tier2Price int    `json:"tier2Price" example:"500000"`
+		Tier2Creds int    `json:"tier2Credits" example:"625"`
+		Tier3Price int    `json:"tier3Price" example:"1000000"`
+		Tier3Creds int    `json:"tier3Credits" example:"1500"`
+	} `json:"data"`
+}
+
+type InternalPlanConfigUpdateRequestDoc struct {
+	FreeBonus    int `json:"freeBonus" example:"100"`
+	SubCredits   int `json:"subCredits" example:"250"`
+	SubPrice     int `json:"subPrice" example:"250000"`
+	TopupPrice   int `json:"topupPrice" example:"1000"`
+	Tier1Price   int `json:"tier1Price" example:"250000"`
+	Tier1Credits int `json:"tier1Credits" example:"300"`
+	Tier2Price   int `json:"tier2Price" example:"500000"`
+	Tier2Credits int `json:"tier2Credits" example:"625"`
+	Tier3Price   int `json:"tier3Price" example:"1000000"`
+	Tier3Credits int `json:"tier3Credits" example:"1500"`
 }
 
 // healthzDoc godoc
@@ -42,10 +367,10 @@ func healthzDoc() {}
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param payload body GenericBody true "Google login payload"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Param payload body AuthGoogleLoginRequestDoc true "Google login payload"
+// @Success 200 {object} AuthTokenResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/auth/google/login [post]
 func authGoogleLoginDoc() {}
 
@@ -54,10 +379,10 @@ func authGoogleLoginDoc() {}
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param payload body GenericBody true "Refresh token payload"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Param payload body AuthRefreshRequestDoc true "Refresh token payload"
+// @Success 200 {object} AuthTokenResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/auth/refresh [post]
 func authRefreshDoc() {}
 
@@ -66,9 +391,9 @@ func authRefreshDoc() {}
 // @Tags auth
 // @Accept json
 // @Produce json
-// @Param payload body GenericBody true "Logout payload"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
+// @Param payload body AuthLogoutRequestDoc true "Logout payload"
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
 // @Router /v1/auth/logout [post]
 func authLogoutDoc() {}
 
@@ -77,8 +402,8 @@ func authLogoutDoc() {}
 // @Tags business
 // @Security BearerAuth
 // @Produce json
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Success 200 {object} map[string]interface{}
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/me/bootstrap [get]
 func meBootstrapDoc() {}
 
@@ -88,10 +413,10 @@ func meBootstrapDoc() {}
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param payload body GenericBody true "Business profile payload"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Param payload body BusinessProfileUpdateRequestDoc true "Business profile payload"
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/business/profile [put]
 func businessProfileUpdateDoc() {}
 
@@ -101,10 +426,10 @@ func businessProfileUpdateDoc() {}
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param payload body GenericBody true "Business WhatsApp payload"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Param payload body BusinessWhatsAppUpdateRequestDoc true "Business WhatsApp payload"
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/business/whatsapp [put]
 func businessWhatsAppUpdateDoc() {}
 
@@ -114,10 +439,10 @@ func businessWhatsAppUpdateDoc() {}
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param payload body GenericBody true "Business settings payload"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Param payload body BusinessSettingsUpdateRequestDoc true "Business settings payload"
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/business/settings [put]
 func businessSettingsUpdateDoc() {}
 
@@ -126,10 +451,20 @@ func businessSettingsUpdateDoc() {}
 // @Tags category
 // @Security BearerAuth
 // @Produce json
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Success 200 {object} CategoryListResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/categories [get]
 func categoriesListDoc() {}
+
+// defaultCategoriesListDoc godoc
+// @Summary List default categories
+// @Tags category
+// @Security BearerAuth
+// @Produce json
+// @Success 200 {object} DefaultCategoryListResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Router /v1/default-categories [get]
+func defaultCategoriesListDoc() {}
 
 // categoriesCreateDoc godoc
 // @Summary Create category
@@ -137,10 +472,10 @@ func categoriesListDoc() {}
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param payload body GenericBody true "Category payload"
-// @Success 201 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Param payload body CategoryCreateRequestDoc true "Category payload"
+// @Success 201 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/categories [post]
 func categoriesCreateDoc() {}
 
@@ -151,10 +486,10 @@ func categoriesCreateDoc() {}
 // @Accept json
 // @Produce json
 // @Param id path string true "Category ID"
-// @Param payload body GenericBody true "Category payload"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Param payload body CategoryUpdateRequestDoc true "Category payload"
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/categories/{id} [patch]
 func categoriesUpdateDoc() {}
 
@@ -164,9 +499,9 @@ func categoriesUpdateDoc() {}
 // @Security BearerAuth
 // @Produce json
 // @Param id path string true "Category ID"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/categories/{id} [delete]
 func categoriesDeleteDoc() {}
 
@@ -178,8 +513,8 @@ func categoriesDeleteDoc() {}
 // @Param q query string false "Search query"
 // @Param status query string false "Customer status"
 // @Param sort query string false "Sort mode" default(urgent)
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Success 200 {object} CustomerListResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/customers [get]
 func customersListDoc() {}
 
@@ -189,10 +524,10 @@ func customersListDoc() {}
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param payload body GenericBody true "Customer payload"
-// @Success 201 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Param payload body CustomerCreateRequestDoc true "Customer payload"
+// @Success 201 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/customers [post]
 func customersCreateDoc() {}
 
@@ -203,10 +538,10 @@ func customersCreateDoc() {}
 // @Accept json
 // @Produce json
 // @Param id path string true "Customer ID"
-// @Param payload body GenericBody true "Customer payload"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Param payload body CustomerUpdateRequestDoc true "Customer payload"
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/customers/{id} [patch]
 func customersUpdateDoc() {}
 
@@ -216,9 +551,9 @@ func customersUpdateDoc() {}
 // @Security BearerAuth
 // @Produce json
 // @Param id path string true "Customer ID"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/customers/{id} [delete]
 func customersDeleteDoc() {}
 
@@ -229,10 +564,10 @@ func customersDeleteDoc() {}
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param payload body GenericBody true "Visit payload"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Param payload body VisitRequestDoc true "Visit payload"
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/visits [post]
 func visitsCreateDoc() {}
 
@@ -242,10 +577,10 @@ func visitsCreateDoc() {}
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param payload body GenericBody true "Lookup payload"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Param payload body CheckinLookupRequestDoc true "Lookup payload"
+// @Success 200 {object} CheckinLookupResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/checkin/lookup [post]
 func checkinLookupDoc() {}
 
@@ -255,10 +590,10 @@ func checkinLookupDoc() {}
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param payload body GenericBody true "Check-in payload"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Param payload body CheckinSubmitRequestDoc true "Check-in payload"
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/checkin/submit [post]
 func checkinSubmitDoc() {}
 
@@ -269,8 +604,8 @@ func checkinSubmitDoc() {}
 // @Produce json
 // @Param status query string false "Reminder status"
 // @Param limit query int false "Limit" default(200)
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Success 200 {object} ReminderLogResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/reminders/log [get]
 func remindersLogDoc() {}
 
@@ -280,9 +615,9 @@ func remindersLogDoc() {}
 // @Security BearerAuth
 // @Produce json
 // @Param id path string true "Reminder ID"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/reminders/{id}/retry [post]
 func remindersRetryDoc() {}
 
@@ -291,8 +626,8 @@ func remindersRetryDoc() {}
 // @Tags reminder
 // @Security BearerAuth
 // @Produce json
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Success 200 {object} DashboardSummaryResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/dashboard/summary [get]
 func dashboardSummaryDoc() {}
 
@@ -301,8 +636,8 @@ func dashboardSummaryDoc() {}
 // @Tags billing
 // @Security BearerAuth
 // @Produce json
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Success 200 {object} BillingSummaryResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/billing/summary [get]
 func billingSummaryDoc() {}
 
@@ -311,8 +646,8 @@ func billingSummaryDoc() {}
 // @Tags billing
 // @Security BearerAuth
 // @Produce json
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Success 200 {object} BillingHistoryResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/billing/history [get]
 func billingHistoryDoc() {}
 
@@ -322,9 +657,9 @@ func billingHistoryDoc() {}
 // @Tags billing
 // @Security BearerAuth
 // @Produce json
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/billing/subscription/activate [post]
 func billingSubscriptionActivateDoc() {}
 
@@ -333,9 +668,9 @@ func billingSubscriptionActivateDoc() {}
 // @Tags billing
 // @Security BearerAuth
 // @Produce json
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/billing/subscription/cancel [post]
 func billingSubscriptionCancelDoc() {}
 
@@ -345,10 +680,10 @@ func billingSubscriptionCancelDoc() {}
 // @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param payload body GenericBody true "Checkout payload"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Param payload body BillingCheckoutRequestDoc true "Checkout payload"
+// @Success 200 {object} BillingCheckoutResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/billing/topup/checkout [post]
 func billingTopupCheckoutDoc() {}
 
@@ -358,10 +693,10 @@ func billingTopupCheckoutDoc() {}
 // @Accept json
 // @Produce json
 // @Param X-Callback-Token header string false "Xendit callback token"
-// @Param payload body GenericBody true "Xendit webhook payload"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Param payload body XenditWebhookPayloadDoc true "Xendit webhook payload"
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/webhooks/xendit [post]
 func webhooksXenditDoc() {}
 
@@ -370,9 +705,9 @@ func webhooksXenditDoc() {}
 // @Tags webhook
 // @Accept json
 // @Produce json
-// @Param payload body GenericBody true "Meta webhook payload"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
+// @Param payload body MetaWebhookPayloadDoc true "Meta webhook payload"
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
 // @Router /v1/webhooks/meta [post]
 func webhooksMetaDoc() {}
 
@@ -381,8 +716,8 @@ func webhooksMetaDoc() {}
 // @Tags internal
 // @Produce json
 // @Param X-Internal-Token header string true "Internal API token"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Success 200 {object} InternalPlanConfigResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/internal/plan-config [get]
 func internalPlanConfigGetDoc() {}
 
@@ -392,9 +727,9 @@ func internalPlanConfigGetDoc() {}
 // @Accept json
 // @Produce json
 // @Param X-Internal-Token header string true "Internal API token"
-// @Param payload body GenericBody true "Plan config payload"
-// @Success 200 {object} SwaggerEnvelope
-// @Failure 400 {object} SwaggerEnvelope
-// @Failure 401 {object} SwaggerEnvelope
+// @Param payload body InternalPlanConfigUpdateRequestDoc true "Plan config payload"
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/internal/plan-config [put]
 func internalPlanConfigPutDoc() {}
