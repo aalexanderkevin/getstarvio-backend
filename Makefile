@@ -2,11 +2,6 @@ APP_NAME := getstarvio
 APP_CMD := ./cmd/getstarvio
 ENV_FILE ?= .env
 
-ifneq (,$(wildcard $(ENV_FILE)))
-include $(ENV_FILE)
-export
-endif
-
 .PHONY: help setup dep build up down logs-db stack-build stack-up stack-down logs-app logs-worker migrate migrate-docker migrate-down-one run-api run-worker test fmt lint tidy swagger swagger-docker
 
 help:
@@ -41,10 +36,10 @@ dep:
 	@echo ">> Downloading dependencies"
 	@go mod download
 
-build: dep
+build:
 	@echo ">> Building binary"
 	@mkdir -p bin
-	@CGO_ENABLED=0 GOOS=linux go build -v -buildvcs=false -trimpath -ldflags="-s -w" -o ./bin/getstarvio ./cmd/getstarvio
+	@CGO_ENABLED=0 GOOS=linux GOMAXPROCS=1 GOMEMLIMIT=300MiB go build -p=1 -v -buildvcs=false -trimpath -ldflags="-s -w" -o ./bin/getstarvio ./cmd/getstarvio
 
 up:
 	@docker compose up -d db
@@ -101,4 +96,4 @@ swagger:
 	@swag init -g cmd/getstarvio/main.go -o docs --parseDependency --parseInternal
 
 swagger-docker:
-	@docker run --rm -v "$$PWD":/code -w /code golang:1.22 sh -lc 'go install github.com/swaggo/swag/cmd/swag@v1.16.4 && /go/bin/swag init -g cmd/getstarvio/main.go -o docs --parseDependency --parseInternal'
+	@docker run --rm -v "$$PWD":/code -w /code golang:1.26.2 sh -lc 'go install github.com/swaggo/swag/cmd/swag@v1.16.4 && /go/bin/swag init -g cmd/getstarvio/main.go -o docs --parseDependency --parseInternal'
