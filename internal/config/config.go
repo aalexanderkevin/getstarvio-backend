@@ -90,6 +90,10 @@ func MustLoad() Config {
 }
 
 func Load() (Config, error) {
+	if err := loadDotEnv(".env"); err != nil {
+		return Config{}, err
+	}
+
 	cfg := Config{
 		Service: ServiceConfig{
 			Env:       getEnv("SERVICE_ENV", "development"),
@@ -136,6 +140,55 @@ func Load() (Config, error) {
 	}
 
 	return cfg, nil
+}
+
+func loadDotEnv(path string) error {
+	content, err := os.ReadFile(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil
+		}
+		return fmt.Errorf("read %s: %w", path, err)
+	}
+
+	lines := strings.Split(string(content), "\n")
+	for _, rawLine := range lines {
+		line := strings.TrimSpace(rawLine)
+		if line == "" || strings.HasPrefix(line, "#") {
+			continue
+		}
+
+		if strings.HasPrefix(line, "export ") {
+			line = strings.TrimSpace(strings.TrimPrefix(line, "export "))
+		}
+
+		sep := strings.Index(line, "=")
+		if sep <= 0 {
+			continue
+		}
+
+		key := strings.TrimSpace(line[:sep])
+		if key == "" {
+			continue
+		}
+
+		if _, exists := os.LookupEnv(key); exists {
+			continue
+		}
+
+		value := strings.TrimSpace(line[sep+1:])
+		if len(value) >= 2 {
+			if (value[0] == '"' && value[len(value)-1] == '"') || (value[0] == '\'' && value[len(value)-1] == '\'') {
+				value = value[1 : len(value)-1]
+			}
+		}
+
+		if err := os.Setenv(key, value); err != nil {
+			return fmt.Errorf("set env %s: %w", key, err)
+		}
+	}
+
+	return nil
 }
 
 func getEnv(key, fallback string) string {

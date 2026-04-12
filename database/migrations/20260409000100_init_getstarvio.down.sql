@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS reminders;
 DROP TABLE IF EXISTS customer_services;
 DROP TABLE IF EXISTS customers;
 DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS default_categories;
 DROP TABLE IF EXISTS business_settings;
 DROP TABLE IF EXISTS businesses;
 DROP TABLE IF EXISTS users;

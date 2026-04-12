@@ -1,3 +1,17 @@
+CREATE TABLE IF NOT EXISTS default_categories (
+  id TEXT PRIMARY KEY,
+  name TEXT NOT NULL UNIQUE,
+  icon TEXT NOT NULL,
+  interval_days INT NOT NULL,
+  template_id TEXT NOT NULL,
+  template_body TEXT NOT NULL,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_default_categories_is_active ON default_categories(is_active);
+
 INSERT INTO default_categories (
   id,
   name,

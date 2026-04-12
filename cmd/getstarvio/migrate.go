@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 
@@ -33,7 +34,15 @@ func newMigrateCommand() *cobra.Command {
 			if rollbackOne {
 				return dbplatform.RollbackOne(sqlDB, cfg.DB.MigrationPath)
 			}
-			return dbplatform.Migrate(sqlDB, cfg.DB.MigrationPath)
+
+			err = dbplatform.Migrate(sqlDB, cfg.DB.MigrationPath)
+			if err != nil {
+				fmt.Printf("Error when migration: %s \n", err.Error())
+				os.Exit(1)
+			}
+
+			fmt.Println("Finish migrating database")
+			return nil
 		},
 	}
 
