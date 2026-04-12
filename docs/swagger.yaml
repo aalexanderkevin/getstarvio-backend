@@ -1,0 +1,873 @@
+basePath: /
+definitions:
+  routes.GenericBody:
+    additionalProperties: true
+    type: object
+  routes.HealthResponse:
+    properties:
+      ok:
+        type: boolean
+      service:
+        type: string
+      time:
+        type: string
+    type: object
+  routes.SwaggerEnvelope:
+    properties:
+      data: {}
+      error:
+        type: boolean
+      message:
+        type: string
+    type: object
+info:
+  contact: {}
+  description: Getstarvio backend API documentation.
+  title: Getstarvio Backend API
+  version: "1.0"
+paths:
+  /healthz:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.HealthResponse'
+      summary: Health check
+      tags:
+      - health
+  /v1/auth/google/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Google login payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.GenericBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      summary: Login with Google
+      tags:
+      - auth
+  /v1/auth/logout:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Logout payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.GenericBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      summary: Logout
+      tags:
+      - auth
+  /v1/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Refresh token payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.GenericBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      summary: Refresh access token
+      tags:
+      - auth
+  /v1/billing/history:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Billing history
+      tags:
+      - billing
+  /v1/billing/subscription/activate:
+    post:
+      description: Simulated activation in v1.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Activate subscription
+      tags:
+      - billing
+  /v1/billing/subscription/cancel:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Cancel subscription
+      tags:
+      - billing
+  /v1/billing/summary:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Billing summary
+      tags:
+      - billing
+  /v1/billing/topup/checkout:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Checkout payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.GenericBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Create top-up checkout (Xendit)
+      tags:
+      - billing
+  /v1/business/profile:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Business profile payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.GenericBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Update business profile
+      tags:
+      - business
+  /v1/business/settings:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Business settings payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.GenericBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Update business settings
+      tags:
+      - business
+  /v1/business/whatsapp:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Business WhatsApp payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.GenericBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Update business WhatsApp fields
+      tags:
+      - business
+  /v1/categories:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: List categories
+      tags:
+      - category
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Category payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.GenericBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Create category
+      tags:
+      - category
+  /v1/categories/{id}:
+    delete:
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Delete category
+      tags:
+      - category
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Category payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.GenericBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Update category
+      tags:
+      - category
+  /v1/checkin/lookup:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Lookup payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.GenericBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Lookup customer for check-in
+      tags:
+      - customer
+  /v1/checkin/submit:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Check-in payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.GenericBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Submit check-in
+      tags:
+      - customer
+  /v1/customers:
+    get:
+      parameters:
+      - description: Search query
+        in: query
+        name: q
+        type: string
+      - description: Customer status
+        in: query
+        name: status
+        type: string
+      - default: urgent
+        description: Sort mode
+        in: query
+        name: sort
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: List customers
+      tags:
+      - customer
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Customer payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.GenericBody'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Create customer
+      tags:
+      - customer
+  /v1/customers/{id}:
+    delete:
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Delete customer
+      tags:
+      - customer
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: Customer ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Customer payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.GenericBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Update customer
+      tags:
+      - customer
+  /v1/dashboard/summary:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Dashboard summary
+      tags:
+      - reminder
+  /v1/internal/plan-config:
+    get:
+      parameters:
+      - description: Internal API token
+        in: header
+        name: X-Internal-Token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      summary: Get internal plan config
+      tags:
+      - internal
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Internal API token
+        in: header
+        name: X-Internal-Token
+        required: true
+        type: string
+      - description: Plan config payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.GenericBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      summary: Update internal plan config
+      tags:
+      - internal
+  /v1/me/bootstrap:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Get bootstrap payload
+      tags:
+      - business
+  /v1/reminders/{id}/retry:
+    post:
+      parameters:
+      - description: Reminder ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Retry reminder
+      tags:
+      - reminder
+  /v1/reminders/log:
+    get:
+      parameters:
+      - description: Reminder status
+        in: query
+        name: status
+        type: string
+      - default: 200
+        description: Limit
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: List reminder logs
+      tags:
+      - reminder
+  /v1/visits:
+    post:
+      consumes:
+      - application/json
+      description: Supports backdate up to 7 days.
+      parameters:
+      - description: Visit payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.GenericBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      security:
+      - BearerAuth: []
+      summary: Create manual visit
+      tags:
+      - customer
+  /v1/webhooks/meta:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Meta webhook payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.GenericBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      summary: Meta webhook
+      tags:
+      - webhook
+  /v1/webhooks/xendit:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Xendit callback token
+        in: header
+        name: X-Callback-Token
+        type: string
+      - description: Xendit webhook payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.GenericBody'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.SwaggerEnvelope'
+      summary: Xendit webhook
+      tags:
+      - webhook
+schemes:
+- http
+- https
+securityDefinitions:
+  BearerAuth:
+    description: Bearer access token, e.g. "Bearer <token>"
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"
