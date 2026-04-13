@@ -1,6 +1,7 @@
 package reminder
 
 import (
+	"errors"
 	"io"
 	"strconv"
 
@@ -52,10 +53,36 @@ func (h *Handler) DashboardSummary(c *gin.Context) {
 }
 
 func (h *Handler) MetaWebhook(c *gin.Context) {
-	body, _ := io.ReadAll(c.Request.Body)
-	if err := h.svc.HandleMetaWebhook(body); err != nil {
-		response.Error(c, 400, err.Error())
+	if c.Request.Method == "GET" {
+		challenge, err := h.svc.VerifyMetaWebhook(
+			c.Query("hub.mode"),
+			c.Query("hub.verify_token"),
+			c.Query("hub.challenge"),
+		)
+		if err != nil {
+			if errors.Is(err, ErrMetaWebhookUnauthorized) {
+				c.String(401, "unauthorized")
+				return
+			}
+			c.String(400, err.Error())
+			return
+		}
+		c.String(200, challenge)
 		return
 	}
-	response.Success(c, map[string]bool{"ok": true})
+
+	body, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		c.String(400, "invalid payload")
+		return
+	}
+	if err := h.svc.HandleMetaWebhook(body, c.GetHeader("X-Hub-Signature-256")); err != nil {
+		if errors.Is(err, ErrMetaWebhookUnauthorized) {
+			c.String(401, "unauthorized")
+			return
+		}
+		c.String(400, err.Error())
+		return
+	}
+	c.String(200, "EVENT_RECEIVED")
 }

@@ -9,7 +9,7 @@ import (
 
 func registerReminderRoutes(authed *gin.RouterGroup, c *app.Container) {
 	repo := reminder.NewRepo(c.DB)
-	svc := reminder.NewService(repo, c.Meta)
+	svc := reminder.NewService(repo, c.Meta, c.Cfg.Meta)
 	h := reminder.NewHandler(svc)
 
 	authed.GET("/reminders/log", h.Log)

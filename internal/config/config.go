@@ -49,8 +49,10 @@ type GoogleConfig struct {
 }
 
 type MetaConfig struct {
-	APIVersion    string
-	PhoneNumberID string
+	APIVersion          string
+	PhoneNumberID       string
+	WebhookVerifyToken  string
+	AppSecret           string
 }
 
 type XenditConfig struct {
@@ -119,8 +121,10 @@ func Load() (Config, error) {
 			AllowInsecureMock: getEnvAsBool("ALLOW_INSECURE_GOOGLE_MOCK", true),
 		},
 		Meta: MetaConfig{
-			APIVersion:    getEnv("META_API_VERSION", "v22.0"),
-			PhoneNumberID: getEnv("META_PHONE_NUMBER_ID", ""),
+			APIVersion:         getEnv("META_API_VERSION", "v22.0"),
+			PhoneNumberID:      getEnv("META_PHONE_NUMBER_ID", ""),
+			WebhookVerifyToken: getEnv("META_WEBHOOK_VERIFY_TOKEN", ""),
+			AppSecret:          getEnv("META_APP_SECRET", ""),
 		},
 		Xendit: XenditConfig{
 			APIKey:          getEnv("XENDIT_API_KEY", ""),

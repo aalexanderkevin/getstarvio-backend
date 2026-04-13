@@ -2,6 +2,9 @@ package reminder
 
 import (
 	"context"
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -11,18 +14,22 @@ import (
 
 	"github.com/google/uuid"
 
+	"github.com/aalexanderkevin/getstarvio-backend/internal/config"
 	"github.com/aalexanderkevin/getstarvio-backend/internal/models"
 	"github.com/aalexanderkevin/getstarvio-backend/internal/modules/shared"
 	"github.com/aalexanderkevin/getstarvio-backend/internal/platform/meta"
 )
 
+var ErrMetaWebhookUnauthorized = errors.New("meta webhook unauthorized")
+
 type Service struct {
 	repo *Repo
 	meta *meta.Client
+	cfg  config.MetaConfig
 }
 
-func NewService(repo *Repo, metaClient *meta.Client) *Service {
-	return &Service{repo: repo, meta: metaClient}
+func NewService(repo *Repo, metaClient *meta.Client, cfg config.MetaConfig) *Service {
+	return &Service{repo: repo, meta: metaClient, cfg: cfg}
 }
 
 func (s *Service) Log(userID, status string, limit int) ([]map[string]interface{}, error) {
@@ -125,13 +132,53 @@ func (s *Service) DashboardSummary(userID string) (map[string]interface{}, error
 	}, nil
 }
 
-func (s *Service) HandleMetaWebhook(raw []byte) error {
+func (s *Service) VerifyMetaWebhook(mode, verifyToken, challenge string) (string, error) {
+	if mode != "subscribe" {
+		return "", ErrMetaWebhookUnauthorized
+	}
+	if s.cfg.WebhookVerifyToken == "" {
+		return "", fmt.Errorf("META_WEBHOOK_VERIFY_TOKEN is not configured")
+	}
+	if verifyToken != s.cfg.WebhookVerifyToken {
+		return "", ErrMetaWebhookUnauthorized
+	}
+	if challenge == "" {
+		return "", fmt.Errorf("hub.challenge is required")
+	}
+	return challenge, nil
+}
+
+func (s *Service) HandleMetaWebhook(raw []byte, signature string) error {
 	if len(raw) == 0 {
-		return nil
+		return fmt.Errorf("empty payload")
+	}
+	if err := s.validateMetaWebhookSignature(raw, signature); err != nil {
+		return err
 	}
 	var payload MetaWebhookPayload
 	if err := json.Unmarshal(raw, &payload); err != nil {
 		return fmt.Errorf("invalid meta payload: %w", err)
+	}
+	if payload.Object != "whatsapp_business_account" {
+		return fmt.Errorf("unsupported meta object: %s", payload.Object)
+	}
+	return nil
+}
+
+func (s *Service) validateMetaWebhookSignature(raw []byte, header string) error {
+	if strings.TrimSpace(s.cfg.AppSecret) == "" {
+		return nil
+	}
+	h := strings.TrimSpace(header)
+	if h == "" || !strings.HasPrefix(h, "sha256=") {
+		return ErrMetaWebhookUnauthorized
+	}
+
+	mac := hmac.New(sha256.New, []byte(s.cfg.AppSecret))
+	_, _ = mac.Write(raw)
+	expected := "sha256=" + hex.EncodeToString(mac.Sum(nil))
+	if !hmac.Equal([]byte(expected), []byte(h)) {
+		return ErrMetaWebhookUnauthorized
 	}
 	return nil
 }

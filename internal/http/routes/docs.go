@@ -337,6 +337,12 @@ type XenditWebhookPayloadDoc struct {
 
 type MetaWebhookPayloadDoc struct {
 	Object string `json:"object" example:"whatsapp_business_account"`
+	Entry  []struct {
+		ID      string `json:"id" example:"1302223415207824"`
+		Changes []struct {
+			Field string `json:"field" example:"messages"`
+		} `json:"changes"`
+	} `json:"entry"`
 }
 
 type InternalPlanConfigResponseDoc struct {
@@ -717,15 +723,30 @@ func billingTopupCheckoutDoc() {}
 func webhooksXenditDoc() {}
 
 // webhooksMetaDoc godoc
-// @Summary Meta webhook
+// @Summary Meta webhook event receiver
 // @Tags webhook
 // @Accept json
 // @Produce json
+// @Param X-Hub-Signature-256 header string false "Meta payload signature"
 // @Param payload body MetaWebhookPayloadDoc true "Meta webhook payload"
-// @Success 200 {object} OKResponseDoc
-// @Failure 400 {object} ErrorResponseDoc
+// @Success 200 {string} string "EVENT_RECEIVED"
+// @Failure 401 {string} string "unauthorized"
+// @Failure 400 {string} string "bad request"
 // @Router /v1/webhooks/meta [post]
 func webhooksMetaDoc() {}
+
+// webhooksMetaVerifyDoc godoc
+// @Summary Meta webhook verification
+// @Tags webhook
+// @Produce plain
+// @Param hub.mode query string true "subscribe"
+// @Param hub.verify_token query string true "Verification token"
+// @Param hub.challenge query string true "Challenge value"
+// @Success 200 {string} string "hub.challenge"
+// @Failure 400 {string} string "bad request"
+// @Failure 401 {string} string "unauthorized"
+// @Router /v1/webhooks/meta [get]
+func webhooksMetaVerifyDoc() {}
 
 // internalPlanConfigGetDoc godoc
 // @Summary Get internal plan config
