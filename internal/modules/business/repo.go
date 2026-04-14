@@ -65,7 +65,21 @@ func (r *Repo) ListCustomerServices(customerIDs []string) ([]models.CustomerServ
 		return []models.CustomerService{}, nil
 	}
 	var out []models.CustomerService
-	err := r.db.Where("customer_id IN ?", customerIDs).Find(&out).Error
+	err := r.db.Table("customer_services cs").
+		Select(`
+			cs.id,
+			cs.customer_id,
+			cs.category_id,
+			cs.last_visit_at,
+			cs.interval_days,
+			cs.created_at,
+			cs.updated_at,
+			COALESCE(cat.name, 'Layanan') AS service_name,
+			COALESCE(cat.icon, '✨') AS service_icon
+		`).
+		Joins("LEFT JOIN categories cat ON cat.id = cs.category_id").
+		Where("cs.customer_id IN ?", customerIDs).
+		Find(&out).Error
 	return out, err
 }
 

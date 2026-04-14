@@ -86,7 +86,12 @@ func (s *Service) Create(userID string, req CreateCustomerRequest) error {
 		via = "manual"
 	}
 
-	cx := models.Customer{ID: uuid.NewString(), BusinessID: biz.ID, Name: req.Name, WA: wa, Via: via}
+	cx := models.Customer{
+		ID:         uuid.NewString(),
+		BusinessID: biz.ID,
+		Name:       req.Name,
+		WA:         wa,
+		Via:        via}
 	services, err := buildServicesFromInput(cx.ID, req.Services, catByID, time.Now().UTC())
 	if err != nil {
 		return err
@@ -196,11 +201,11 @@ func (s *Service) RecordVisit(userID string, req VisitRequest) error {
 
 	input := make([]ServiceInput, 0, len(req.CategoryIDs))
 	for _, cid := range req.CategoryIDs {
-		cat, ok := catByID[cid]
+		_, ok := catByID[cid]
 		if !ok {
 			return fmt.Errorf("invalid category id: %s", cid)
 		}
-		input = append(input, ServiceInput{CategoryID: cat.ID, Name: cat.Name, Date: visitDate.Format(time.RFC3339)})
+		input = append(input, ServiceInput{CategoryID: cid, Date: visitDate.Format(time.RFC3339)})
 	}
 	services, err := buildServicesFromInput(cx.ID, input, catByID, visitDate)
 	if err != nil {
@@ -278,11 +283,11 @@ func (s *Service) CheckinSubmit(userID string, req CheckinSubmitRequest) error {
 
 	input := make([]ServiceInput, 0, len(req.CategoryIDs))
 	for _, cid := range req.CategoryIDs {
-		cat, ok := catByID[cid]
+		_, ok := catByID[cid]
 		if !ok {
 			return fmt.Errorf("invalid category id: %s", cid)
 		}
-		input = append(input, ServiceInput{CategoryID: cid, Name: cat.Name, Date: visitDate.Format(time.RFC3339)})
+		input = append(input, ServiceInput{CategoryID: cid, Date: visitDate.Format(time.RFC3339)})
 	}
 	services, err := buildServicesFromInput(cx.ID, input, catByID, visitDate)
 	if err != nil {
@@ -302,13 +307,12 @@ func buildServicesFromInput(customerID string, in []ServiceInput, catByID map[st
 		if err != nil {
 			dt = fallbackDate
 		}
-		name := it.Name
-		if name == "" {
-			name = cat.Name
-		}
 		services = append(services, models.CustomerService{
-			ID: uuid.NewString(), CustomerID: customerID, CategoryID: cat.ID,
-			ServiceName: name, ServiceIcon: cat.Icon, LastVisitAt: dt, IntervalDays: cat.IntervalDays,
+			ID:           uuid.NewString(),
+			CustomerID:   customerID,
+			CategoryID:   cat.ID,
+			LastVisitAt:  dt,
+			IntervalDays: cat.IntervalDays,
 		})
 	}
 	return services, nil

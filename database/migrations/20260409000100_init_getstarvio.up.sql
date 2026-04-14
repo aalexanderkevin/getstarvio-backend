@@ -88,13 +88,11 @@ CREATE TABLE IF NOT EXISTS customer_services (
   id TEXT PRIMARY KEY,
   customer_id TEXT NOT NULL REFERENCES customers(id) ON DELETE CASCADE,
   category_id TEXT REFERENCES categories(id) ON DELETE SET NULL,
-  service_name TEXT NOT NULL,
-  service_icon TEXT NOT NULL,
   last_visit_at TIMESTAMPTZ NOT NULL,
   interval_days INT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  UNIQUE (customer_id, service_name)
+  UNIQUE (customer_id, category_id)
 );
 CREATE INDEX IF NOT EXISTS idx_customer_services_customer ON customer_services(customer_id);
 CREATE INDEX IF NOT EXISTS idx_customer_services_category ON customer_services(category_id);

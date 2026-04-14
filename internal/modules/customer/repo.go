@@ -55,7 +55,21 @@ func (r *Repo) ListServices(customerIDs []string) ([]models.CustomerService, err
 		return []models.CustomerService{}, nil
 	}
 	var out []models.CustomerService
-	err := r.db.Where("customer_id IN ?", customerIDs).Find(&out).Error
+	err := r.db.Table("customer_services cs").
+		Select(`
+			cs.id,
+			cs.customer_id,
+			cs.category_id,
+			cs.last_visit_at,
+			cs.interval_days,
+			cs.created_at,
+			cs.updated_at,
+			COALESCE(cat.name, 'Layanan') AS service_name,
+			COALESCE(cat.icon, '✨') AS service_icon
+		`).
+		Joins("LEFT JOIN categories cat ON cat.id = cs.category_id").
+		Where("cs.customer_id IN ?", customerIDs).
+		Find(&out).Error
 	return out, err
 }
 
@@ -89,11 +103,9 @@ func (r *Repo) UpdateCustomerAndServices(businessID, customerID string, customer
 		}
 		for _, s := range services {
 			var existing models.CustomerService
-			err := tx.Where("customer_id = ? AND service_name = ?", customerID, s.ServiceName).First(&existing).Error
+			err := tx.Where("customer_id = ? AND category_id = ?", customerID, s.CategoryID).First(&existing).Error
 			if err == nil {
 				if err := tx.Model(&models.CustomerService{}).Where("id = ?", existing.ID).Updates(map[string]interface{}{
-					"category_id":   s.CategoryID,
-					"service_icon":  s.ServiceIcon,
 					"last_visit_at": s.LastVisitAt,
 					"interval_days": s.IntervalDays,
 					"updated_at":    time.Now().UTC(),

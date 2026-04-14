@@ -151,7 +151,7 @@ func (r *Repo) ListSchedulableServices(businessID string) ([]SchedulableServiceR
 			c.name AS customer_name,
 			c.wa AS customer_wa,
 			COALESCE(cs.category_id, '') AS category_id,
-			cs.service_name,
+			COALESCE(cat.name, 'Layanan') AS service_name,
 			cs.last_visit_at,
 			cs.interval_days,
 			COALESCE(cat.template_id, '') AS template_id,
