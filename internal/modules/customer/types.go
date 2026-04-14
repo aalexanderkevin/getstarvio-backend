@@ -2,7 +2,6 @@ package customer
 
 type ServiceInput struct {
 	CategoryID string `json:"categoryId"`
-	Name       string `json:"name"`
 	Date       string `json:"date"`
 }
 

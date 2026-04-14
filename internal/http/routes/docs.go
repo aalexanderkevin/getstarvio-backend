@@ -141,7 +141,6 @@ type CategoryUpdateRequestDoc struct {
 
 type CustomerServiceInputDoc struct {
 	CategoryID string `json:"categoryId" example:"defcat-facial-treatment"`
-	Name       string `json:"name" example:"Facial Treatment"`
 	Date       string `json:"date" example:"2026-04-12T09:00:00Z"`
 }
 

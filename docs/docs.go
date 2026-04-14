@@ -2147,10 +2147,6 @@ const docTemplate = `{
                 "date": {
                     "type": "string",
                     "example": "2026-04-12T09:00:00Z"
-                },
-                "name": {
-                    "type": "string",
-                    "example": "Facial Treatment"
                 }
             }
         },

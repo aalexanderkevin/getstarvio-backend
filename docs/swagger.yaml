@@ -493,9 +493,6 @@ definitions:
       date:
         example: "2026-04-12T09:00:00Z"
         type: string
-      name:
-        example: Facial Treatment
-        type: string
     type: object
   routes.CustomerUpdateRequestDoc:
     properties:
