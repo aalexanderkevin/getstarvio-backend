@@ -79,7 +79,7 @@ func (h *Handler) CheckinLookup(c *gin.Context) {
 		response.Error(c, 400, err.Error())
 		return
 	}
-	res, err := h.svc.CheckinLookup(middleware.UserID(c), req.WA)
+	res, err := h.svc.CheckinLookup(middleware.UserID(c), req.PhoneNumber)
 	if err != nil {
 		response.Error(c, 400, err.Error())
 		return

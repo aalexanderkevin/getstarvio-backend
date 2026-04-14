@@ -7,33 +7,33 @@ type ServiceInput struct {
 }
 
 type CreateCustomerRequest struct {
-	Name     string         `json:"name"`
-	WA       string         `json:"wa"`
-	Via      string         `json:"via"`
-	Services []ServiceInput `json:"services"`
+	Name        string         `json:"name"`
+	PhoneNumber string         `json:"phoneNumber"`
+	Via         string         `json:"via"`
+	Services    []ServiceInput `json:"services"`
 }
 
 type UpdateCustomerRequest struct {
-	Name     *string        `json:"name"`
-	WA       *string        `json:"wa"`
-	Via      *string        `json:"via"`
-	Services []ServiceInput `json:"services"`
+	Name        *string        `json:"name"`
+	PhoneNumber *string        `json:"phoneNumber"`
+	Via         *string        `json:"via"`
+	Services    []ServiceInput `json:"services"`
 }
 
 type VisitRequest struct {
-	CustomerID   string   `json:"customerId"`
-	CustomerName string   `json:"customerName"`
-	CustomerWA   string   `json:"customerWa"`
-	Date         string   `json:"date"`
-	CategoryIDs  []string `json:"categoryIds"`
+	CustomerID          string   `json:"customerId"`
+	CustomerName        string   `json:"customerName"`
+	CustomerPhoneNumber string   `json:"customerPhoneNumber"`
+	Date                string   `json:"date"`
+	CategoryIDs         []string `json:"categoryIds"`
 }
 
 type CheckinLookupRequest struct {
-	WA string `json:"wa"`
+	PhoneNumber string `json:"phoneNumber"`
 }
 
 type CheckinSubmitRequest struct {
-	WA          string   `json:"wa"`
+	PhoneNumber string   `json:"phoneNumber"`
 	Name        string   `json:"name"`
 	Date        string   `json:"date"`
 	CategoryIDs []string `json:"categoryIds"`

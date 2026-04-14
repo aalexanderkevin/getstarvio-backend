@@ -94,13 +94,13 @@ type DefaultCategory struct {
 func (DefaultCategory) TableName() string { return "default_categories" }
 
 type Customer struct {
-	ID         string    `gorm:"column:id;primaryKey"`
-	BusinessID string    `gorm:"column:business_id;index;not null"`
-	Name       string    `gorm:"column:name;not null"`
-	WA         string    `gorm:"column:wa;index;not null"`
-	Via        string    `gorm:"column:via;not null"`
-	CreatedAt  time.Time `gorm:"column:created_at;autoCreateTime"`
-	UpdatedAt  time.Time `gorm:"column:updated_at;autoUpdateTime"`
+	ID          string    `gorm:"column:id;primaryKey"`
+	BusinessID  string    `gorm:"column:business_id;index;not null"`
+	Name        string    `gorm:"column:name;not null"`
+	PhoneNumber string    `gorm:"column:phone_number;index;not null"`
+	Via         string    `gorm:"column:via;not null"`
+	CreatedAt   time.Time `gorm:"column:created_at;autoCreateTime"`
+	UpdatedAt   time.Time `gorm:"column:updated_at;autoUpdateTime"`
 }
 
 func (Customer) TableName() string { return "customers" }

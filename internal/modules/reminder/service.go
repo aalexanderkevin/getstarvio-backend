@@ -315,7 +315,7 @@ func (s *Service) dispatchDueReminders(ctx context.Context, limit int) (int, int
 		if dctx.Category != nil && dctx.Category.TemplateID != "" {
 			templateName = dctx.Category.TemplateID
 		}
-		to := shared.NormalizePhone(dctx.Customer.WA, "62")
+		to := shared.NormalizePhone(dctx.Customer.PhoneNumber, "62")
 		if to == "" {
 			_ = s.repo.MarkReminderFailed(rem.ID, "customer wa is empty")
 			failed++

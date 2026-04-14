@@ -146,17 +146,17 @@ type CustomerServiceInputDoc struct {
 }
 
 type CustomerCreateRequestDoc struct {
-	Name     string                    `json:"name" example:"Anisa Putri"`
-	WA       string                    `json:"wa" example:"6281234567890"`
-	Via      string                    `json:"via" example:"manual"`
-	Services []CustomerServiceInputDoc `json:"services"`
+	Name        string                    `json:"name" example:"Anisa Putri"`
+	PhoneNumber string                    `json:"phoneNumber" example:"6281234567890"`
+	Via         string                    `json:"via" example:"manual"`
+	Services    []CustomerServiceInputDoc `json:"services"`
 }
 
 type CustomerUpdateRequestDoc struct {
-	Name     *string                   `json:"name" example:"Anisa Putri"`
-	WA       *string                   `json:"wa" example:"6281234567890"`
-	Via      *string                   `json:"via" example:"manual"`
-	Services []CustomerServiceInputDoc `json:"services"`
+	Name        *string                   `json:"name" example:"Anisa Putri"`
+	PhoneNumber *string                   `json:"phoneNumber" example:"6281234567890"`
+	Via         *string                   `json:"via" example:"manual"`
+	Services    []CustomerServiceInputDoc `json:"services"`
 }
 
 type CustomerServiceDoc struct {
@@ -170,7 +170,7 @@ type CustomerServiceDoc struct {
 type CustomerListItemDoc struct {
 	ID          string               `json:"id" example:"c9e53f5d-6dc7-4db5-8504-3625e0d737f5"`
 	Name        string               `json:"name" example:"Anisa Putri"`
-	WA          string               `json:"wa" example:"6281234567890"`
+	PhoneNumber string               `json:"phoneNumber" example:"6281234567890"`
 	Via         string               `json:"via" example:"manual"`
 	Status      string               `json:"status" example:"aktif"`
 	OverdueDays int                  `json:"overdueDays" example:"0"`
@@ -184,23 +184,23 @@ type CustomerListResponseDoc struct {
 }
 
 type VisitRequestDoc struct {
-	CustomerID   string   `json:"customerId" example:"c9e53f5d-6dc7-4db5-8504-3625e0d737f5"`
-	CustomerName string   `json:"customerName" example:"Anisa Putri"`
-	CustomerWA   string   `json:"customerWa" example:"6281234567890"`
-	Date         string   `json:"date" example:"2026-04-12T09:00:00Z"`
-	CategoryIDs  []string `json:"categoryIds" example:"[\"defcat-facial-treatment\"]"`
+	CustomerID          string   `json:"customerId" example:"c9e53f5d-6dc7-4db5-8504-3625e0d737f5"`
+	CustomerName        string   `json:"customerName" example:"Anisa Putri"`
+	CustomerPhoneNumber string   `json:"customerPhoneNumber,omitempty" example:"6281234567890"`
+	Date                string   `json:"date" example:"2026-04-12T09:00:00Z"`
+	CategoryIDs         []string `json:"categoryIds" example:"[\"defcat-facial-treatment\"]"`
 }
 
 type CheckinLookupRequestDoc struct {
-	WA string `json:"wa" example:"6281234567890"`
+	PhoneNumber string `json:"phoneNumber" example:"6281234567890"`
 }
 
 type CheckinLookupCustomerDoc struct {
-	ID       string               `json:"id" example:"c9e53f5d-6dc7-4db5-8504-3625e0d737f5"`
-	Name     string               `json:"name" example:"Anisa Putri"`
-	WA       string               `json:"wa" example:"6281234567890"`
-	Via      string               `json:"via" example:"manual"`
-	Services []CustomerServiceDoc `json:"services"`
+	ID          string               `json:"id" example:"c9e53f5d-6dc7-4db5-8504-3625e0d737f5"`
+	Name        string               `json:"name" example:"Anisa Putri"`
+	PhoneNumber string               `json:"phoneNumber" example:"6281234567890"`
+	Via         string               `json:"via" example:"manual"`
+	Services    []CustomerServiceDoc `json:"services"`
 }
 
 type CheckinLookupDataDoc struct {
@@ -214,7 +214,7 @@ type CheckinLookupResponseDoc struct {
 }
 
 type CheckinSubmitRequestDoc struct {
-	WA          string   `json:"wa" example:"6281234567890"`
+	PhoneNumber string   `json:"phoneNumber" example:"6281234567890"`
 	Name        string   `json:"name" example:"Anisa Putri"`
 	Date        string   `json:"date" example:"2026-04-12T09:00:00Z"`
 	CategoryIDs []string `json:"categoryIds" example:"[\"defcat-facial-treatment\"]"`

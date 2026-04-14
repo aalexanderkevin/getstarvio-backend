@@ -62,25 +62,25 @@ func (s *Service) GetBootstrap(userID string) (map[string]interface{}, error) {
 	catDTO := make([]map[string]interface{}, 0, len(cats))
 	for _, c := range cats {
 		catDTO = append(catDTO, map[string]interface{}{
-			"id":           c.ID,
-			"name":         c.Name,
-			"icon":         c.Icon,
-			"interval":     c.IntervalDays,
-			"templateId":   c.TemplateID,
-			"templateBody": c.TemplateBody,
+			"id":             c.ID,
+			"name":           c.Name,
+			"icon":           c.Icon,
+			"interval":       c.IntervalDays,
+			"templateId":     c.TemplateID,
+			"templateBody":   c.TemplateBody,
 			"metaTemplateId": c.MetaTemplateID,
-			"isEnabled":    c.IsEnabled,
+			"isEnabled":      c.IsEnabled,
 		})
 	}
 
 	cxDTO := make([]map[string]interface{}, 0, len(customers))
 	for _, cx := range customers {
 		cxDTO = append(cxDTO, map[string]interface{}{
-			"id":       cx.ID,
-			"name":     cx.Name,
-			"wa":       cx.WA,
-			"via":      cx.Via,
-			"services": serviceMap[cx.ID],
+			"id":          cx.ID,
+			"name":        cx.Name,
+			"phoneNumber": cx.PhoneNumber,
+			"via":         cx.Via,
+			"services":    serviceMap[cx.ID],
 		})
 	}
 
@@ -132,31 +132,31 @@ func (s *Service) GetBootstrap(userID string) (map[string]interface{}, error) {
 	}
 
 	return map[string]interface{}{
-		"DATA_VERSION":       4,
-		"bizName":            biz.BizName,
-		"bizType":            biz.BizType,
-		"bizSlug":            biz.BizSlug,
-		"adminName":          biz.AdminName,
-		"adminEmail":         biz.AdminEmail,
-		"ownerWa":            biz.OwnerWA,
-		"waNum":              biz.WANum,
-		"metaWabaId":         biz.MetaWABAID,
+		"DATA_VERSION":              4,
+		"bizName":                   biz.BizName,
+		"bizType":                   biz.BizType,
+		"bizSlug":                   biz.BizSlug,
+		"adminName":                 biz.AdminName,
+		"adminEmail":                biz.AdminEmail,
+		"ownerWa":                   biz.OwnerWA,
+		"waNum":                     biz.WANum,
+		"metaWabaId":                biz.MetaWABAID,
 		"metaAccessTokenConfigured": strings.TrimSpace(biz.MetaAccessToken) != "",
-		"timezone":           biz.Timezone,
-		"country":            biz.Country,
-		"plan":               plan,
-		"subCreditsLeft":     wallet.SubCreditsLeft,
-		"subCreditsMax":      wallet.SubCreditsMax,
-		"topupCreditsLeft":   wallet.TopupCreditsLeft,
-		"subRenewsAt":        subRenewsAt,
-		"remLeft":            wallet.WelcomeCreditsLeft + wallet.SubCreditsLeft + wallet.TopupCreditsLeft,
-		"remMax":             wallet.SubCreditsMax,
-		"defaultInterval":    settings.DefaultInterval,
-		"automationEnabled":  settings.AutomationEnabled,
-		"sendTime":           settings.SendTime,
-		"autoTopup":          settings.AutoTopupEnabled,
-		"autoTopupThreshold": settings.AutoTopupThreshold,
-		"autoTopupPackage":   settings.AutoTopupPackageID,
+		"timezone":                  biz.Timezone,
+		"country":                   biz.Country,
+		"plan":                      plan,
+		"subCreditsLeft":            wallet.SubCreditsLeft,
+		"subCreditsMax":             wallet.SubCreditsMax,
+		"topupCreditsLeft":          wallet.TopupCreditsLeft,
+		"subRenewsAt":               subRenewsAt,
+		"remLeft":                   wallet.WelcomeCreditsLeft + wallet.SubCreditsLeft + wallet.TopupCreditsLeft,
+		"remMax":                    wallet.SubCreditsMax,
+		"defaultInterval":           settings.DefaultInterval,
+		"automationEnabled":         settings.AutomationEnabled,
+		"sendTime":                  settings.SendTime,
+		"autoTopup":                 settings.AutoTopupEnabled,
+		"autoTopupThreshold":        settings.AutoTopupThreshold,
+		"autoTopupPackage":          settings.AutoTopupPackageID,
 		"billingNotifs": map[string]bool{
 			"lowCredit":       settings.BillingNotifLow,
 			"criticalCredit":  settings.BillingNotifCritical,

@@ -54,7 +54,7 @@ func (s *Service) List(userID, q, status, sortBy, date string) ([]map[string]int
 		item := map[string]interface{}{
 			"id":          c.ID,
 			"name":        c.Name,
-			"wa":          c.WA,
+			"phoneNumber": c.PhoneNumber,
 			"via":         c.Via,
 			"status":      worst,
 			"overdueDays": overdue,
@@ -69,8 +69,9 @@ func (s *Service) List(userID, q, status, sortBy, date string) ([]map[string]int
 }
 
 func (s *Service) Create(userID string, req CreateCustomerRequest) error {
-	if req.Name == "" || req.WA == "" {
-		return fmt.Errorf("name and wa are required")
+	phone := strings.TrimSpace(req.PhoneNumber)
+	if req.Name == "" || phone == "" {
+		return fmt.Errorf("name and phone number are required")
 	}
 	biz, err := s.repo.FindBusinessByUser(userID)
 	if err != nil {
@@ -85,18 +86,18 @@ func (s *Service) Create(userID string, req CreateCustomerRequest) error {
 		catByID[c.ID] = c
 	}
 
-	wa := shared.NormalizePhone(req.WA, "62")
+	phoneNumber := shared.NormalizePhone(phone, "62")
 	via := req.Via
 	if via == "" {
 		via = "manual"
 	}
 
 	cx := models.Customer{
-		ID:         uuid.NewString(),
-		BusinessID: biz.ID,
-		Name:       req.Name,
-		WA:         wa,
-		Via:        via}
+		ID:          uuid.NewString(),
+		BusinessID:  biz.ID,
+		Name:        req.Name,
+		PhoneNumber: phoneNumber,
+		Via:         via}
 	services, err := buildServicesFromInput(cx.ID, req.Services, catByID, time.Now().UTC())
 	if err != nil {
 		return err
@@ -126,8 +127,8 @@ func (s *Service) Update(userID, customerID string, req UpdateCustomerRequest) e
 	if req.Name != nil {
 		payload["name"] = *req.Name
 	}
-	if req.WA != nil {
-		payload["wa"] = shared.NormalizePhone(*req.WA, "62")
+	if req.PhoneNumber != nil {
+		payload["phone_number"] = shared.NormalizePhone(strings.TrimSpace(*req.PhoneNumber), "62")
 	}
 	if req.Via != nil {
 		payload["via"] = *req.Via
@@ -186,15 +187,16 @@ func (s *Service) RecordVisit(userID string, req VisitRequest) error {
 			return err
 		}
 	} else {
-		if req.CustomerName == "" || req.CustomerWA == "" {
-			return fmt.Errorf("customerName and customerWa are required for new customer")
+		phone := strings.TrimSpace(req.CustomerPhoneNumber)
+		if req.CustomerName == "" || phone == "" {
+			return fmt.Errorf("customerName and customer phone number are required for new customer")
 		}
-		wa := shared.NormalizePhone(req.CustomerWA, "62")
-		existing, err := s.repo.FindCustomerByWA(biz.ID, wa)
+		phoneNumber := shared.NormalizePhone(phone, "62")
+		existing, err := s.repo.FindCustomerByWA(biz.ID, phoneNumber)
 		if err == nil {
 			cx = existing
 		} else if err == gorm.ErrRecordNotFound {
-			newCx := models.Customer{ID: uuid.NewString(), BusinessID: biz.ID, Name: req.CustomerName, WA: wa, Via: "manual"}
+			newCx := models.Customer{ID: uuid.NewString(), BusinessID: biz.ID, Name: req.CustomerName, PhoneNumber: phoneNumber, Via: "manual"}
 			if err := s.repo.CreateCustomerWithServices(newCx, nil); err != nil {
 				return err
 			}
@@ -219,12 +221,12 @@ func (s *Service) RecordVisit(userID string, req VisitRequest) error {
 	return s.repo.UpdateCustomerAndServices(biz.ID, cx.ID, nil, services)
 }
 
-func (s *Service) CheckinLookup(userID, wa string) (map[string]interface{}, error) {
+func (s *Service) CheckinLookup(userID, phoneNumber string) (map[string]interface{}, error) {
 	biz, err := s.repo.FindBusinessByUser(userID)
 	if err != nil {
 		return nil, err
 	}
-	fwa := shared.NormalizePhone(wa, "62")
+	fwa := shared.NormalizePhone(strings.TrimSpace(phoneNumber), "62")
 	cx, err := s.repo.FindCustomerByWA(biz.ID, fwa)
 	if err == gorm.ErrRecordNotFound {
 		return map[string]interface{}{"found": false}, nil
@@ -240,18 +242,19 @@ func (s *Service) CheckinLookup(userID, wa string) (map[string]interface{}, erro
 	return map[string]interface{}{
 		"found": true,
 		"customer": map[string]interface{}{
-			"id":       cx.ID,
-			"name":     cx.Name,
-			"wa":       cx.WA,
-			"via":      cx.Via,
-			"services": toServiceDTO(svcs, time.Now().UTC()),
+			"id":          cx.ID,
+			"name":        cx.Name,
+			"phoneNumber": cx.PhoneNumber,
+			"via":         cx.Via,
+			"services":    toServiceDTO(svcs, time.Now().UTC()),
 		},
 	}, nil
 }
 
 func (s *Service) CheckinSubmit(userID string, req CheckinSubmitRequest) error {
-	if req.WA == "" || len(req.CategoryIDs) == 0 {
-		return fmt.Errorf("wa and categoryIds are required")
+	phone := strings.TrimSpace(req.PhoneNumber)
+	if phone == "" || len(req.CategoryIDs) == 0 {
+		return fmt.Errorf("phone number and categoryIds are required")
 	}
 	biz, err := s.repo.FindBusinessByUser(userID)
 	if err != nil {
@@ -271,13 +274,13 @@ func (s *Service) CheckinSubmit(userID string, req CheckinSubmitRequest) error {
 		return err
 	}
 
-	wa := shared.NormalizePhone(req.WA, "62")
-	cx, err := s.repo.FindCustomerByWA(biz.ID, wa)
+	phoneNumber := shared.NormalizePhone(phone, "62")
+	cx, err := s.repo.FindCustomerByWA(biz.ID, phoneNumber)
 	if err == gorm.ErrRecordNotFound {
 		if req.Name == "" {
 			return fmt.Errorf("name is required for new checkin")
 		}
-		newCx := models.Customer{ID: uuid.NewString(), BusinessID: biz.ID, Name: req.Name, WA: wa, Via: "qr"}
+		newCx := models.Customer{ID: uuid.NewString(), BusinessID: biz.ID, Name: req.Name, PhoneNumber: phoneNumber, Via: "qr"}
 		if err := s.repo.CreateCustomerWithServices(newCx, nil); err != nil {
 			return err
 		}

@@ -75,14 +75,14 @@ CREATE TABLE IF NOT EXISTS customers (
   id TEXT PRIMARY KEY,
   business_id TEXT NOT NULL REFERENCES businesses(id) ON DELETE CASCADE,
   name TEXT NOT NULL,
-  wa TEXT NOT NULL,
+  phone_number TEXT NOT NULL,
   via TEXT NOT NULL,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-  UNIQUE (business_id, wa)
+  UNIQUE (business_id, phone_number)
 );
 CREATE INDEX IF NOT EXISTS idx_customers_business ON customers(business_id);
-CREATE INDEX IF NOT EXISTS idx_customers_wa ON customers(wa);
+CREATE INDEX IF NOT EXISTS idx_customers_phone_number ON customers(phone_number);
 
 CREATE TABLE IF NOT EXISTS customer_services (
   id TEXT PRIMARY KEY,

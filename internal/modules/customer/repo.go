@@ -26,7 +26,7 @@ func (r *Repo) ListCustomers(businessID string, q string) ([]models.Customer, er
 	db := r.db.Where("business_id = ?", businessID)
 	if q != "" {
 		like := "%" + q + "%"
-		db = db.Where("LOWER(name) LIKE LOWER(?) OR wa LIKE ?", like, like)
+		db = db.Where("LOWER(name) LIKE LOWER(?) OR phone_number LIKE ?", like, like)
 	}
 	err := db.Order("created_at desc").Find(&out).Error
 	return out, err
@@ -43,7 +43,7 @@ func (r *Repo) FindCustomer(businessID, id string) (*models.Customer, error) {
 
 func (r *Repo) FindCustomerByWA(businessID, wa string) (*models.Customer, error) {
 	var c models.Customer
-	err := r.db.Where("business_id = ? AND wa = ?", businessID, wa).First(&c).Error
+	err := r.db.Where("business_id = ? AND phone_number = ?", businessID, wa).First(&c).Error
 	if err != nil {
 		return nil, err
 	}
