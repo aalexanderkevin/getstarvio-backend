@@ -237,12 +237,33 @@ definitions:
     type: object
   routes.BusinessWhatsAppUpdateRequestDoc:
     properties:
+      metaAccessToken:
+        example: EAALhDPG71UIBA...
+        type: string
+      metaWabaId:
+        example: "1302223415207824"
+        type: string
       ownerWa:
         example: "6281234567890"
         type: string
       waNum:
         example: "6289876543210"
         type: string
+    type: object
+  routes.CategoryCreateDataDoc:
+    properties:
+      categoryId:
+        example: 0ba9d96c-62e6-4ac8-bc77-b0228066f3ff
+        type: string
+      metaStatus:
+        example: PENDING
+        type: string
+      metaTemplateId:
+        example: "1744775703359541"
+        type: string
+      ok:
+        example: true
+        type: boolean
     type: object
   routes.CategoryCreateRequestDoc:
     properties:
@@ -259,11 +280,20 @@ definitions:
         example: Hair Treatment
         type: string
       templateBody:
-        example: Hai [nama], waktunya hair treatment berikutnya di [bisnis].
+        example: "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}.
+          Yuk balik lagi — kami tunggu! \U0001F60A"
         type: string
       templateId:
-        example: tpl-d
+        example: hair_treatment_testing
         type: string
+    type: object
+  routes.CategoryCreateResponseDoc:
+    properties:
+      data:
+        $ref: '#/definitions/routes.CategoryCreateDataDoc'
+      error:
+        example: false
+        type: boolean
     type: object
   routes.CategoryItemDoc:
     properties:
@@ -279,6 +309,9 @@ definitions:
       isEnabled:
         example: true
         type: boolean
+      metaTemplateId:
+        example: "1744775703359541"
+        type: string
       name:
         example: Facial Treatment
         type: string
@@ -329,15 +362,15 @@ definitions:
       name:
         example: Anisa Putri
         type: string
+      phoneNumber:
+        example: "6281234567890"
+        type: string
       services:
         items:
           $ref: '#/definitions/routes.CustomerServiceDoc'
         type: array
       via:
         example: manual
-        type: string
-      wa:
-        example: "6281234567890"
         type: string
     type: object
   routes.CheckinLookupDataDoc:
@@ -350,7 +383,7 @@ definitions:
     type: object
   routes.CheckinLookupRequestDoc:
     properties:
-      wa:
+      phoneNumber:
         example: "6281234567890"
         type: string
     type: object
@@ -376,7 +409,7 @@ definitions:
       name:
         example: Anisa Putri
         type: string
-      wa:
+      phoneNumber:
         example: "6281234567890"
         type: string
     type: object
@@ -385,15 +418,15 @@ definitions:
       name:
         example: Anisa Putri
         type: string
+      phoneNumber:
+        example: "6281234567890"
+        type: string
       services:
         items:
           $ref: '#/definitions/routes.CustomerServiceInputDoc'
         type: array
       via:
         example: manual
-        type: string
-      wa:
-        example: "6281234567890"
         type: string
     type: object
   routes.CustomerListItemDoc:
@@ -410,6 +443,9 @@ definitions:
       overdueDays:
         example: 0
         type: integer
+      phoneNumber:
+        example: "6281234567890"
+        type: string
       services:
         items:
           $ref: '#/definitions/routes.CustomerServiceDoc'
@@ -419,9 +455,6 @@ definitions:
         type: string
       via:
         example: manual
-        type: string
-      wa:
-        example: "6281234567890"
         type: string
     type: object
   routes.CustomerListResponseDoc:
@@ -469,15 +502,15 @@ definitions:
       name:
         example: Anisa Putri
         type: string
+      phoneNumber:
+        example: "6281234567890"
+        type: string
       services:
         items:
           $ref: '#/definitions/routes.CustomerServiceInputDoc'
         type: array
       via:
         example: manual
-        type: string
-      wa:
-        example: "6281234567890"
         type: string
     type: object
   routes.DashboardCreditSummaryDoc:
@@ -662,6 +695,22 @@ definitions:
     type: object
   routes.MetaWebhookPayloadDoc:
     properties:
+      entry:
+        items:
+          properties:
+            changes:
+              items:
+                properties:
+                  field:
+                    example: messages
+                    type: string
+                type: object
+              type: array
+            id:
+              example: "1302223415207824"
+              type: string
+          type: object
+        type: array
       object:
         example: whatsapp_business_account
         type: string
@@ -746,7 +795,7 @@ definitions:
       customerName:
         example: Anisa Putri
         type: string
-      customerWa:
+      customerPhoneNumber:
         example: "6281234567890"
         type: string
       date:
@@ -1095,6 +1144,9 @@ paths:
     post:
       consumes:
       - application/json
+      description: Creates WhatsApp template in Meta first. Business must have `metaWabaId`
+        and `metaAccessToken` set via `/v1/business/whatsapp`. Returns error when
+        Meta status is REJECTED.
       parameters:
       - description: Category payload
         in: body
@@ -1108,7 +1160,7 @@ paths:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/routes.OKResponseDoc'
+            $ref: '#/definitions/routes.CategoryCreateResponseDoc'
         "400":
           description: Bad Request
           schema:
@@ -1262,6 +1314,11 @@ paths:
         description: Sort mode
         in: query
         name: sort
+        type: string
+      - description: Reference date (RFC3339 or YYYY-MM-DD)
+        example: "2026-04-14"
+        in: query
+        name: date
         type: string
       produces:
       - application/json
@@ -1571,10 +1628,49 @@ paths:
       tags:
       - customer
   /v1/webhooks/meta:
+    get:
+      parameters:
+      - description: subscribe
+        in: query
+        name: hub.mode
+        required: true
+        type: string
+      - description: Verification token
+        in: query
+        name: hub.verify_token
+        required: true
+        type: string
+      - description: Challenge value
+        in: query
+        name: hub.challenge
+        required: true
+        type: string
+      produces:
+      - text/plain
+      responses:
+        "200":
+          description: hub.challenge
+          schema:
+            type: string
+        "400":
+          description: bad request
+          schema:
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+      summary: Meta webhook verification
+      tags:
+      - webhook
     post:
       consumes:
       - application/json
       parameters:
+      - description: Meta payload signature
+        in: header
+        name: X-Hub-Signature-256
+        type: string
       - description: Meta webhook payload
         in: body
         name: payload
@@ -1585,14 +1681,18 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: EVENT_RECEIVED
           schema:
-            $ref: '#/definitions/routes.OKResponseDoc'
+            type: string
         "400":
-          description: Bad Request
+          description: bad request
           schema:
-            $ref: '#/definitions/routes.ErrorResponseDoc'
-      summary: Meta webhook
+            type: string
+        "401":
+          description: unauthorized
+          schema:
+            type: string
+      summary: Meta webhook event receiver
       tags:
       - webhook
   /v1/webhooks/xendit:

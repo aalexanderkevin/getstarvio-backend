@@ -531,6 +531,7 @@ const docTemplate = `{
                         "BearerAuth": []
                     }
                 ],
+                "description": "Creates WhatsApp template in Meta first. Business must have ` + "`" + `metaWabaId` + "`" + ` and ` + "`" + `metaAccessToken` + "`" + ` set via ` + "`" + `/v1/business/whatsapp` + "`" + `. Returns error when Meta status is REJECTED.",
                 "consumes": [
                     "application/json"
                 ],
@@ -556,7 +557,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/routes.OKResponseDoc"
+                            "$ref": "#/definitions/routes.CategoryCreateResponseDoc"
                         }
                     },
                     "400": {
@@ -806,6 +807,13 @@ const docTemplate = `{
                         "default": "urgent",
                         "description": "Sort mode",
                         "name": "sort",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "example": "2026-04-14",
+                        "description": "Reference date (RFC3339 or YYYY-MM-DD)",
+                        "name": "date",
                         "in": "query"
                     }
                 ],
@@ -1290,6 +1298,58 @@ const docTemplate = `{
             }
         },
         "/v1/webhooks/meta": {
+            "get": {
+                "produces": [
+                    "text/plain"
+                ],
+                "tags": [
+                    "webhook"
+                ],
+                "summary": "Meta webhook verification",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "subscribe",
+                        "name": "hub.mode",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Verification token",
+                        "name": "hub.verify_token",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Challenge value",
+                        "name": "hub.challenge",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "hub.challenge",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "post": {
                 "consumes": [
                     "application/json"
@@ -1300,8 +1360,14 @@ const docTemplate = `{
                 "tags": [
                     "webhook"
                 ],
-                "summary": "Meta webhook",
+                "summary": "Meta webhook event receiver",
                 "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Meta payload signature",
+                        "name": "X-Hub-Signature-256",
+                        "in": "header"
+                    },
                     {
                         "description": "Meta webhook payload",
                         "name": "payload",
@@ -1314,15 +1380,21 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "EVENT_RECEIVED",
                         "schema": {
-                            "$ref": "#/definitions/routes.OKResponseDoc"
+                            "type": "string"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "bad request",
                         "schema": {
-                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                            "type": "string"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }
@@ -1716,6 +1788,14 @@ const docTemplate = `{
         "routes.BusinessWhatsAppUpdateRequestDoc": {
             "type": "object",
             "properties": {
+                "metaAccessToken": {
+                    "type": "string",
+                    "example": "EAALhDPG71UIBA..."
+                },
+                "metaWabaId": {
+                    "type": "string",
+                    "example": "1302223415207824"
+                },
                 "ownerWa": {
                     "type": "string",
                     "example": "6281234567890"
@@ -1723,6 +1803,27 @@ const docTemplate = `{
                 "waNum": {
                     "type": "string",
                     "example": "6289876543210"
+                }
+            }
+        },
+        "routes.CategoryCreateDataDoc": {
+            "type": "object",
+            "properties": {
+                "categoryId": {
+                    "type": "string",
+                    "example": "0ba9d96c-62e6-4ac8-bc77-b0228066f3ff"
+                },
+                "metaStatus": {
+                    "type": "string",
+                    "example": "PENDING"
+                },
+                "metaTemplateId": {
+                    "type": "string",
+                    "example": "1744775703359541"
+                },
+                "ok": {
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },
@@ -1747,11 +1848,23 @@ const docTemplate = `{
                 },
                 "templateBody": {
                     "type": "string",
-                    "example": "Hai [nama], waktunya hair treatment berikutnya di [bisnis]."
+                    "example": "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"
                 },
                 "templateId": {
                     "type": "string",
-                    "example": "tpl-d"
+                    "example": "hair_treatment_testing"
+                }
+            }
+        },
+        "routes.CategoryCreateResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/routes.CategoryCreateDataDoc"
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
                 }
             }
         },
@@ -1773,6 +1886,10 @@ const docTemplate = `{
                 "isEnabled": {
                     "type": "boolean",
                     "example": true
+                },
+                "metaTemplateId": {
+                    "type": "string",
+                    "example": "1744775703359541"
                 },
                 "name": {
                     "type": "string",
@@ -1843,6 +1960,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "Anisa Putri"
                 },
+                "phoneNumber": {
+                    "type": "string",
+                    "example": "6281234567890"
+                },
                 "services": {
                     "type": "array",
                     "items": {
@@ -1852,10 +1973,6 @@ const docTemplate = `{
                 "via": {
                     "type": "string",
                     "example": "manual"
-                },
-                "wa": {
-                    "type": "string",
-                    "example": "6281234567890"
                 }
             }
         },
@@ -1874,7 +1991,7 @@ const docTemplate = `{
         "routes.CheckinLookupRequestDoc": {
             "type": "object",
             "properties": {
-                "wa": {
+                "phoneNumber": {
                     "type": "string",
                     "example": "6281234567890"
                 }
@@ -1912,7 +2029,7 @@ const docTemplate = `{
                     "type": "string",
                     "example": "Anisa Putri"
                 },
-                "wa": {
+                "phoneNumber": {
                     "type": "string",
                     "example": "6281234567890"
                 }
@@ -1925,6 +2042,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "Anisa Putri"
                 },
+                "phoneNumber": {
+                    "type": "string",
+                    "example": "6281234567890"
+                },
                 "services": {
                     "type": "array",
                     "items": {
@@ -1934,10 +2055,6 @@ const docTemplate = `{
                 "via": {
                     "type": "string",
                     "example": "manual"
-                },
-                "wa": {
-                    "type": "string",
-                    "example": "6281234567890"
                 }
             }
         },
@@ -1960,6 +2077,10 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 0
                 },
+                "phoneNumber": {
+                    "type": "string",
+                    "example": "6281234567890"
+                },
                 "services": {
                     "type": "array",
                     "items": {
@@ -1973,10 +2094,6 @@ const docTemplate = `{
                 "via": {
                     "type": "string",
                     "example": "manual"
-                },
-                "wa": {
-                    "type": "string",
-                    "example": "6281234567890"
                 }
             }
         },
@@ -2044,6 +2161,10 @@ const docTemplate = `{
                     "type": "string",
                     "example": "Anisa Putri"
                 },
+                "phoneNumber": {
+                    "type": "string",
+                    "example": "6281234567890"
+                },
                 "services": {
                     "type": "array",
                     "items": {
@@ -2053,10 +2174,6 @@ const docTemplate = `{
                 "via": {
                     "type": "string",
                     "example": "manual"
-                },
-                "wa": {
-                    "type": "string",
-                    "example": "6281234567890"
                 }
             }
         },
@@ -2313,6 +2430,30 @@ const docTemplate = `{
         "routes.MetaWebhookPayloadDoc": {
             "type": "object",
             "properties": {
+                "entry": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "changes": {
+                                "type": "array",
+                                "items": {
+                                    "type": "object",
+                                    "properties": {
+                                        "field": {
+                                            "type": "string",
+                                            "example": "messages"
+                                        }
+                                    }
+                                }
+                            },
+                            "id": {
+                                "type": "string",
+                                "example": "1302223415207824"
+                            }
+                        }
+                    }
+                },
                 "object": {
                     "type": "string",
                     "example": "whatsapp_business_account"
@@ -2432,7 +2573,7 @@ const docTemplate = `{
                     "type": "string",
                     "example": "Anisa Putri"
                 },
-                "customerWa": {
+                "customerPhoneNumber": {
                     "type": "string",
                     "example": "6281234567890"
                 },
