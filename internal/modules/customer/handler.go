@@ -17,6 +17,7 @@ func (h *Handler) List(c *gin.Context) {
 		c.Query("q"),
 		c.Query("status"),
 		c.DefaultQuery("sort", "urgent"),
+		c.Query("date"),
 	)
 	if err != nil {
 		response.Error(c, 500, err.Error())

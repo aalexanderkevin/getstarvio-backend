@@ -17,7 +17,7 @@ type Service struct{ repo *Repo }
 
 func NewService(repo *Repo) *Service { return &Service{repo: repo} }
 
-func (s *Service) List(userID, q, status, sortBy string) ([]map[string]interface{}, error) {
+func (s *Service) List(userID, q, status, sortBy, date string) ([]map[string]interface{}, error) {
 	biz, err := s.repo.FindBusinessByUser(userID)
 	if err != nil {
 		return nil, err
@@ -39,10 +39,15 @@ func (s *Service) List(userID, q, status, sortBy string) ([]map[string]interface
 		m[svc.CustomerID] = append(m[svc.CustomerID], svc)
 	}
 
+	asOf, err := parseVisitDate(date)
+	if err != nil {
+		return nil, err
+	}
+
 	out := make([]map[string]interface{}, 0, len(cxs))
 	for _, c := range cxs {
 		services := m[c.ID]
-		worst, overdue := worstStatus(services)
+		worst, overdue := worstStatus(services, asOf)
 		if status != "" && status != "semua" && worst != status {
 			continue
 		}
@@ -54,7 +59,7 @@ func (s *Service) List(userID, q, status, sortBy string) ([]map[string]interface
 			"status":      worst,
 			"overdueDays": overdue,
 			"createdAt":   c.CreatedAt.Format(time.RFC3339),
-			"services":    toServiceDTO(services),
+			"services":    toServiceDTO(services, asOf),
 		}
 		out = append(out, item)
 	}
@@ -239,7 +244,7 @@ func (s *Service) CheckinLookup(userID, wa string) (map[string]interface{}, erro
 			"name":     cx.Name,
 			"wa":       cx.WA,
 			"via":      cx.Via,
-			"services": toServiceDTO(svcs),
+			"services": toServiceDTO(svcs, time.Now().UTC()),
 		},
 	}, nil
 }
@@ -342,8 +347,8 @@ func validateBackdate(t time.Time) error {
 	return nil
 }
 
-func getStatus(s models.CustomerService) string {
-	diff := int(time.Since(s.LastVisitAt).Hours() / 24)
+func getStatus(s models.CustomerService, now time.Time) string {
+	diff := int(now.Sub(s.LastVisitAt).Hours() / 24)
 	if s.IntervalDays <= 0 {
 		return "aktif"
 	}
@@ -357,7 +362,7 @@ func getStatus(s models.CustomerService) string {
 	return "aktif"
 }
 
-func worstStatus(services []models.CustomerService) (string, int) {
+func worstStatus(services []models.CustomerService, now time.Time) (string, int) {
 	if len(services) == 0 {
 		return "aktif", 0
 	}
@@ -365,8 +370,8 @@ func worstStatus(services []models.CustomerService) (string, int) {
 	worst := "aktif"
 	worstOverdue := 0
 	for _, s := range services {
-		st := getStatus(s)
-		over := int(time.Since(s.LastVisitAt).Hours()/24) - s.IntervalDays
+		st := getStatus(s, now)
+		over := int(now.Sub(s.LastVisitAt).Hours()/24) - s.IntervalDays
 		if order[st] < order[worst] {
 			worst = st
 			if over > 0 {
@@ -377,7 +382,7 @@ func worstStatus(services []models.CustomerService) (string, int) {
 	return worst, worstOverdue
 }
 
-func toServiceDTO(services []models.CustomerService) []map[string]interface{} {
+func toServiceDTO(services []models.CustomerService, now time.Time) []map[string]interface{} {
 	out := make([]map[string]interface{}, 0, len(services))
 	for _, s := range services {
 		out = append(out, map[string]interface{}{
@@ -385,7 +390,7 @@ func toServiceDTO(services []models.CustomerService) []map[string]interface{} {
 			"icon":   s.ServiceIcon,
 			"date":   s.LastVisitAt.Format(time.RFC3339),
 			"days":   s.IntervalDays,
-			"status": getStatus(s),
+			"status": getStatus(s, now),
 		})
 	}
 	return out

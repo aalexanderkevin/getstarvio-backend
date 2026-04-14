@@ -80,14 +80,14 @@ type BusinessSettingsUpdateRequestDoc struct {
 }
 
 type CategoryItemDoc struct {
-	ID           string `json:"id" example:"defcat-facial-treatment"`
-	Name         string `json:"name" example:"Facial Treatment"`
-	Icon         string `json:"icon" example:"💆"`
-	Interval     int    `json:"interval" example:"30"`
-	TemplateID   string `json:"templateId" example:"tpl-a"`
-	TemplateBody string `json:"templateBody" example:"Hai [nama], sudah sebulan sejak Facial Treatment terakhir kamu di [bisnis]."`
+	ID             string `json:"id" example:"defcat-facial-treatment"`
+	Name           string `json:"name" example:"Facial Treatment"`
+	Icon           string `json:"icon" example:"💆"`
+	Interval       int    `json:"interval" example:"30"`
+	TemplateID     string `json:"templateId" example:"tpl-a"`
+	TemplateBody   string `json:"templateBody" example:"Hai [nama], sudah sebulan sejak Facial Treatment terakhir kamu di [bisnis]."`
 	MetaTemplateID string `json:"metaTemplateId,omitempty" example:"1744775703359541"`
-	IsEnabled    bool   `json:"isEnabled" example:"true"`
+	IsEnabled      bool   `json:"isEnabled" example:"true"`
 }
 
 type CategoryListResponseDoc struct {
@@ -535,6 +535,7 @@ func categoriesDeleteDoc() {}
 // @Param q query string false "Search query"
 // @Param status query string false "Customer status"
 // @Param sort query string false "Sort mode" default(urgent)
+// @Param date query string false "Reference date (RFC3339 or YYYY-MM-DD)" example(2026-04-14)
 // @Success 200 {object} CustomerListResponseDoc
 // @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/customers [get]
