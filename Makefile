@@ -2,7 +2,7 @@ APP_NAME := getstarvio
 APP_CMD := ./cmd/getstarvio
 ENV_FILE ?= .env
 
-.PHONY: help setup dep build up down logs-db stack-build stack-up stack-down logs-app logs-worker migrate migrate-docker migrate-down-one run-api run-worker test fmt lint tidy swagger swagger-docker
+.PHONY: help setup dep build up down logs-db stack-build stack-up stack-up-app stack-down logs-app logs-worker migrate migrate-docker migrate-down-one run-api run-worker test fmt lint tidy swagger swagger-docker
 
 help:
 	@echo "Available targets:"
@@ -13,6 +13,7 @@ help:
 	@echo "  make down             # stop docker compose services"
 	@echo "  make stack-build      # build backend image (plain progress)"
 	@echo "  make stack-up         # start app + worker + db via docker compose"
+	@echo "  make stack-up-app     # rebuild and restart only app container"
 	@echo "  make stack-down       # stop full docker compose stack"
 	@echo "  make logs-db          # tail postgres logs"
 	@echo "  make logs-app         # tail app logs"
@@ -55,6 +56,9 @@ stack-build:
 
 stack-up:
 	@docker compose up --build -d db app worker
+
+stack-up-app:
+	@docker compose up -d --no-deps --build app
 
 stack-down:
 	@docker compose down
