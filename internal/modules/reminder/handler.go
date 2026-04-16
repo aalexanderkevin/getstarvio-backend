@@ -61,10 +61,10 @@ func (h *Handler) MetaWebhook(c *gin.Context) {
 		)
 		if err != nil {
 			if errors.Is(err, ErrMetaWebhookUnauthorized) {
-				c.String(401, "unauthorized")
+				response.Error(c, 401, "unauthorized")
 				return
 			}
-			c.String(400, err.Error())
+			response.Error(c, 400, err.Error())
 			return
 		}
 		c.String(200, challenge)
@@ -73,15 +73,15 @@ func (h *Handler) MetaWebhook(c *gin.Context) {
 
 	body, err := io.ReadAll(c.Request.Body)
 	if err != nil {
-		c.String(400, "invalid payload")
+		response.Error(c, 400, "invalid payload")
 		return
 	}
 	if err := h.svc.HandleMetaWebhook(body, c.GetHeader("X-Hub-Signature-256")); err != nil {
 		if errors.Is(err, ErrMetaWebhookUnauthorized) {
-			c.String(401, "unauthorized")
+			response.Error(c, 401, "unauthorized")
 			return
 		}
-		c.String(400, err.Error())
+		response.Error(c, 400, err.Error())
 		return
 	}
 	c.String(200, "EVENT_RECEIVED")

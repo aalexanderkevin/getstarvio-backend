@@ -20,8 +20,9 @@ type Server struct {
 
 func NewServer(c *app.Container) *Server {
 	r := gin.New()
-	r.Use(gin.Recovery())
 	r.Use(middleware.RequestID())
+	r.Use(middleware.HTTPLogger())
+	r.Use(gin.Recovery())
 	r.Use(cors.New(cors.Config{
 		AllowAllOrigins:  true,
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
