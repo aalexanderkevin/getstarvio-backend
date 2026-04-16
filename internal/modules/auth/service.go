@@ -161,9 +161,6 @@ func (s *Service) issueTokens(userID string) (*TokenResponse, error) {
 
 func (s *Service) verifyGoogleIdentity(ctx context.Context, req GoogleLoginRequest) (*googleIdentity, error) {
 	if req.IDToken == "" {
-		if s.cfg.Google.AllowInsecureMock && req.GoogleSub != "" && req.Email != "" {
-			return &googleIdentity{Sub: req.GoogleSub, Email: req.Email, Name: req.Name}, nil
-		}
 		return nil, fmt.Errorf("idToken is required")
 	}
 
