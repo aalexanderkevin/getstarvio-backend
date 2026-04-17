@@ -168,20 +168,11 @@ func (s *Service) Update(userID, id string, req UpdateCategoryRequest) error {
 		return err
 	}
 	payload := map[string]interface{}{}
-	if req.Name != nil {
-		payload["name"] = *req.Name
-	}
 	if req.Icon != nil {
 		payload["icon"] = *req.Icon
 	}
 	if req.Interval != nil {
 		payload["interval_days"] = *req.Interval
-	}
-	if req.TemplateID != nil {
-		payload["template_id"] = *req.TemplateID
-	}
-	if req.TemplateBody != nil {
-		payload["template_body"] = *req.TemplateBody
 	}
 	if req.IsEnabled != nil {
 		payload["is_enabled"] = *req.IsEnabled
