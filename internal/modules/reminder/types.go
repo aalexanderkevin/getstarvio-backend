@@ -1,5 +1,7 @@
 package reminder
 
+import "encoding/json"
+
 type MetaWebhookPayload struct {
 	Object string             `json:"object"`
 	Entry  []MetaWebhookEntry `json:"entry"`
@@ -11,8 +13,8 @@ type MetaWebhookEntry struct {
 }
 
 type MetaWebhookChange struct {
-	Field string           `json:"field"`
-	Value MetaWebhookValue `json:"value"`
+	Field string          `json:"field"`
+	Value json.RawMessage `json:"value"`
 }
 
 type MetaWebhookValue struct {
@@ -20,6 +22,15 @@ type MetaWebhookValue struct {
 	Metadata         MetaWebhookMetadata  `json:"metadata"`
 	Messages         []MetaWebhookMessage `json:"messages"`
 	Statuses         []MetaWebhookStatus  `json:"statuses"`
+}
+
+type MetaTemplateStatusUpdate struct {
+	Event                string          `json:"event"`
+	MessageTemplateIDRaw json.RawMessage `json:"message_template_id"`
+	MessageTemplateName  string          `json:"message_template_name"`
+	MessageTemplateLang  string          `json:"message_template_language"`
+	MessageTemplateCat   string          `json:"message_template_category"`
+	Reason               string          `json:"reason"`
 }
 
 type MetaWebhookMetadata struct {

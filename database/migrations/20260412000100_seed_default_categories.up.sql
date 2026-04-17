@@ -5,15 +5,16 @@ INSERT INTO default_categories (
   interval_days,
   template_id,
   template_body,
+  example_body,
   is_active
 )
 VALUES
-  ('defcat-facial-treatment', 'Facial Treatment', '💆', 30, 'tpl-a', 'Hai [nama], sudah sebulan sejak Facial Treatment terakhir kamu di [bisnis]. Yuk booking lagi biar kulit tetap glowing! ✨', TRUE),
-  ('defcat-waxing', 'Waxing', '🪒', 14, 'tpl-b', 'Hai [nama]! Sudah 2 minggu nih sejak waxing terakhir. Mau reschedule? Hubungi kami ya 😊', TRUE),
-  ('defcat-manicure-pedicure', 'Manicure & Pedicure', '💅', 21, 'tpl-a', 'Hai [nama], sudah 3 minggu sejak Manicure & Pedicure terakhir kamu di [bisnis]. Yuk booking lagi! 💅', TRUE),
-  ('defcat-body-massage', 'Body Massage', '🧖', 21, 'tpl-c', 'Hai [nama], badan pegal? Sudah waktunya Body Massage lagi di [bisnis]. Ada diskon 10% kalau booking minggu ini! 💆‍♀️', TRUE),
-  ('defcat-hair-treatment', 'Hair Treatment', '💇', 45, 'tpl-d', 'Hai [nama], gimana rambut kamu setelah Hair Treatment di [bisnis]? Kalau mau touch-up, kabari kami ya! 💇‍♀️', TRUE),
-  ('defcat-lash-lift-tint', 'Lash Lift & Tint', '👁️', 42, 'tpl-b', 'Hai [nama]! Sudah lama nih sejak Lash Lift & Tint terakhir. Bulu mata kamu pasti kangen perawatan 😍', TRUE)
+  ('defcat-facial-treatment', 'Facial Treatment', '💆', 30, 'tpl-a', 'Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊', '["Pelanggan","{{interval}}","{{service}}","{{business}}"]', TRUE),
+  ('defcat-waxing', 'Waxing', '🪒', 14, 'tpl-b', 'Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊', '["Pelanggan","{{interval}}","{{service}}","{{business}}"]', TRUE),
+  ('defcat-manicure-pedicure', 'Manicure & Pedicure', '💅', 21, 'tpl-a', 'Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊', '["Pelanggan","{{interval}}","{{service}}","{{business}}"]', TRUE),
+  ('defcat-body-massage', 'Body Massage', '🧖', 21, 'tpl-c', 'Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊', '["Pelanggan","{{interval}}","{{service}}","{{business}}"]', TRUE),
+  ('defcat-hair-treatment', 'Hair Treatment', '💇', 45, 'tpl-d', 'Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊', '["Pelanggan","{{interval}}","{{service}}","{{business}}"]', TRUE),
+  ('defcat-lash-lift-tint', 'Lash Lift & Tint', '👁️', 42, 'tpl-b', 'Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊', '["Pelanggan","{{interval}}","{{service}}","{{business}}"]', TRUE)
 ON CONFLICT (id) DO UPDATE
 SET
   name = EXCLUDED.name,
@@ -21,5 +22,6 @@ SET
   interval_days = EXCLUDED.interval_days,
   template_id = EXCLUDED.template_id,
   template_body = EXCLUDED.template_body,
+  example_body = EXCLUDED.example_body,
   is_active = EXCLUDED.is_active,
   updated_at = NOW();

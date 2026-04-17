@@ -44,9 +44,14 @@ type CreateTemplateResult struct {
 }
 
 func NewClient(cfg config.MetaConfig) *Client {
+	timeoutSeconds := cfg.HTTPTimeoutSeconds
+	if timeoutSeconds <= 0 {
+		timeoutSeconds = 30
+	}
+
 	return &Client{
 		cfg:        cfg,
-		httpClient: &http.Client{Timeout: 10 * time.Second},
+		httpClient: &http.Client{Timeout: time.Duration(timeoutSeconds) * time.Second},
 	}
 }
 
@@ -145,12 +150,13 @@ func (c *Client) CreateTemplate(ctx context.Context, in CreateTemplateInput) (*C
 	}
 
 	payload := map[string]any{
-		"name":     in.Name,
-		"category": in.Category,
-		"language": in.Language,
+		"name":             in.Name,
+		"category":         in.Category,
+		"language":         in.Language,
+		"parameter_format": "POSITIONAL",
 		"components": []map[string]any{
 			{
-				"type": "body",
+				"type": "BODY",
 				"text": in.BodyText,
 				"example": map[string]any{
 					"body_text": [][]string{in.ExampleBodyTextVars},

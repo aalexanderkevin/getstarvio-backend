@@ -28,8 +28,7 @@ func (h *Handler) Log(c *gin.Context) {
 	}
 
 	res, err := h.svc.Log(middleware.UserID(c), c.Query("status"), limit)
-	if err != nil {
-		response.Error(c, 500, err.Error())
+	if response.FetchErrorOrEmpty(c, err) {
 		return
 	}
 	response.Success(c, res)
@@ -45,8 +44,7 @@ func (h *Handler) Retry(c *gin.Context) {
 
 func (h *Handler) DashboardSummary(c *gin.Context) {
 	res, err := h.svc.DashboardSummary(middleware.UserID(c))
-	if err != nil {
-		response.Error(c, 500, err.Error())
+	if response.FetchErrorOrEmpty(c, err) {
 		return
 	}
 	response.Success(c, res)
@@ -84,5 +82,6 @@ func (h *Handler) MetaWebhook(c *gin.Context) {
 		response.Error(c, 400, err.Error())
 		return
 	}
+
 	c.String(200, "EVENT_RECEIVED")
 }

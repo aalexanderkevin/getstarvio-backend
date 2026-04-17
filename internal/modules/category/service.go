@@ -2,6 +2,7 @@ package category
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -37,6 +38,7 @@ func (s *Service) ListDefault() ([]map[string]interface{}, error) {
 			"interval":     c.IntervalDays,
 			"templateId":   c.TemplateID,
 			"templateBody": c.TemplateBody,
+			"exampleBody":  c.ExampleBody,
 		})
 	}
 	return out, nil
@@ -68,9 +70,10 @@ func (s *Service) List(userID string) ([]map[string]interface{}, error) {
 }
 
 func (s *Service) Create(userID string, req CreateCategoryRequest) (map[string]interface{}, error) {
-	if req.Name == "" || req.Interval <= 0 {
-		return nil, fmt.Errorf("name and interval are required")
+	if req.Name == "" || req.Interval <= 0 || strings.TrimSpace(req.DefaultCategoryID) == "" {
+		return nil, fmt.Errorf("name, interval, and defaultCategoryId are required")
 	}
+
 	biz, err := s.repo.FindBusinessByUser(userID)
 	if err != nil {
 		return nil, err
@@ -81,18 +84,29 @@ func (s *Service) Create(userID string, req CreateCategoryRequest) (map[string]i
 	if strings.TrimSpace(biz.MetaAccessToken) == "" {
 		return nil, fmt.Errorf("business metaAccessToken is required")
 	}
-	enabled := true
-	if req.IsEnabled != nil {
-		enabled = *req.IsEnabled
+
+	defCat, err := s.repo.FindDefaultByID(strings.TrimSpace(req.DefaultCategoryID))
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, fmt.Errorf("default category not found")
+		}
+		return nil, err
 	}
 
-	templateName := req.TemplateID
+	templateName := defCat.TemplateID
 	if templateName == "" {
 		templateName = defaultTemplateName(req.Name)
 	}
-	templateBody := req.TemplateBody
+	templateName = concatTemplateNameWithBusiness(templateName, biz.BizName)
+
+	templateBody := strings.TrimSpace(defCat.TemplateBody)
 	if templateBody == "" {
-		templateBody = "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"
+		return nil, fmt.Errorf("default category templateBody is empty")
+	}
+
+	exampleVars, err := parseExampleBodyVars(defCat.ExampleBody, req.Name, req.Interval, biz.BizName)
+	if err != nil {
+		return nil, err
 	}
 
 	metaTemplate, err := s.meta.CreateTemplate(context.Background(), meta.CreateTemplateInput{
@@ -102,7 +116,7 @@ func (s *Service) Create(userID string, req CreateCategoryRequest) (map[string]i
 		Category:            "UTILITY",
 		Language:            "id",
 		BodyText:            templateBody,
-		ExampleBodyTextVars: []string{"Pelanggan", strconv.Itoa(req.Interval), req.Name, biz.BizName},
+		ExampleBodyTextVars: exampleVars,
 	})
 	if err != nil {
 		return nil, err
@@ -111,19 +125,24 @@ func (s *Service) Create(userID string, req CreateCategoryRequest) (map[string]i
 		return nil, fmt.Errorf("meta template rejected")
 	}
 
+	icon := strings.TrimSpace(req.Icon)
+	if icon == "" {
+		icon = strings.TrimSpace(defCat.Icon)
+	}
+	if icon == "" {
+		icon = "✨"
+	}
+
 	cat := models.Category{
 		ID:             uuid.NewString(),
 		BusinessID:     biz.ID,
 		Name:           req.Name,
-		Icon:           req.Icon,
+		Icon:           icon,
 		IntervalDays:   req.Interval,
 		TemplateID:     templateName,
 		TemplateBody:   templateBody,
-		IsEnabled:      enabled,
+		IsEnabled:      true,
 		MetaTemplateID: metaTemplate.ID,
-	}
-	if cat.Icon == "" {
-		cat.Icon = "✨"
 	}
 	if err := s.repo.Create(cat); err != nil {
 		return nil, err
@@ -182,16 +201,67 @@ func (s *Service) Delete(userID, id string) error {
 }
 
 func defaultTemplateName(categoryName string) string {
-	s := strings.ToLower(strings.TrimSpace(categoryName))
-	s = strings.ReplaceAll(s, " ", "_")
-	s = strings.Map(func(r rune) rune {
-		if (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') || r == '_' {
-			return r
-		}
-		return -1
-	}, s)
+	s := normalizeTemplateNamePart(categoryName)
 	if s == "" {
 		s = "category_reminder"
 	}
 	return fmt.Sprintf("%s_%d", s, time.Now().Unix())
+}
+
+func concatTemplateNameWithBusiness(templateName, businessName string) string {
+	base := normalizeTemplateNamePart(templateName)
+	if base == "" {
+		base = "category_reminder"
+	}
+	biz := normalizeTemplateNamePart(businessName)
+	if biz == "" {
+		return base
+	}
+	return fmt.Sprintf("%s_%s", base, biz)
+}
+
+func normalizeTemplateNamePart(v string) string {
+	v = strings.ToLower(strings.TrimSpace(v))
+	v = strings.ReplaceAll(v, " ", "_")
+	v = strings.Map(func(r rune) rune {
+		if (r >= 'a' && r <= 'z') || (r >= '0' && r <= '9') || r == '_' {
+			return r
+		}
+		return -1
+	}, v)
+	v = strings.Trim(v, "_")
+	for strings.Contains(v, "__") {
+		v = strings.ReplaceAll(v, "__", "_")
+	}
+	return v
+}
+
+func parseExampleBodyVars(raw, serviceName string, interval int, businessName string) ([]string, error) {
+	trimmed := strings.TrimSpace(raw)
+	if trimmed == "" {
+		return nil, fmt.Errorf("default category exampleBody is empty")
+	}
+
+	var vars []string
+	if err := json.Unmarshal([]byte(trimmed), &vars); err != nil {
+		return nil, fmt.Errorf("invalid default category exampleBody: %w", err)
+	}
+	if len(vars) == 0 {
+		return nil, fmt.Errorf("default category exampleBody has no values")
+	}
+
+	out := make([]string, 0, len(vars))
+	for _, v := range vars {
+		vv := strings.TrimSpace(v)
+		switch strings.ToLower(vv) {
+		case "{{interval}}":
+			vv = strconv.Itoa(interval)
+		case "{{service}}":
+			vv = serviceName
+		case "{{business}}":
+			vv = businessName
+		}
+		out = append(out, vv)
+	}
+	return out, nil
 }

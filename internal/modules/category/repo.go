@@ -32,6 +32,15 @@ func (r *Repo) ListDefaults() ([]models.DefaultCategory, error) {
 	return out, err
 }
 
+func (r *Repo) FindDefaultByID(id string) (*models.DefaultCategory, error) {
+	var out models.DefaultCategory
+	err := r.db.Where("id = ? AND is_active = ?", id, true).First(&out).Error
+	if err != nil {
+		return nil, err
+	}
+	return &out, nil
+}
+
 func (r *Repo) Create(c models.Category) error {
 	return r.db.Create(&c).Error
 }

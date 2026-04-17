@@ -86,6 +86,7 @@ type DefaultCategory struct {
 	IntervalDays int       `gorm:"column:interval_days;not null"`
 	TemplateID   string    `gorm:"column:template_id;not null"`
 	TemplateBody string    `gorm:"column:template_body;not null"`
+	ExampleBody  string    `gorm:"column:example_body;not null"`
 	IsActive     bool      `gorm:"column:is_active;default:true"`
 	CreatedAt    time.Time `gorm:"column:created_at;autoCreateTime"`
 	UpdatedAt    time.Time `gorm:"column:updated_at;autoUpdateTime"`

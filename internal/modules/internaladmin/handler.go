@@ -16,8 +16,7 @@ func NewHandler(svc *Service) *Handler {
 
 func (h *Handler) GetPlanConfig(c *gin.Context) {
 	res, err := h.svc.GetPlanConfig()
-	if err != nil {
-		response.Error(c, 500, err.Error())
+	if response.FetchErrorOrEmpty(c, err) {
 		return
 	}
 	response.Success(c, res)

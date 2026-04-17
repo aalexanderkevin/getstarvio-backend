@@ -16,8 +16,7 @@ func NewHandler(svc *Service) *Handler { return &Handler{svc: svc} }
 
 func (h *Handler) Summary(c *gin.Context) {
 	res, err := h.svc.Summary(middleware.UserID(c))
-	if err != nil {
-		response.Error(c, 500, err.Error())
+	if response.FetchErrorOrEmpty(c, err) {
 		return
 	}
 	response.Success(c, res)
@@ -25,8 +24,7 @@ func (h *Handler) Summary(c *gin.Context) {
 
 func (h *Handler) History(c *gin.Context) {
 	res, err := h.svc.History(middleware.UserID(c))
-	if err != nil {
-		response.Error(c, 500, err.Error())
+	if response.FetchErrorOrEmpty(c, err) {
 		return
 	}
 	response.Success(c, res)
@@ -83,8 +81,7 @@ func (h *Handler) XenditWebhook(c *gin.Context) {
 
 func (h *Handler) GetPlanConfig(c *gin.Context) {
 	res, err := h.svc.GetPlanConfig(middleware.UserID(c))
-	if err != nil {
-		response.Error(c, 500, err.Error())
+	if response.FetchErrorOrEmpty(c, err) {
 		return
 	}
 	response.Success(c, res)

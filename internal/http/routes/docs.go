@@ -101,7 +101,8 @@ type DefaultCategoryItemDoc struct {
 	Icon         string `json:"icon" example:"💆"`
 	Interval     int    `json:"interval" example:"30"`
 	TemplateID   string `json:"templateId" example:"tpl-a"`
-	TemplateBody string `json:"templateBody" example:"Hai [nama], sudah sebulan sejak Facial Treatment terakhir kamu di [bisnis]."`
+	TemplateBody string `json:"templateBody" example:"Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"`
+	ExampleBody  string `json:"exampleBody" example:"[\"Pelanggan\",\"{{interval}}\",\"{{service}}\",\"{{business}}\"]"`
 }
 
 type DefaultCategoryListResponseDoc struct {
@@ -110,12 +111,10 @@ type DefaultCategoryListResponseDoc struct {
 }
 
 type CategoryCreateRequestDoc struct {
-	Name         string `json:"name" example:"Hair Treatment"`
-	Icon         string `json:"icon" example:"💇"`
-	Interval     int    `json:"interval" example:"45"`
-	TemplateID   string `json:"templateId" example:"hair_treatment_testing"`
-	TemplateBody string `json:"templateBody" example:"Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"`
-	IsEnabled    *bool  `json:"isEnabled" example:"true"`
+	Name              string `json:"name" example:"Hair Treatment"`
+	Icon              string `json:"icon" example:"💇"`
+	Interval          int    `json:"interval" example:"45"`
+	DefaultCategoryID string `json:"defaultCategoryId" example:"defcat-hair-treatment"`
 }
 
 type CategoryCreateDataDoc struct {

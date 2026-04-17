@@ -162,6 +162,34 @@ func (s *Service) HandleMetaWebhook(raw []byte, signature string) error {
 	if payload.Object != "whatsapp_business_account" {
 		return fmt.Errorf("unsupported meta object: %s", payload.Object)
 	}
+
+	for _, entry := range payload.Entry {
+		for _, change := range entry.Changes {
+			if strings.TrimSpace(change.Field) != "message_template_status_update" {
+				continue
+			}
+
+			var upd MetaTemplateStatusUpdate
+			if err := json.Unmarshal(change.Value, &upd); err != nil {
+				return fmt.Errorf("invalid message_template_status_update payload: %w", err)
+			}
+
+			metaTemplateID, err := parseMetaTemplateID(upd.MessageTemplateIDRaw)
+			if err != nil {
+				return fmt.Errorf("invalid message_template_id: %w", err)
+			}
+
+			enabled, shouldUpdate := categoryEnabledByTemplateEvent(upd.Event)
+			if !shouldUpdate {
+				continue
+			}
+
+			if err := s.repo.SetCategoryEnabledByMetaTemplateID(metaTemplateID, enabled); err != nil {
+				return err
+			}
+		}
+	}
+
 	return nil
 }
 
@@ -390,4 +418,41 @@ func canSend(w models.Wallet, now time.Time) (bool, string) {
 		return false, "credits empty"
 	}
 	return true, ""
+}
+
+func parseMetaTemplateID(raw json.RawMessage) (string, error) {
+	if len(raw) == 0 {
+		return "", fmt.Errorf("empty value")
+	}
+
+	var asString string
+	if err := json.Unmarshal(raw, &asString); err == nil {
+		asString = strings.TrimSpace(asString)
+		if asString == "" {
+			return "", fmt.Errorf("empty string")
+		}
+		return asString, nil
+	}
+
+	var asNumber json.Number
+	if err := json.Unmarshal(raw, &asNumber); err == nil {
+		s := strings.TrimSpace(asNumber.String())
+		if s == "" {
+			return "", fmt.Errorf("empty number")
+		}
+		return s, nil
+	}
+
+	return "", fmt.Errorf("unsupported type")
+}
+
+func categoryEnabledByTemplateEvent(event string) (bool, bool) {
+	switch strings.ToUpper(strings.TrimSpace(event)) {
+	case "APPROVED":
+		return true, true
+	case "REJECTED", "PENDING":
+		return false, true
+	default:
+		return false, false
+	}
 }

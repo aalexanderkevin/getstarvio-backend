@@ -50,6 +50,7 @@ CREATE TABLE IF NOT EXISTS default_categories (
   interval_days INT NOT NULL,
   template_id TEXT NOT NULL,
   template_body TEXT NOT NULL,
+  example_body TEXT NOT NULL,
   is_active BOOLEAN NOT NULL DEFAULT TRUE,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

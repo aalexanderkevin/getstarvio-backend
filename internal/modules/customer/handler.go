@@ -19,8 +19,7 @@ func (h *Handler) List(c *gin.Context) {
 		c.DefaultQuery("sort", "urgent"),
 		c.Query("date"),
 	)
-	if err != nil {
-		response.Error(c, 500, err.Error())
+	if response.FetchErrorOrEmpty(c, err) {
 		return
 	}
 	response.Success(c, res)

@@ -13,8 +13,7 @@ func NewHandler(svc *Service) *Handler { return &Handler{svc: svc} }
 
 func (h *Handler) Bootstrap(c *gin.Context) {
 	res, err := h.svc.GetBootstrap(middleware.UserID(c))
-	if err != nil {
-		response.Error(c, 500, err.Error())
+	if response.FetchErrorOrEmpty(c, err) {
 		return
 	}
 	response.Success(c, res)

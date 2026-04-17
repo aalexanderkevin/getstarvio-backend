@@ -9,13 +9,13 @@ import (
 )
 
 type Config struct {
-	Service ServiceConfig
-	DB      DBConfig
-	JWT     JWTConfig
-	Google  GoogleConfig
-	Meta    MetaConfig
-	Xendit  XenditConfig
-	Worker  WorkerConfig
+	Service  ServiceConfig
+	DB       DBConfig
+	JWT      JWTConfig
+	Google   GoogleConfig
+	Meta     MetaConfig
+	Xendit   XenditConfig
+	Worker   WorkerConfig
 	Internal InternalConfig
 	LogLevel string
 }
@@ -38,21 +38,22 @@ type DBConfig struct {
 }
 
 type JWTConfig struct {
-	Secret             string
-	AccessTTLMinutes   int
-	RefreshTTLHours    int
+	Secret           string
+	AccessTTLMinutes int
+	RefreshTTLHours  int
 }
 
 type GoogleConfig struct {
-	ClientID             string
-	AllowInsecureMock    bool
+	ClientID          string
+	AllowInsecureMock bool
 }
 
 type MetaConfig struct {
-	APIVersion          string
-	PhoneNumberID       string
-	WebhookVerifyToken  string
-	AppSecret           string
+	APIVersion         string
+	PhoneNumberID      string
+	WebhookVerifyToken string
+	AppSecret          string
+	HTTPTimeoutSeconds int
 }
 
 type XenditConfig struct {
@@ -71,7 +72,7 @@ type InternalConfig struct {
 }
 
 var (
-	once sync.Once
+	once     sync.Once
 	instance Config
 )
 
@@ -125,6 +126,7 @@ func Load() (Config, error) {
 			PhoneNumberID:      getEnv("META_PHONE_NUMBER_ID", ""),
 			WebhookVerifyToken: getEnv("META_WEBHOOK_VERIFY_TOKEN", ""),
 			AppSecret:          getEnv("META_APP_SECRET", ""),
+			HTTPTimeoutSeconds: getEnvAsInt("META_HTTP_TIMEOUT_SECONDS", 30),
 		},
 		Xendit: XenditConfig{
 			APIKey:          getEnv("XENDIT_API_KEY", ""),
@@ -132,7 +134,7 @@ func Load() (Config, error) {
 			SuccessRedirect: getEnv("XENDIT_SUCCESS_REDIRECT", ""),
 			FailureRedirect: getEnv("XENDIT_FAILURE_REDIRECT", ""),
 		},
-		Worker: WorkerConfig{PollIntervalSeconds: getEnvAsInt("WORKER_POLL_INTERVAL_SECONDS", 30)},
+		Worker:   WorkerConfig{PollIntervalSeconds: getEnvAsInt("WORKER_POLL_INTERVAL_SECONDS", 30)},
 		Internal: InternalConfig{Token: getEnv("INTERNAL_API_TOKEN", "change-me-internal-token")},
 		LogLevel: strings.ToLower(getEnv("LOG_LEVEL", "info")),
 	}
