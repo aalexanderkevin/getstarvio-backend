@@ -3,7 +3,12 @@ services:
     image: getstarvio-backend:local
     build:
       context: .
-    command: ["server"]
+    entrypoint:
+      [
+        "/bin/sh",
+        "-c",
+        "mkdir -p /var/log/getstarvio && /app/getstarvio server 2>&1 | tee -a /var/log/getstarvio/app.log",
+      ]
     env_file:
       - .env
     environment:
@@ -14,10 +19,17 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./logs/app:/var/log/getstarvio
 
   worker:
     image: getstarvio-backend:local
-    command: ["worker"]
+    entrypoint:
+      [
+        "/bin/sh",
+        "-c",
+        "mkdir -p /var/log/getstarvio && /app/getstarvio worker 2>&1 | tee -a /var/log/getstarvio/worker.log",
+      ]
     env_file:
       - .env
     environment:
@@ -26,6 +38,8 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    volumes:
+      - ./logs/worker:/var/log/getstarvio
 
   db:
     image: postgres:16
