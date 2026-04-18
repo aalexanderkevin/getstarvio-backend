@@ -267,24 +267,17 @@ definitions:
     type: object
   routes.CategoryCreateRequestDoc:
     properties:
+      defaultCategoryId:
+        example: defcat-hair-treatment
+        type: string
       icon:
         example: "\U0001F487"
         type: string
       interval:
         example: 45
         type: integer
-      isEnabled:
-        example: true
-        type: boolean
       name:
         example: Hair Treatment
-        type: string
-      templateBody:
-        example: "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}.
-          Yuk balik lagi — kami tunggu! \U0001F60A"
-        type: string
-      templateId:
-        example: hair_treatment_testing
         type: string
     type: object
   routes.CategoryCreateResponseDoc:
@@ -466,6 +459,31 @@ definitions:
       error:
         example: false
         type: boolean
+      pagination:
+        $ref: '#/definitions/routes.CustomerPaginationDoc'
+      statusCount:
+        $ref: '#/definitions/routes.CustomerStatusCountDoc'
+    type: object
+  routes.CustomerPaginationDoc:
+    properties:
+      hasNext:
+        example: true
+        type: boolean
+      hasPrev:
+        example: false
+        type: boolean
+      limit:
+        example: 20
+        type: integer
+      page:
+        example: 1
+        type: integer
+      total:
+        example: 57
+        type: integer
+      totalPages:
+        example: 3
+        type: integer
     type: object
   routes.CustomerServiceDoc:
     properties:
@@ -493,6 +511,21 @@ definitions:
       date:
         example: "2026-04-12T09:00:00Z"
         type: string
+    type: object
+  routes.CustomerStatusCountDoc:
+    properties:
+      aktif:
+        example: 25
+        type: integer
+      hilang:
+        example: 12
+        type: integer
+      mendekati:
+        example: 20
+        type: integer
+      semua:
+        example: 57
+        type: integer
     type: object
   routes.CustomerUpdateRequestDoc:
     properties:
@@ -564,6 +597,9 @@ definitions:
     type: object
   routes.DefaultCategoryItemDoc:
     properties:
+      exampleBody:
+        example: '["Pelanggan","{{interval}}","{{service}}","{{business}}"]'
+        type: string
       icon:
         example: "\U0001F486"
         type: string
@@ -577,8 +613,8 @@ definitions:
         example: Facial Treatment
         type: string
       templateBody:
-        example: Hai [nama], sudah sebulan sejak Facial Treatment terakhir kamu di
-          [bisnis].
+        example: "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}.
+          Yuk balik lagi — kami tunggu! \U0001F60A"
         type: string
       templateId:
         example: tpl-a
@@ -1317,6 +1353,16 @@ paths:
         in: query
         name: date
         type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 20
+        description: Items per page (max 100)
+        in: query
+        name: limit
+        type: integer
       produces:
       - application/json
       responses:

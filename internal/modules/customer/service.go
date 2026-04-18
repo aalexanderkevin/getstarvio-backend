@@ -17,19 +17,19 @@ type Service struct{ repo *Repo }
 
 func NewService(repo *Repo) *Service { return &Service{repo: repo} }
 
-func (s *Service) List(userID, q, status, sortBy, date string) ([]map[string]interface{}, error) {
+func (s *Service) List(userID, q, status, sortBy, date string, page, limit int) (ListCustomersResponse, error) {
 	biz, err := s.repo.FindBusinessByUser(userID)
 	if err != nil {
-		return nil, err
+		return ListCustomersResponse{}, err
 	}
 	asOf, visitFrom, visitTo, err := resolveCustomerListDateParams(date)
 	if err != nil {
-		return nil, err
+		return ListCustomersResponse{}, err
 	}
 
 	cxs, err := s.repo.ListCustomers(biz.ID, q, visitFrom, visitTo)
 	if err != nil {
-		return nil, err
+		return ListCustomersResponse{}, err
 	}
 	ids := make([]string, 0, len(cxs))
 	for _, c := range cxs {
@@ -37,17 +37,19 @@ func (s *Service) List(userID, q, status, sortBy, date string) ([]map[string]int
 	}
 	svcs, err := s.repo.ListServices(ids)
 	if err != nil {
-		return nil, err
+		return ListCustomersResponse{}, err
 	}
 	m := map[string][]models.CustomerService{}
 	for _, svc := range svcs {
 		m[svc.CustomerID] = append(m[svc.CustomerID], svc)
 	}
 
+	count := StatusCount{}
 	out := make([]map[string]interface{}, 0, len(cxs))
 	for _, c := range cxs {
 		services := m[c.ID]
 		worst, overdue := worstStatus(services, asOf)
+		incrementStatusCount(&count, worst)
 		if status != "" && status != "semua" && worst != status {
 			continue
 		}
@@ -65,7 +67,61 @@ func (s *Service) List(userID, q, status, sortBy, date string) ([]map[string]int
 	}
 
 	sortCustomers(out, sortBy)
-	return out, nil
+	return paginateCustomerList(out, page, limit, count), nil
+}
+
+func paginateCustomerList(items []map[string]interface{}, page, limit int, count StatusCount) ListCustomersResponse {
+	if page < 1 {
+		page = 1
+	}
+	if limit < 1 {
+		limit = 20
+	}
+
+	total := len(items)
+	totalPages := 0
+	if total > 0 {
+		totalPages = (total + limit - 1) / limit
+	}
+
+	start := (page - 1) * limit
+	if start > total {
+		start = total
+	}
+	end := start + limit
+	if end > total {
+		end = total
+	}
+
+	paged := make([]map[string]interface{}, 0, end-start)
+	if start < end {
+		paged = append(paged, items[start:end]...)
+	}
+
+	return ListCustomersResponse{
+		Data: paged,
+		Pagination: PaginationMeta{
+			Page:       page,
+			Limit:      limit,
+			Total:      total,
+			TotalPages: totalPages,
+			HasNext:    totalPages > 0 && page < totalPages,
+			HasPrev:    totalPages > 0 && page > 1,
+		},
+		StatusCount: count,
+	}
+}
+
+func incrementStatusCount(count *StatusCount, status string) {
+	count.Semua++
+	switch status {
+	case "hilang":
+		count.Hilang++
+	case "mendekati":
+		count.Mendekati++
+	default:
+		count.Aktif++
+	}
 }
 
 func resolveCustomerListDateParams(date string) (time.Time, *time.Time, *time.Time, error) {

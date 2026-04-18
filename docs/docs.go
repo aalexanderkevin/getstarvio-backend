@@ -815,6 +815,20 @@ const docTemplate = `{
                         "description": "Reference date (RFC3339 or YYYY-MM-DD)",
                         "name": "date",
                         "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Page number",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 20,
+                        "description": "Items per page (max 100)",
+                        "name": "limit",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -1830,6 +1844,10 @@ const docTemplate = `{
         "routes.CategoryCreateRequestDoc": {
             "type": "object",
             "properties": {
+                "defaultCategoryId": {
+                    "type": "string",
+                    "example": "defcat-hair-treatment"
+                },
                 "icon": {
                     "type": "string",
                     "example": "💇"
@@ -1838,21 +1856,9 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 45
                 },
-                "isEnabled": {
-                    "type": "boolean",
-                    "example": true
-                },
                 "name": {
                     "type": "string",
                     "example": "Hair Treatment"
-                },
-                "templateBody": {
-                    "type": "string",
-                    "example": "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"
-                },
-                "templateId": {
-                    "type": "string",
-                    "example": "hair_treatment_testing"
                 }
             }
         },
@@ -2109,6 +2115,41 @@ const docTemplate = `{
                 "error": {
                     "type": "boolean",
                     "example": false
+                },
+                "pagination": {
+                    "$ref": "#/definitions/routes.CustomerPaginationDoc"
+                },
+                "statusCount": {
+                    "$ref": "#/definitions/routes.CustomerStatusCountDoc"
+                }
+            }
+        },
+        "routes.CustomerPaginationDoc": {
+            "type": "object",
+            "properties": {
+                "hasNext": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "hasPrev": {
+                    "type": "boolean",
+                    "example": false
+                },
+                "limit": {
+                    "type": "integer",
+                    "example": 20
+                },
+                "page": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "total": {
+                    "type": "integer",
+                    "example": 57
+                },
+                "totalPages": {
+                    "type": "integer",
+                    "example": 3
                 }
             }
         },
@@ -2147,6 +2188,27 @@ const docTemplate = `{
                 "date": {
                     "type": "string",
                     "example": "2026-04-12T09:00:00Z"
+                }
+            }
+        },
+        "routes.CustomerStatusCountDoc": {
+            "type": "object",
+            "properties": {
+                "aktif": {
+                    "type": "integer",
+                    "example": 25
+                },
+                "hilang": {
+                    "type": "integer",
+                    "example": 12
+                },
+                "mendekati": {
+                    "type": "integer",
+                    "example": 20
+                },
+                "semua": {
+                    "type": "integer",
+                    "example": 57
                 }
             }
         },
@@ -2249,6 +2311,10 @@ const docTemplate = `{
         "routes.DefaultCategoryItemDoc": {
             "type": "object",
             "properties": {
+                "exampleBody": {
+                    "type": "string",
+                    "example": "[\"Pelanggan\",\"{{interval}}\",\"{{service}}\",\"{{business}}\"]"
+                },
                 "icon": {
                     "type": "string",
                     "example": "💆"
@@ -2267,7 +2333,7 @@ const docTemplate = `{
                 },
                 "templateBody": {
                     "type": "string",
-                    "example": "Hai [nama], sudah sebulan sejak Facial Treatment terakhir kamu di [bisnis]."
+                    "example": "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"
                 },
                 "templateId": {
                     "type": "string",

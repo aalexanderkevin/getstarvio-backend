@@ -1,6 +1,9 @@
 package customer
 
 import (
+	"fmt"
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/aalexanderkevin/getstarvio-backend/internal/http/middleware"
@@ -12,17 +15,48 @@ type Handler struct{ svc *Service }
 func NewHandler(svc *Service) *Handler { return &Handler{svc: svc} }
 
 func (h *Handler) List(c *gin.Context) {
+	page, err := parsePositiveIntQuery(c, "page", 1)
+	if err != nil {
+		response.Error(c, 400, "invalid page parameter")
+		return
+	}
+	limit, err := parsePositiveIntQuery(c, "limit", 20)
+	if err != nil {
+		response.Error(c, 400, "invalid limit parameter")
+		return
+	}
+	if limit > 100 {
+		limit = 100
+	}
+
 	res, err := h.svc.List(
 		middleware.UserID(c),
 		c.Query("q"),
 		c.Query("status"),
 		c.DefaultQuery("sort", "urgent"),
 		c.Query("date"),
+		page,
+		limit,
 	)
 	if response.FetchErrorOrEmpty(c, err) {
 		return
 	}
-	response.Success(c, res)
+	response.SuccessWithPaginationAndStatusCount(c, res.Data, res.Pagination, res.StatusCount)
+}
+
+func parsePositiveIntQuery(c *gin.Context, key string, fallback int) (int, error) {
+	raw := c.Query(key)
+	if raw == "" {
+		return fallback, nil
+	}
+	v, err := strconv.Atoi(raw)
+	if err != nil {
+		return 0, err
+	}
+	if v < 1 {
+		return 0, fmt.Errorf("%s must be >= 1", key)
+	}
+	return v, nil
 }
 
 func (h *Handler) Create(c *gin.Context) {

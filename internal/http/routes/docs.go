@@ -176,9 +176,27 @@ type CustomerListItemDoc struct {
 	Services    []CustomerServiceDoc `json:"services"`
 }
 
+type CustomerPaginationDoc struct {
+	Page       int  `json:"page" example:"1"`
+	Limit      int  `json:"limit" example:"20"`
+	Total      int  `json:"total" example:"57"`
+	TotalPages int  `json:"totalPages" example:"3"`
+	HasNext    bool `json:"hasNext" example:"true"`
+	HasPrev    bool `json:"hasPrev" example:"false"`
+}
+
+type CustomerStatusCountDoc struct {
+	Semua     int `json:"semua" example:"57"`
+	Aktif     int `json:"aktif" example:"25"`
+	Mendekati int `json:"mendekati" example:"20"`
+	Hilang    int `json:"hilang" example:"12"`
+}
+
 type CustomerListResponseDoc struct {
-	Error bool                  `json:"error" example:"false"`
-	Data  []CustomerListItemDoc `json:"data"`
+	Error       bool                   `json:"error" example:"false"`
+	Data        []CustomerListItemDoc  `json:"data"`
+	Pagination  CustomerPaginationDoc  `json:"pagination"`
+	StatusCount CustomerStatusCountDoc `json:"statusCount"`
 }
 
 type VisitRequestDoc struct {
@@ -534,6 +552,8 @@ func categoriesDeleteDoc() {}
 // @Param status query string false "Customer status"
 // @Param sort query string false "Sort mode" default(urgent)
 // @Param date query string false "Reference date (RFC3339 or YYYY-MM-DD)" example(2026-04-14)
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Items per page (max 100)" default(20)
 // @Success 200 {object} CustomerListResponseDoc
 // @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/customers [get]

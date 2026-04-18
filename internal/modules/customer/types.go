@@ -37,3 +37,25 @@ type CheckinSubmitRequest struct {
 	Date        string   `json:"date"`
 	CategoryIDs []string `json:"categoryIds"`
 }
+
+type PaginationMeta struct {
+	Page       int  `json:"page"`
+	Limit      int  `json:"limit"`
+	Total      int  `json:"total"`
+	TotalPages int  `json:"totalPages"`
+	HasNext    bool `json:"hasNext"`
+	HasPrev    bool `json:"hasPrev"`
+}
+
+type StatusCount struct {
+	Semua     int `json:"semua"`
+	Aktif     int `json:"aktif"`
+	Mendekati int `json:"mendekati"`
+	Hilang    int `json:"hilang"`
+}
+
+type ListCustomersResponse struct {
+	Data        []map[string]interface{} `json:"data"`
+	Pagination  PaginationMeta           `json:"pagination"`
+	StatusCount StatusCount              `json:"statusCount"`
+}
