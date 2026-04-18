@@ -21,12 +21,23 @@ func (r *Repo) FindBusinessByUser(userID string) (*models.Business, error) {
 	return &b, nil
 }
 
-func (r *Repo) ListCustomers(businessID string, q string) ([]models.Customer, error) {
+func (r *Repo) ListCustomers(businessID string, q string, visitFrom, visitTo *time.Time) ([]models.Customer, error) {
 	var out []models.Customer
 	db := r.db.Where("business_id = ?", businessID)
 	if q != "" {
 		like := "%" + q + "%"
 		db = db.Where("LOWER(name) LIKE LOWER(?) OR phone_number LIKE ?", like, like)
+	}
+	if visitFrom != nil && visitTo != nil {
+		db = db.Where(`
+			EXISTS (
+				SELECT 1
+				FROM customer_services cs
+				WHERE cs.customer_id = customers.id
+				  AND cs.last_visit_at >= ?
+				  AND cs.last_visit_at < ?
+			)
+		`, *visitFrom, *visitTo)
 	}
 	err := db.Order("created_at desc").Find(&out).Error
 	return out, err

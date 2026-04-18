@@ -22,7 +22,12 @@ func (s *Service) List(userID, q, status, sortBy, date string) ([]map[string]int
 	if err != nil {
 		return nil, err
 	}
-	cxs, err := s.repo.ListCustomers(biz.ID, q)
+	asOf, visitFrom, visitTo, err := resolveCustomerListDateParams(date)
+	if err != nil {
+		return nil, err
+	}
+
+	cxs, err := s.repo.ListCustomers(biz.ID, q, visitFrom, visitTo)
 	if err != nil {
 		return nil, err
 	}
@@ -37,11 +42,6 @@ func (s *Service) List(userID, q, status, sortBy, date string) ([]map[string]int
 	m := map[string][]models.CustomerService{}
 	for _, svc := range svcs {
 		m[svc.CustomerID] = append(m[svc.CustomerID], svc)
-	}
-
-	asOf, err := parseVisitDate(date)
-	if err != nil {
-		return nil, err
 	}
 
 	out := make([]map[string]interface{}, 0, len(cxs))
@@ -66,6 +66,22 @@ func (s *Service) List(userID, q, status, sortBy, date string) ([]map[string]int
 
 	sortCustomers(out, sortBy)
 	return out, nil
+}
+
+func resolveCustomerListDateParams(date string) (time.Time, *time.Time, *time.Time, error) {
+	if strings.TrimSpace(date) == "" {
+		now := time.Now().UTC()
+		return now, nil, nil, nil
+	}
+
+	asOf, err := parseVisitDate(date)
+	if err != nil {
+		return time.Time{}, nil, nil, err
+	}
+
+	start := time.Date(asOf.Year(), asOf.Month(), asOf.Day(), 0, 0, 0, 0, time.UTC)
+	end := start.AddDate(0, 0, 1)
+	return asOf, &start, &end, nil
 }
 
 func (s *Service) Create(userID string, req CreateCustomerRequest) error {
