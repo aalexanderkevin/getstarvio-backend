@@ -209,6 +209,30 @@ type PlanConfig struct {
 
 func (PlanConfig) TableName() string { return "plan_configs" }
 
+type InternalAdmin struct {
+	ID           string     `gorm:"column:id;primaryKey"`
+	Name         string     `gorm:"column:name;not null"`
+	Email        string     `gorm:"column:email;uniqueIndex;not null"`
+	PasswordHash string     `gorm:"column:password_hash;not null"`
+	IsActive     bool       `gorm:"column:is_active;not null;default:true"`
+	LastLoginAt  *time.Time `gorm:"column:last_login_at"`
+	CreatedAt    time.Time  `gorm:"column:created_at;autoCreateTime"`
+	UpdatedAt    time.Time  `gorm:"column:updated_at;autoUpdateTime"`
+}
+
+func (InternalAdmin) TableName() string { return "internal_admins" }
+
+type InternalRefreshToken struct {
+	ID        string     `gorm:"column:id;primaryKey"`
+	AdminID   string     `gorm:"column:admin_id;index;not null"`
+	TokenHash string     `gorm:"column:token_hash;uniqueIndex;not null"`
+	ExpiresAt time.Time  `gorm:"column:expires_at;not null"`
+	RevokedAt *time.Time `gorm:"column:revoked_at"`
+	CreatedAt time.Time  `gorm:"column:created_at;autoCreateTime"`
+}
+
+func (InternalRefreshToken) TableName() string { return "internal_refresh_tokens" }
+
 type RefreshToken struct {
 	ID        string     `gorm:"column:id;primaryKey"`
 	UserID    string     `gorm:"column:user_id;index;not null"`

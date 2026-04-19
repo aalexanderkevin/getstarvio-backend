@@ -14,6 +14,49 @@ func NewHandler(svc *Service) *Handler {
 	return &Handler{svc: svc}
 }
 
+func (h *Handler) Login(c *gin.Context) {
+	var req LoginRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Error(c, 400, err.Error())
+		return
+	}
+
+	res, err := h.svc.Login(req)
+	if err != nil {
+		response.Error(c, 401, err.Error())
+		return
+	}
+	response.Success(c, res)
+}
+
+func (h *Handler) Refresh(c *gin.Context) {
+	var req RefreshRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Error(c, 400, err.Error())
+		return
+	}
+
+	res, err := h.svc.Refresh(req)
+	if err != nil {
+		response.Error(c, 401, err.Error())
+		return
+	}
+	response.Success(c, res)
+}
+
+func (h *Handler) Logout(c *gin.Context) {
+	var req LogoutRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Error(c, 400, err.Error())
+		return
+	}
+	if err := h.svc.Logout(req); err != nil {
+		response.Error(c, 500, err.Error())
+		return
+	}
+	response.Success(c, map[string]bool{"ok": true})
+}
+
 func (h *Handler) GetPlanConfig(c *gin.Context) {
 	res, err := h.svc.GetPlanConfig()
 	if response.FetchErrorOrEmpty(c, err) {

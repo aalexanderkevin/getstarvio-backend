@@ -1,5 +1,35 @@
 package internaladmin
 
+type LoginRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type LoginResponse struct {
+	AccessToken  string                `json:"accessToken"`
+	RefreshToken string                `json:"refreshToken"`
+	Admin        InternalAdminBasicDTO `json:"admin"`
+}
+
+type InternalAdminBasicDTO struct {
+	ID    string `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+}
+
+type RefreshRequest struct {
+	RefreshToken string `json:"refreshToken"`
+}
+
+type RefreshResponse struct {
+	AccessToken  string `json:"accessToken"`
+	RefreshToken string `json:"refreshToken"`
+}
+
+type LogoutRequest struct {
+	RefreshToken string `json:"refreshToken"`
+}
+
 type PlanConfigResponse struct {
 	BusinessID string `json:"businessId"`
 	FreeBonus  int    `json:"freeBonus"`

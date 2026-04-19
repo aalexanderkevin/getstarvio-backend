@@ -391,6 +391,40 @@ type InternalPlanConfigUpdateRequestDoc struct {
 	Tier3Credits int `json:"tier3Credits" example:"1500"`
 }
 
+type InternalAdminLoginRequestDoc struct {
+	Email    string `json:"email" example:"admin@getstarvio.com"`
+	Password string `json:"password" example:"secret-password"`
+}
+
+type InternalAdminLoginResponseDoc struct {
+	Error bool `json:"error" example:"false"`
+	Data  struct {
+		AccessToken  string `json:"accessToken" example:"eyJhbGciOiJIUzI1NiIs..."`
+		RefreshToken string `json:"refreshToken" example:"eyJhbGciOiJIUzI1NiIs..."`
+		Admin        struct {
+			ID    string `json:"id" example:"d4f89973-19a8-4b53-a736-96f9c4fc36bf"`
+			Name  string `json:"name" example:"System Admin"`
+			Email string `json:"email" example:"admin@getstarvio.com"`
+		} `json:"admin"`
+	} `json:"data"`
+}
+
+type InternalAdminRefreshRequestDoc struct {
+	RefreshToken string `json:"refreshToken" example:"eyJhbGciOiJIUzI1NiIs..."`
+}
+
+type InternalAdminRefreshResponseDoc struct {
+	Error bool `json:"error" example:"false"`
+	Data  struct {
+		AccessToken  string `json:"accessToken" example:"eyJhbGciOiJIUzI1NiIs..."`
+		RefreshToken string `json:"refreshToken" example:"eyJhbGciOiJIUzI1NiIs..."`
+	} `json:"data"`
+}
+
+type InternalAdminLogoutRequestDoc struct {
+	RefreshToken string `json:"refreshToken" example:"eyJhbGciOiJIUzI1NiIs..."`
+}
+
 // healthzDoc godoc
 // @Summary Health check
 // @Tags health
@@ -767,11 +801,47 @@ func webhooksMetaDoc() {}
 // @Router /v1/webhooks/meta [get]
 func webhooksMetaVerifyDoc() {}
 
+// internalAdminLoginDoc godoc
+// @Summary Internal admin login
+// @Tags internal
+// @Accept json
+// @Produce json
+// @Param payload body InternalAdminLoginRequestDoc true "Internal admin login payload"
+// @Success 200 {object} InternalAdminLoginResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Router /v1/internal/auth/login [post]
+func internalAdminLoginDoc() {}
+
+// internalAdminRefreshDoc godoc
+// @Summary Internal admin refresh token
+// @Tags internal
+// @Accept json
+// @Produce json
+// @Param payload body InternalAdminRefreshRequestDoc true "Internal admin refresh payload"
+// @Success 200 {object} InternalAdminRefreshResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Router /v1/internal/auth/refresh [post]
+func internalAdminRefreshDoc() {}
+
+// internalAdminLogoutDoc godoc
+// @Summary Internal admin logout
+// @Tags internal
+// @Accept json
+// @Produce json
+// @Param payload body InternalAdminLogoutRequestDoc true "Internal admin logout payload"
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Router /v1/internal/auth/logout [post]
+func internalAdminLogoutDoc() {}
+
 // internalPlanConfigGetDoc godoc
 // @Summary Get internal plan config
 // @Tags internal
+// @Security BearerAuth
 // @Produce json
-// @Param X-Internal-Token header string true "Internal API token"
 // @Success 200 {object} InternalPlanConfigResponseDoc
 // @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/internal/plan-config [get]
@@ -780,9 +850,9 @@ func internalPlanConfigGetDoc() {}
 // internalPlanConfigPutDoc godoc
 // @Summary Update internal plan config
 // @Tags internal
+// @Security BearerAuth
 // @Accept json
 // @Produce json
-// @Param X-Internal-Token header string true "Internal API token"
 // @Param payload body InternalPlanConfigUpdateRequestDoc true "Plan config payload"
 // @Success 200 {object} OKResponseDoc
 // @Failure 400 {object} ErrorResponseDoc

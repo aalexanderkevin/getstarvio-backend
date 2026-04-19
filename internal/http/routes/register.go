@@ -27,7 +27,6 @@ func Register(r *gin.Engine, c *app.Container) {
 	registerWebhookRoutes(api, c)
 
 	internalGroup := api.Group("/internal")
-	internalGroup.Use(middleware.InternalToken())
 	registerInternalAdminRoutes(internalGroup, c)
 
 	authed := api.Group("")

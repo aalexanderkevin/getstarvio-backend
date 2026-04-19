@@ -1055,8 +1055,148 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/internal/auth/login": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "internal"
+                ],
+                "summary": "Internal admin login",
+                "parameters": [
+                    {
+                        "description": "Internal admin login payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.InternalAdminLoginRequestDoc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.InternalAdminLoginResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/internal/auth/logout": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "internal"
+                ],
+                "summary": "Internal admin logout",
+                "parameters": [
+                    {
+                        "description": "Internal admin logout payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.InternalAdminLogoutRequestDoc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.OKResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/internal/auth/refresh": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "internal"
+                ],
+                "summary": "Internal admin refresh token",
+                "parameters": [
+                    {
+                        "description": "Internal admin refresh payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.InternalAdminRefreshRequestDoc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.InternalAdminRefreshResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/internal/plan-config": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "produces": [
                     "application/json"
                 ],
@@ -1064,15 +1204,6 @@ const docTemplate = `{
                     "internal"
                 ],
                 "summary": "Get internal plan config",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Internal API token",
-                        "name": "X-Internal-Token",
-                        "in": "header",
-                        "required": true
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -1089,6 +1220,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -1100,13 +1236,6 @@ const docTemplate = `{
                 ],
                 "summary": "Update internal plan config",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Internal API token",
-                        "name": "X-Internal-Token",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "description": "Plan config payload",
                         "name": "payload",
@@ -2383,6 +2512,98 @@ const docTemplate = `{
                 "time": {
                     "type": "string",
                     "example": "2026-04-12T10:00:00Z"
+                }
+            }
+        },
+        "routes.InternalAdminLoginRequestDoc": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "admin@getstarvio.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "secret-password"
+                }
+            }
+        },
+        "routes.InternalAdminLoginResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "accessToken": {
+                            "type": "string",
+                            "example": "eyJhbGciOiJIUzI1NiIs..."
+                        },
+                        "admin": {
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string",
+                                    "example": "admin@getstarvio.com"
+                                },
+                                "id": {
+                                    "type": "string",
+                                    "example": "d4f89973-19a8-4b53-a736-96f9c4fc36bf"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "example": "System Admin"
+                                }
+                            }
+                        },
+                        "refreshToken": {
+                            "type": "string",
+                            "example": "eyJhbGciOiJIUzI1NiIs..."
+                        }
+                    }
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "routes.InternalAdminLogoutRequestDoc": {
+            "type": "object",
+            "properties": {
+                "refreshToken": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIs..."
+                }
+            }
+        },
+        "routes.InternalAdminRefreshRequestDoc": {
+            "type": "object",
+            "properties": {
+                "refreshToken": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIs..."
+                }
+            }
+        },
+        "routes.InternalAdminRefreshResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "accessToken": {
+                            "type": "string",
+                            "example": "eyJhbGciOiJIUzI1NiIs..."
+                        },
+                        "refreshToken": {
+                            "type": "string",
+                            "example": "eyJhbGciOiJIUzI1NiIs..."
+                        }
+                    }
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
                 }
             }
         },

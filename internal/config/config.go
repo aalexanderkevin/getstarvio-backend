@@ -16,7 +16,6 @@ type Config struct {
 	Meta     MetaConfig
 	Xendit   XenditConfig
 	Worker   WorkerConfig
-	Internal InternalConfig
 	LogLevel string
 }
 
@@ -65,10 +64,6 @@ type XenditConfig struct {
 
 type WorkerConfig struct {
 	PollIntervalSeconds int
-}
-
-type InternalConfig struct {
-	Token string
 }
 
 var (
@@ -135,7 +130,6 @@ func Load() (Config, error) {
 			FailureRedirect: getEnv("XENDIT_FAILURE_REDIRECT", ""),
 		},
 		Worker:   WorkerConfig{PollIntervalSeconds: getEnvAsInt("WORKER_POLL_INTERVAL_SECONDS", 30)},
-		Internal: InternalConfig{Token: getEnv("INTERNAL_API_TOKEN", "change-me-internal-token")},
 		LogLevel: strings.ToLower(getEnv("LOG_LEVEL", "info")),
 	}
 

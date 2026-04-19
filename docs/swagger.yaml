@@ -651,6 +651,69 @@ definitions:
         example: "2026-04-12T10:00:00Z"
         type: string
     type: object
+  routes.InternalAdminLoginRequestDoc:
+    properties:
+      email:
+        example: admin@getstarvio.com
+        type: string
+      password:
+        example: secret-password
+        type: string
+    type: object
+  routes.InternalAdminLoginResponseDoc:
+    properties:
+      data:
+        properties:
+          accessToken:
+            example: eyJhbGciOiJIUzI1NiIs...
+            type: string
+          admin:
+            properties:
+              email:
+                example: admin@getstarvio.com
+                type: string
+              id:
+                example: d4f89973-19a8-4b53-a736-96f9c4fc36bf
+                type: string
+              name:
+                example: System Admin
+                type: string
+            type: object
+          refreshToken:
+            example: eyJhbGciOiJIUzI1NiIs...
+            type: string
+        type: object
+      error:
+        example: false
+        type: boolean
+    type: object
+  routes.InternalAdminLogoutRequestDoc:
+    properties:
+      refreshToken:
+        example: eyJhbGciOiJIUzI1NiIs...
+        type: string
+    type: object
+  routes.InternalAdminRefreshRequestDoc:
+    properties:
+      refreshToken:
+        example: eyJhbGciOiJIUzI1NiIs...
+        type: string
+    type: object
+  routes.InternalAdminRefreshResponseDoc:
+    properties:
+      data:
+        properties:
+          accessToken:
+            example: eyJhbGciOiJIUzI1NiIs...
+            type: string
+          refreshToken:
+            example: eyJhbGciOiJIUzI1NiIs...
+            type: string
+        type: object
+      error:
+        example: false
+        type: boolean
+    type: object
   routes.InternalPlanConfigResponseDoc:
     properties:
       data:
@@ -1508,14 +1571,95 @@ paths:
       summary: List default categories
       tags:
       - category
+  /v1/internal/auth/login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Internal admin login payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.InternalAdminLoginRequestDoc'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.InternalAdminLoginResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+      summary: Internal admin login
+      tags:
+      - internal
+  /v1/internal/auth/logout:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Internal admin logout payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.InternalAdminLogoutRequestDoc'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.OKResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+      summary: Internal admin logout
+      tags:
+      - internal
+  /v1/internal/auth/refresh:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Internal admin refresh payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.InternalAdminRefreshRequestDoc'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.InternalAdminRefreshResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+      summary: Internal admin refresh token
+      tags:
+      - internal
   /v1/internal/plan-config:
     get:
-      parameters:
-      - description: Internal API token
-        in: header
-        name: X-Internal-Token
-        required: true
-        type: string
       produces:
       - application/json
       responses:
@@ -1527,6 +1671,8 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/routes.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
       summary: Get internal plan config
       tags:
       - internal
@@ -1534,11 +1680,6 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: Internal API token
-        in: header
-        name: X-Internal-Token
-        required: true
-        type: string
       - description: Plan config payload
         in: body
         name: payload
@@ -1560,6 +1701,8 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/routes.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
       summary: Update internal plan config
       tags:
       - internal
