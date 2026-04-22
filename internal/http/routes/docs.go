@@ -101,8 +101,8 @@ type DefaultCategoryItemDoc struct {
 	Icon         string `json:"icon" example:"💆"`
 	Interval     int    `json:"interval" example:"30"`
 	TemplateID   string `json:"templateId" example:"tpl-a"`
-	TemplateBody string `json:"templateBody" example:"Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"`
-	ExampleBody  string `json:"exampleBody" example:"[\"Pelanggan\",\"{{interval}}\",\"{{service}}\",\"{{business}}\"]"`
+	TemplateBody string `json:"templateBody" example:"Halo 1! Sudah 2 hari sejak 3 terakhir kamu di 4. Yuk balik lagi — kami tunggu! 😊"`
+	ExampleBody  string `json:"exampleBody" example:"[\"Pelanggan\",\"interval\",\"service\",\"business\"]"`
 }
 
 type DefaultCategoryListResponseDoc struct {

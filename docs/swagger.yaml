@@ -598,7 +598,7 @@ definitions:
   routes.DefaultCategoryItemDoc:
     properties:
       exampleBody:
-        example: '["Pelanggan","{{interval}}","{{service}}","{{business}}"]'
+        example: '["Pelanggan","interval","service","business"]'
         type: string
       icon:
         example: "\U0001F486"
@@ -613,8 +613,8 @@ definitions:
         example: Facial Treatment
         type: string
       templateBody:
-        example: "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}.
-          Yuk balik lagi — kami tunggu! \U0001F60A"
+        example: "Halo 1! Sudah 2 hari sejak 3 terakhir kamu di 4. Yuk balik lagi
+          — kami tunggu! \U0001F60A"
         type: string
       templateId:
         example: tpl-a

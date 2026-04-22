@@ -2442,7 +2442,7 @@ const docTemplate = `{
             "properties": {
                 "exampleBody": {
                     "type": "string",
-                    "example": "[\"Pelanggan\",\"{{interval}}\",\"{{service}}\",\"{{business}}\"]"
+                    "example": "[\"Pelanggan\",\"interval\",\"service\",\"business\"]"
                 },
                 "icon": {
                     "type": "string",
@@ -2462,7 +2462,7 @@ const docTemplate = `{
                 },
                 "templateBody": {
                     "type": "string",
-                    "example": "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"
+                    "example": "Halo 1! Sudah 2 hari sejak 3 terakhir kamu di 4. Yuk balik lagi — kami tunggu! 😊"
                 },
                 "templateId": {
                     "type": "string",
