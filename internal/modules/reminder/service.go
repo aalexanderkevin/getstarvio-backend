@@ -55,6 +55,7 @@ func (s *Service) Log(userID, status string, limit int) ([]map[string]interface{
 			"categoryId":    r.CategoryID,
 			"cxName":        r.CxName,
 			"svcName":       r.SvcName,
+			"categoryName":  r.SvcName,
 			"scheduledAt":   r.ScheduledAt.Format(time.RFC3339),
 			"sentAt":        sentAt,
 			"status":        r.Status,
