@@ -4,16 +4,16 @@ package docs
 import "github.com/swaggo/swag"
 
 const docTemplate = `{
-    "schemes": {{ marshal .Schemes }},
+    "schemes": [[ marshal .Schemes ]],
     "swagger": "2.0",
     "info": {
-        "description": "{{escape .Description}}",
-        "title": "{{.Title}}",
+        "description": "[[escape .Description]]",
+        "title": "[[.Title]]",
         "contact": {},
-        "version": "{{.Version}}"
+        "version": "[[.Version]]"
     },
-    "host": "{{.Host}}",
-    "basePath": "{{.BasePath}}",
+    "host": "[[.Host]]",
+    "basePath": "[[.BasePath]]",
     "paths": {
         "/healthz": {
             "get": {
@@ -1190,6 +1190,84 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/internal/categories": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "internal"
+                ],
+                "summary": "List default categories (internal)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.InternalDefaultCategoryListResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "internal"
+                ],
+                "summary": "Create default category (internal)",
+                "parameters": [
+                    {
+                        "description": "Default category payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.InternalDefaultCategoryCreateRequestDoc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/routes.InternalDefaultCategoryCreateResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/internal/plan-config": {
             "get": {
                 "security": [
@@ -2076,7 +2154,7 @@ const docTemplate = `{
                 },
                 "templateBody": {
                     "type": "string",
-                    "example": "Hai [nama], waktunya hair treatment premium lagi di [bisnis]."
+                    "example": "Hai {{1}}, waktunya hair treatment premium lagi di {{2}}."
                 },
                 "templateId": {
                     "type": "string",
@@ -2440,9 +2518,13 @@ const docTemplate = `{
         "routes.DefaultCategoryItemDoc": {
             "type": "object",
             "properties": {
+                "category": {
+                    "type": "string",
+                    "example": "beauty"
+                },
                 "exampleBody": {
                     "type": "string",
-                    "example": "[\"Pelanggan\",\"interval\",\"service\",\"business\"]"
+                    "example": "[\"Pelanggan\",\"Interval\",\"Service\",\"Business\"]"
                 },
                 "icon": {
                     "type": "string",
@@ -2460,9 +2542,13 @@ const docTemplate = `{
                     "type": "string",
                     "example": "Facial Treatment"
                 },
+                "status": {
+                    "type": "string",
+                    "example": "PENDING"
+                },
                 "templateBody": {
                     "type": "string",
-                    "example": "Halo 1! Sudah 2 hari sejak 3 terakhir kamu di 4. Yuk balik lagi — kami tunggu! 😊"
+                    "example": "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"
                 },
                 "templateId": {
                     "type": "string",
@@ -2599,6 +2685,129 @@ const docTemplate = `{
                             "type": "string",
                             "example": "eyJhbGciOiJIUzI1NiIs..."
                         }
+                    }
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "routes.InternalDefaultCategoryCreateRequestDoc": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string",
+                    "example": "beauty"
+                },
+                "exampleBody": {
+                    "type": "string",
+                    "example": "[\"Pelanggan\",\"Interval\",\"Service\",\"Business\"]"
+                },
+                "icon": {
+                    "type": "string",
+                    "example": "💆"
+                },
+                "interval": {
+                    "type": "integer",
+                    "example": 21
+                },
+                "isActive": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Body Massage"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "PENDING"
+                },
+                "templateBody": {
+                    "type": "string",
+                    "example": "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"
+                },
+                "templateId": {
+                    "type": "string",
+                    "example": "body_massage_reminder"
+                }
+            }
+        },
+        "routes.InternalDefaultCategoryCreateResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string",
+                            "example": "9ec44c6a-c9d6-4ebd-9476-f6f5a0dca4c8"
+                        },
+                        "ok": {
+                            "type": "boolean",
+                            "example": true
+                        }
+                    }
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "routes.InternalDefaultCategoryItemDoc": {
+            "type": "object",
+            "properties": {
+                "category": {
+                    "type": "string",
+                    "example": "beauty"
+                },
+                "exampleBody": {
+                    "type": "string",
+                    "example": "[\"Pelanggan\",\"Interval\",\"Service\",\"Business\"]"
+                },
+                "icon": {
+                    "type": "string",
+                    "example": "💆"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "defcat-facial-treatment"
+                },
+                "interval": {
+                    "type": "integer",
+                    "example": 30
+                },
+                "isActive": {
+                    "type": "boolean",
+                    "example": true
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Facial Treatment"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "PENDING"
+                },
+                "templateBody": {
+                    "type": "string",
+                    "example": "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"
+                },
+                "templateId": {
+                    "type": "string",
+                    "example": "tpl-a"
+                }
+            }
+        },
+        "routes.InternalDefaultCategoryListResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/routes.InternalDefaultCategoryItemDoc"
                     }
                 },
                 "error": {
@@ -2908,8 +3117,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "Getstarvio backend API documentation.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	LeftDelim:        "{{",
-	RightDelim:       "}}",
+	LeftDelim:        "[[",
+	RightDelim:       "]]",
 }
 
 func init() {

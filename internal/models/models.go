@@ -82,8 +82,10 @@ func (Category) TableName() string { return "categories" }
 type DefaultCategory struct {
 	ID           string    `gorm:"column:id;primaryKey"`
 	Name         string    `gorm:"column:name;not null"`
-	Icon         string    `gorm:"column:icon;not null"`
-	IntervalDays int       `gorm:"column:interval_days;not null"`
+	Category     string    `gorm:"column:category;not null;default:'UTILITY'"`
+	Status       string    `gorm:"column:status;not null;default:'PENDING'"`
+	Icon         *string   `gorm:"column:icon"`
+	IntervalDays *int      `gorm:"column:interval_days"`
 	TemplateID   string    `gorm:"column:template_id;not null"`
 	TemplateBody string    `gorm:"column:template_body;not null"`
 	ExampleBody  string    `gorm:"column:example_body;not null"`

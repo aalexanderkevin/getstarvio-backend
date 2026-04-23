@@ -341,7 +341,7 @@ definitions:
         example: Hair Treatment Premium
         type: string
       templateBody:
-        example: Hai [nama], waktunya hair treatment premium lagi di [bisnis].
+        example: Hai {{1}}, waktunya hair treatment premium lagi di {{2}}.
         type: string
       templateId:
         example: tpl-d
@@ -597,8 +597,11 @@ definitions:
     type: object
   routes.DefaultCategoryItemDoc:
     properties:
+      category:
+        example: beauty
+        type: string
       exampleBody:
-        example: '["Pelanggan","interval","service","business"]'
+        example: '["Pelanggan","Interval","Service","Business"]'
         type: string
       icon:
         example: "\U0001F486"
@@ -612,9 +615,12 @@ definitions:
       name:
         example: Facial Treatment
         type: string
+      status:
+        example: PENDING
+        type: string
       templateBody:
-        example: "Halo 1! Sudah 2 hari sejak 3 terakhir kamu di 4. Yuk balik lagi
-          — kami tunggu! \U0001F60A"
+        example: "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}.
+          Yuk balik lagi — kami tunggu! \U0001F60A"
         type: string
       templateId:
         example: tpl-a
@@ -710,6 +716,96 @@ definitions:
             example: eyJhbGciOiJIUzI1NiIs...
             type: string
         type: object
+      error:
+        example: false
+        type: boolean
+    type: object
+  routes.InternalDefaultCategoryCreateRequestDoc:
+    properties:
+      category:
+        example: beauty
+        type: string
+      exampleBody:
+        example: '["Pelanggan","Interval","Service","Business"]'
+        type: string
+      icon:
+        example: "\U0001F486"
+        type: string
+      interval:
+        example: 21
+        type: integer
+      isActive:
+        example: true
+        type: boolean
+      name:
+        example: Body Massage
+        type: string
+      status:
+        example: PENDING
+        type: string
+      templateBody:
+        example: "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}.
+          Yuk balik lagi — kami tunggu! \U0001F60A"
+        type: string
+      templateId:
+        example: body_massage_reminder
+        type: string
+    type: object
+  routes.InternalDefaultCategoryCreateResponseDoc:
+    properties:
+      data:
+        properties:
+          id:
+            example: 9ec44c6a-c9d6-4ebd-9476-f6f5a0dca4c8
+            type: string
+          ok:
+            example: true
+            type: boolean
+        type: object
+      error:
+        example: false
+        type: boolean
+    type: object
+  routes.InternalDefaultCategoryItemDoc:
+    properties:
+      category:
+        example: beauty
+        type: string
+      exampleBody:
+        example: '["Pelanggan","Interval","Service","Business"]'
+        type: string
+      icon:
+        example: "\U0001F486"
+        type: string
+      id:
+        example: defcat-facial-treatment
+        type: string
+      interval:
+        example: 30
+        type: integer
+      isActive:
+        example: true
+        type: boolean
+      name:
+        example: Facial Treatment
+        type: string
+      status:
+        example: PENDING
+        type: string
+      templateBody:
+        example: "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}.
+          Yuk balik lagi — kami tunggu! \U0001F60A"
+        type: string
+      templateId:
+        example: tpl-a
+        type: string
+    type: object
+  routes.InternalDefaultCategoryListResponseDoc:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/routes.InternalDefaultCategoryItemDoc'
+        type: array
       error:
         example: false
         type: boolean
@@ -1656,6 +1752,54 @@ paths:
           schema:
             $ref: '#/definitions/routes.ErrorResponseDoc'
       summary: Internal admin refresh token
+      tags:
+      - internal
+  /v1/internal/categories:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.InternalDefaultCategoryListResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: List default categories (internal)
+      tags:
+      - internal
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Default category payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.InternalDefaultCategoryCreateRequestDoc'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/routes.InternalDefaultCategoryCreateResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: Create default category (internal)
       tags:
       - internal
   /v1/internal/plan-config:

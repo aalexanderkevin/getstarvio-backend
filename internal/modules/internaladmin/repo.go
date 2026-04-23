@@ -62,6 +62,16 @@ func (r *Repo) RevokeInternalRefreshToken(tokenHash string, at time.Time) error 
 		Update("revoked_at", at).Error
 }
 
+func (r *Repo) ListDefaultCategories() ([]models.DefaultCategory, error) {
+	var out []models.DefaultCategory
+	err := r.db.Order("name asc").Find(&out).Error
+	return out, err
+}
+
+func (r *Repo) CreateDefaultCategory(c models.DefaultCategory) error {
+	return r.db.Create(&c).Error
+}
+
 func (r *Repo) GetPrimaryPlanConfig() (*models.PlanConfig, error) {
 	var p models.PlanConfig
 	err := r.db.Order("created_at asc").First(&p).Error

@@ -97,7 +97,8 @@ tidy:
 	@go mod tidy
 
 swagger:
-	@swag init -g main.go -d cmd/getstarvio,internal/http/routes -o docs --parseDependency --parseInternal
+	@swag init -g main.go -d cmd/getstarvio,internal/http/routes -o docs --parseDependency --parseInternal --templateDelims "[[,]]"
 
 swagger-docker:
-	@docker run --rm -v "$$PWD":/code -w /code golang:1.26.2 sh -c 'go install github.com/swaggo/swag/cmd/swag@v1.16.4 && /go/bin/swag init -g main.go -d cmd/getstarvio,internal/http/routes -o docs --parseDependency --parseInternal'
+	@docker run --rm -v "$$PWD":/code -w /code golang:1.26.2 sh -c 'go install github.com/swaggo/swag/cmd/swag@v1.16.4 && /go/bin/swag init -g main.go -d cmd/getstarvio,internal/http/routes -o docs --parseDependency --parseInternal --templateDelims "[[,]]"'
+

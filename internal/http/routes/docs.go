@@ -96,13 +96,15 @@ type CategoryListResponseDoc struct {
 }
 
 type DefaultCategoryItemDoc struct {
-	ID           string `json:"id" example:"defcat-facial-treatment"`
-	Name         string `json:"name" example:"Facial Treatment"`
-	Icon         string `json:"icon" example:"💆"`
-	Interval     int    `json:"interval" example:"30"`
-	TemplateID   string `json:"templateId" example:"tpl-a"`
-	TemplateBody string `json:"templateBody" example:"Halo 1! Sudah 2 hari sejak 3 terakhir kamu di 4. Yuk balik lagi — kami tunggu! 😊"`
-	ExampleBody  string `json:"exampleBody" example:"[\"Pelanggan\",\"interval\",\"service\",\"business\"]"`
+	ID           string  `json:"id" example:"defcat-facial-treatment"`
+	Name         string  `json:"name" example:"Facial Treatment"`
+	Category     string  `json:"category" example:"beauty"`
+	Status       string  `json:"status" example:"PENDING"`
+	Icon         *string `json:"icon" example:"💆"`
+	Interval     *int    `json:"interval" example:"30"`
+	TemplateID   string  `json:"templateId" example:"tpl-a"`
+	TemplateBody string  `json:"templateBody" example:"Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"`
+	ExampleBody  string  `json:"exampleBody" example:"[\"Pelanggan\",\"Interval\",\"Service\",\"Business\"]"`
 }
 
 type DefaultCategoryListResponseDoc struct {
@@ -134,7 +136,7 @@ type CategoryUpdateRequestDoc struct {
 	Icon         *string `json:"icon" example:"💇"`
 	Interval     *int    `json:"interval" example:"60"`
 	TemplateID   *string `json:"templateId" example:"tpl-d"`
-	TemplateBody *string `json:"templateBody" example:"Hai [nama], waktunya hair treatment premium lagi di [bisnis]."`
+	TemplateBody *string `json:"templateBody" example:"Hai {{1}}, waktunya hair treatment premium lagi di {{2}}."`
 	IsEnabled    *bool   `json:"isEnabled" example:"true"`
 }
 
@@ -423,6 +425,44 @@ type InternalAdminRefreshResponseDoc struct {
 
 type InternalAdminLogoutRequestDoc struct {
 	RefreshToken string `json:"refreshToken" example:"eyJhbGciOiJIUzI1NiIs..."`
+}
+
+type InternalDefaultCategoryItemDoc struct {
+	ID           string  `json:"id" example:"defcat-facial-treatment"`
+	Name         string  `json:"name" example:"Facial Treatment"`
+	Category     string  `json:"category" example:"beauty"`
+	Status       string  `json:"status" example:"PENDING"`
+	Icon         *string `json:"icon" example:"💆"`
+	Interval     *int    `json:"interval" example:"30"`
+	TemplateID   string  `json:"templateId" example:"tpl-a"`
+	TemplateBody string  `json:"templateBody" example:"Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"`
+	ExampleBody  string  `json:"exampleBody" example:"[\"Pelanggan\",\"Interval\",\"Service\",\"Business\"]"`
+	IsActive     bool    `json:"isActive" example:"true"`
+}
+
+type InternalDefaultCategoryListResponseDoc struct {
+	Error bool                             `json:"error" example:"false"`
+	Data  []InternalDefaultCategoryItemDoc `json:"data"`
+}
+
+type InternalDefaultCategoryCreateRequestDoc struct {
+	Name         string  `json:"name" example:"Body Massage"`
+	Category     string  `json:"category" example:"beauty"`
+	Status       *string `json:"status" example:"PENDING"`
+	Icon         *string `json:"icon" example:"💆"`
+	Interval     *int    `json:"interval" example:"21"`
+	TemplateID   string  `json:"templateId" example:"body_massage_reminder"`
+	TemplateBody string  `json:"templateBody" example:"Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"`
+	ExampleBody  string  `json:"exampleBody" example:"[\"Pelanggan\",\"Interval\",\"Service\",\"Business\"]"`
+	IsActive     *bool   `json:"isActive" example:"true"`
+}
+
+type InternalDefaultCategoryCreateResponseDoc struct {
+	Error bool `json:"error" example:"false"`
+	Data  struct {
+		OK bool   `json:"ok" example:"true"`
+		ID string `json:"id" example:"9ec44c6a-c9d6-4ebd-9476-f6f5a0dca4c8"`
+	} `json:"data"`
 }
 
 // healthzDoc godoc
@@ -836,6 +876,29 @@ func internalAdminRefreshDoc() {}
 // @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/internal/auth/logout [post]
 func internalAdminLogoutDoc() {}
+
+// internalDefaultCategoriesGetDoc godoc
+// @Summary List default categories (internal)
+// @Tags internal
+// @Security BearerAuth
+// @Produce json
+// @Success 200 {object} InternalDefaultCategoryListResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Router /v1/internal/categories [get]
+func internalDefaultCategoriesGetDoc() {}
+
+// internalDefaultCategoriesPostDoc godoc
+// @Summary Create default category (internal)
+// @Tags internal
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param payload body InternalDefaultCategoryCreateRequestDoc true "Default category payload"
+// @Success 201 {object} InternalDefaultCategoryCreateResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Router /v1/internal/categories [post]
+func internalDefaultCategoriesPostDoc() {}
 
 // internalPlanConfigGetDoc godoc
 // @Summary Get internal plan config

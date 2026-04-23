@@ -57,6 +57,28 @@ func (h *Handler) Logout(c *gin.Context) {
 	response.Success(c, map[string]bool{"ok": true})
 }
 
+func (h *Handler) ListDefaultCategories(c *gin.Context) {
+	res, err := h.svc.ListDefaultCategories()
+	if response.FetchErrorOrEmpty(c, err) {
+		return
+	}
+	response.Success(c, res)
+}
+
+func (h *Handler) CreateDefaultCategory(c *gin.Context) {
+	var req CreateDefaultCategoryRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Error(c, 400, err.Error())
+		return
+	}
+	res, err := h.svc.CreateDefaultCategory(req)
+	if err != nil {
+		response.Error(c, 400, err.Error())
+		return
+	}
+	response.Created(c, res)
+}
+
 func (h *Handler) GetPlanConfig(c *gin.Context) {
 	res, err := h.svc.GetPlanConfig()
 	if response.FetchErrorOrEmpty(c, err) {

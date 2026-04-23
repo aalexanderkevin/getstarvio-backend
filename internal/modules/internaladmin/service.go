@@ -1,6 +1,7 @@
 package internaladmin
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"strings"
@@ -172,6 +173,87 @@ func (s *Service) Logout(req LogoutRequest) error {
 		return nil
 	}
 	return s.repo.RevokeInternalRefreshToken(shared.HashToken(req.RefreshToken), time.Now().UTC())
+}
+
+func (s *Service) ListDefaultCategories() ([]DefaultCategoryListItem, error) {
+	cats, err := s.repo.ListDefaultCategories()
+	if err != nil {
+		return nil, err
+	}
+	out := make([]DefaultCategoryListItem, 0, len(cats))
+	for _, c := range cats {
+		out = append(out, DefaultCategoryListItem{
+			ID:           c.ID,
+			Name:         c.Name,
+			Category:     c.Category,
+			Status:       c.Status,
+			Icon:         c.Icon,
+			Interval:     c.IntervalDays,
+			TemplateID:   c.TemplateID,
+			TemplateBody: c.TemplateBody,
+			ExampleBody:  c.ExampleBody,
+			IsActive:     c.IsActive,
+		})
+	}
+	return out, nil
+}
+
+func (s *Service) CreateDefaultCategory(req CreateDefaultCategoryRequest) (map[string]interface{}, error) {
+	name := strings.TrimSpace(req.Name)
+	category := strings.TrimSpace(req.Category)
+	status := "PENDING"
+	if req.Status != nil {
+		trimmedStatus := strings.ToUpper(strings.TrimSpace(*req.Status))
+		if trimmedStatus != "" {
+			status = trimmedStatus
+		}
+	}
+	templateID := strings.TrimSpace(req.TemplateID)
+	templateBody := strings.TrimSpace(req.TemplateBody)
+	exampleBody := strings.TrimSpace(req.ExampleBody)
+	if name == "" || templateID == "" || templateBody == "" || exampleBody == "" {
+		return nil, fmt.Errorf("name, templateId, templateBody, and exampleBody are required")
+	}
+	if category == "" {
+		category = "UTILITY"
+	}
+	if req.Interval != nil && *req.Interval <= 0 {
+		return nil, fmt.Errorf("interval must be greater than 0")
+	}
+
+	var vars []string
+	if err := json.Unmarshal([]byte(exampleBody), &vars); err != nil || len(vars) == 0 {
+		return nil, fmt.Errorf("exampleBody must be valid JSON string array")
+	}
+
+	var icon *string
+	if req.Icon != nil {
+		trimmed := strings.TrimSpace(*req.Icon)
+		if trimmed != "" {
+			icon = &trimmed
+		}
+	}
+	isActive := true
+	if req.IsActive != nil {
+		isActive = *req.IsActive
+	}
+
+	m := models.DefaultCategory{
+		ID:           uuid.NewString(),
+		Name:         name,
+		Category:     category,
+		Status:       status,
+		Icon:         icon,
+		IntervalDays: req.Interval,
+		TemplateID:   templateID,
+		TemplateBody: templateBody,
+		ExampleBody:  exampleBody,
+		IsActive:     isActive,
+	}
+	if err := s.repo.CreateDefaultCategory(m); err != nil {
+		return nil, err
+	}
+	return map[string]interface{}{"ok": true, "id": m.ID}, nil
 }
 
 func (s *Service) issueTokens(adminID string) (string, string, error) {

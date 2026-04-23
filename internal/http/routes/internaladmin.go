@@ -19,6 +19,8 @@ func registerInternalAdminRoutes(internal *gin.RouterGroup, c *app.Container) {
 
 	authed := internal.Group("")
 	authed.Use(middleware.InternalAuth())
+	authed.GET("/categories", h.ListDefaultCategories)
+	authed.POST("/categories", h.CreateDefaultCategory)
 	authed.GET("/plan-config", h.GetPlanConfig)
 	authed.PUT("/plan-config", h.UpdatePlanConfig)
 }

@@ -1,0 +1,8 @@
+ALTER TABLE default_categories
+ADD COLUMN IF NOT EXISTS category TEXT NOT NULL DEFAULT 'UTILITY';
+
+ALTER TABLE default_categories
+ALTER COLUMN icon DROP NOT NULL;
+
+ALTER TABLE default_categories
+ALTER COLUMN interval_days DROP NOT NULL;

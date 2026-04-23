@@ -31,11 +31,21 @@ func (s *Service) ListDefault() ([]map[string]interface{}, error) {
 	}
 	out := make([]map[string]interface{}, 0, len(cats))
 	for _, c := range cats {
+		var icon interface{}
+		if c.Icon != nil {
+			icon = *c.Icon
+		}
+		var interval interface{}
+		if c.IntervalDays != nil {
+			interval = *c.IntervalDays
+		}
 		out = append(out, map[string]interface{}{
 			"id":           c.ID,
 			"name":         c.Name,
-			"icon":         c.Icon,
-			"interval":     c.IntervalDays,
+			"category":     c.Category,
+			"status":       c.Status,
+			"icon":         icon,
+			"interval":     interval,
 			"templateId":   c.TemplateID,
 			"templateBody": c.TemplateBody,
 			"exampleBody":  c.ExampleBody,
@@ -127,7 +137,9 @@ func (s *Service) Create(userID string, req CreateCategoryRequest) (map[string]i
 
 	icon := strings.TrimSpace(req.Icon)
 	if icon == "" {
-		icon = strings.TrimSpace(defCat.Icon)
+		if defCat.Icon != nil {
+			icon = strings.TrimSpace(*defCat.Icon)
+		}
 	}
 	if icon == "" {
 		icon = "✨"

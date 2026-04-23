@@ -30,6 +30,31 @@ type LogoutRequest struct {
 	RefreshToken string `json:"refreshToken"`
 }
 
+type DefaultCategoryListItem struct {
+	ID           string  `json:"id"`
+	Name         string  `json:"name"`
+	Category     string  `json:"category"`
+	Status       string  `json:"status"`
+	Icon         *string `json:"icon"`
+	Interval     *int    `json:"interval"`
+	TemplateID   string  `json:"templateId"`
+	TemplateBody string  `json:"templateBody"`
+	ExampleBody  string  `json:"exampleBody"`
+	IsActive     bool    `json:"isActive"`
+}
+
+type CreateDefaultCategoryRequest struct {
+	Name         string  `json:"name"`
+	Category     string  `json:"category"`
+	Status       *string `json:"status"`
+	Icon         *string `json:"icon"`
+	Interval     *int    `json:"interval"`
+	TemplateID   string  `json:"templateId"`
+	TemplateBody string  `json:"templateBody"`
+	ExampleBody  string  `json:"exampleBody"`
+	IsActive     *bool   `json:"isActive"`
+}
+
 type PlanConfigResponse struct {
 	BusinessID string `json:"businessId"`
 	FreeBonus  int    `json:"freeBonus"`
