@@ -119,6 +119,7 @@ func (s *Service) Create(userID string, req CreateCategoryRequest) (map[string]i
 		return nil, err
 	}
 
+	categoryID := uuid.NewString()
 	metaTemplate, err := s.meta.CreateTemplate(context.Background(), meta.CreateTemplateInput{
 		Name:                templateName,
 		WABAID:              biz.MetaWABAID,
@@ -127,6 +128,7 @@ func (s *Service) Create(userID string, req CreateCategoryRequest) (map[string]i
 		Language:            "id",
 		BodyText:            templateBody,
 		ExampleBodyTextVars: exampleVars,
+		RefID:               categoryID,
 	})
 	if err != nil {
 		return nil, err
@@ -146,7 +148,7 @@ func (s *Service) Create(userID string, req CreateCategoryRequest) (map[string]i
 	}
 
 	cat := models.Category{
-		ID:             uuid.NewString(),
+		ID:             categoryID,
 		BusinessID:     biz.ID,
 		Name:           req.Name,
 		Icon:           icon,

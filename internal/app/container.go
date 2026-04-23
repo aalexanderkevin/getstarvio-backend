@@ -18,7 +18,7 @@ func NewContainer(cfg config.Config, db *gorm.DB) *Container {
 	return &Container{
 		Cfg:    cfg,
 		DB:     db,
-		Meta:   meta.NewClient(cfg.Meta),
+		Meta:   meta.NewClient(cfg.Meta, meta.NewGormFacebookLogStore(db)),
 		Xendit: xendit.NewClient(cfg.Xendit),
 	}
 }

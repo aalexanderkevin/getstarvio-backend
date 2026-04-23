@@ -17,6 +17,7 @@ import (
 type Client struct {
 	cfg        config.MetaConfig
 	httpClient *http.Client
+	logStore   FacebookLogStore
 }
 
 type SendTemplateInput struct {
@@ -25,6 +26,7 @@ type SendTemplateInput struct {
 	LanguageCode string
 	Parameters   []string
 	AccessToken  string
+	RefID        string
 }
 
 type CreateTemplateInput struct {
@@ -35,6 +37,7 @@ type CreateTemplateInput struct {
 	BodyText            string
 	ExampleBodyTextVars []string
 	AccessToken         string
+	RefID               string
 }
 
 type CreateTemplateResult struct {
@@ -43,15 +46,20 @@ type CreateTemplateResult struct {
 	Category string
 }
 
-func NewClient(cfg config.MetaConfig) *Client {
+func NewClient(cfg config.MetaConfig, stores ...FacebookLogStore) *Client {
 	timeoutSeconds := cfg.HTTPTimeoutSeconds
 	if timeoutSeconds <= 0 {
 		timeoutSeconds = 30
+	}
+	var store FacebookLogStore
+	if len(stores) > 0 {
+		store = stores[0]
 	}
 
 	return &Client{
 		cfg:        cfg,
 		httpClient: &http.Client{Timeout: time.Duration(timeoutSeconds) * time.Second},
+		logStore:   store,
 	}
 }
 
@@ -101,11 +109,13 @@ func (c *Client) SendTemplate(ctx context.Context, in SendTemplateInput) (string
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
+		c.logAPICall("send_message", url, string(b), err.Error(), 0, in.RefID)
 		return "", err
 	}
 	defer resp.Body.Close()
 
 	body, _ := io.ReadAll(resp.Body)
+	c.logAPICall("send_message", url, string(b), string(body), resp.StatusCode, in.RefID)
 	if resp.StatusCode >= 300 {
 		return "", fmt.Errorf("meta send failed (%d): %s", resp.StatusCode, string(body))
 	}
@@ -176,11 +186,13 @@ func (c *Client) CreateTemplate(ctx context.Context, in CreateTemplateInput) (*C
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
+		c.logAPICall("create_template", url, string(b), err.Error(), 0, in.RefID)
 		return nil, err
 	}
 	defer resp.Body.Close()
 
 	body, _ := io.ReadAll(resp.Body)
+	c.logAPICall("create_template", url, string(b), string(body), resp.StatusCode, in.RefID)
 	if resp.StatusCode >= 300 {
 		return nil, fmt.Errorf("meta create template failed (%d): %s", resp.StatusCode, string(body))
 	}
@@ -202,4 +214,20 @@ func (c *Client) CreateTemplate(ctx context.Context, in CreateTemplateInput) (*C
 		Status:   out.Status,
 		Category: out.Category,
 	}, nil
+}
+
+func (c *Client) logAPICall(operation, url, requestBody, responseBody string, responseCode int, refID string) {
+	if c.logStore == nil {
+		return
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	_ = c.logStore.CreateFacebookLog(ctx, FacebookLogEntry{
+		Operation:    operation,
+		URL:          url,
+		RequestBody:  requestBody,
+		ResponseBody: responseBody,
+		ResponseCode: responseCode,
+		RefID:        refID,
+	})
 }

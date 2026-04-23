@@ -245,3 +245,16 @@ type RefreshToken struct {
 }
 
 func (RefreshToken) TableName() string { return "refresh_tokens" }
+
+type FacebookLog struct {
+	ID           int64     `gorm:"column:id;primaryKey;autoIncrement"`
+	Operation    string    `gorm:"column:operation;index;not null"`
+	URL          string    `gorm:"column:url;not null"`
+	RequestBody  string    `gorm:"column:request_body;not null"`
+	ResponseBody string    `gorm:"column:response_body"`
+	ResponseCode int       `gorm:"column:response_code;not null"`
+	RefID        string    `gorm:"column:ref_id;index"`
+	CreatedAt    time.Time `gorm:"column:created_at;autoCreateTime"`
+}
+
+func (FacebookLog) TableName() string { return "facebook_logs" }

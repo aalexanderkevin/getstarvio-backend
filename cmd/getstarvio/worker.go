@@ -31,7 +31,7 @@ func newWorkerCommand() *cobra.Command {
 			}()
 
 			repo := reminder.NewRepo(db)
-			svc := reminder.NewService(repo, meta.NewClient(cfg.Meta), cfg.Meta)
+			svc := reminder.NewService(repo, meta.NewClient(cfg.Meta, meta.NewGormFacebookLogStore(db)), cfg.Meta)
 
 			ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
 			defer cancel()
