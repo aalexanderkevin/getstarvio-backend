@@ -33,6 +33,14 @@ type MetaTemplateStatusUpdate struct {
 	Reason               string          `json:"reason"`
 }
 
+type MetaTemplateCategoryUpdate struct {
+	MessageTemplateIDRaw    json.RawMessage `json:"message_template_id"`
+	MessageTemplateName     string          `json:"message_template_name"`
+	MessageTemplateLang     string          `json:"message_template_language"`
+	MessageNewCategory      string          `json:"new_category"`
+	MessagePreviousCategory string          `json:"previous_category"`
+}
+
 type MetaWebhookMetadata struct {
 	DisplayPhoneNumber string `json:"display_phone_number"`
 	PhoneNumberID      string `json:"phone_number_id"`

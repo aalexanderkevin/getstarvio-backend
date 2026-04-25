@@ -287,14 +287,23 @@ func (r *Repo) MarkReminderSentAndDeduct(reminderID, metaMessageID string) error
 	})
 }
 
-func (r *Repo) SetCategoryEnabledByMetaTemplateID(metaTemplateID string, status string) error {
+func (r *Repo) SetCategoryEnabledByMetaTemplateID(metaTemplateID string, status, category string) error {
 	now := time.Now().UTC()
-	return r.db.Model(&models.WATemplate{}).
-		Where("meta_template_id = ?", metaTemplateID).
-		Updates(map[string]interface{}{
-			"status":     status,
-			"updated_at": now,
-		}).Error
+	if status != "" {
+		return r.db.Model(&models.WATemplate{}).
+			Where("meta_template_id = ?", metaTemplateID).
+			Updates(map[string]any{
+				"status":     status,
+				"updated_at": now,
+			}).Error
+	} else {
+		return r.db.Model(&models.WATemplate{}).
+			Where("meta_template_id = ?", metaTemplateID).
+			Updates(map[string]any{
+				"category":   category,
+				"updated_at": now,
+			}).Error
+	}
 }
 
 func (r *Repo) FindWATemplateByMetaTemplateName(templateName string) (*models.WATemplate, error) {

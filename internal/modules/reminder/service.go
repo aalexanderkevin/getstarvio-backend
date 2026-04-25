@@ -167,24 +167,41 @@ func (s *Service) HandleMetaWebhook(raw []byte, signature string) error {
 
 	for _, entry := range payload.Entry {
 		for _, change := range entry.Changes {
-			if strings.TrimSpace(change.Field) != "message_template_status_update" {
+			switch strings.TrimSpace(change.Field) {
+			case "message_template_status_update":
+				var upd MetaTemplateStatusUpdate
+				if err := json.Unmarshal(change.Value, &upd); err != nil {
+					return fmt.Errorf("invalid message_template_status_update payload: %w", err)
+				}
+
+				metaTemplateID, err := parseMetaTemplateID(upd.MessageTemplateIDRaw)
+				if err != nil {
+					return fmt.Errorf("invalid message_template_id: %w", err)
+				}
+
+				status := strings.ToUpper(strings.TrimSpace(upd.Event))
+				if err := s.repo.SetCategoryEnabledByMetaTemplateID(metaTemplateID, status, ""); err != nil {
+					return err
+				}
+			case "template_category_update":
+				var upd MetaTemplateCategoryUpdate
+				if err := json.Unmarshal(change.Value, &upd); err != nil {
+					return fmt.Errorf("invalid template_category_update payload: %w", err)
+				}
+
+				metaTemplateID, err := parseMetaTemplateID(upd.MessageTemplateIDRaw)
+				if err != nil {
+					return fmt.Errorf("invalid message_template_id: %w", err)
+				}
+
+				newCategory := strings.ToUpper(strings.TrimSpace(upd.MessageNewCategory))
+				if err := s.repo.SetCategoryEnabledByMetaTemplateID(metaTemplateID, "", newCategory); err != nil {
+					return err
+				}
+			default:
 				continue
 			}
 
-			var upd MetaTemplateStatusUpdate
-			if err := json.Unmarshal(change.Value, &upd); err != nil {
-				return fmt.Errorf("invalid message_template_status_update payload: %w", err)
-			}
-
-			metaTemplateID, err := parseMetaTemplateID(upd.MessageTemplateIDRaw)
-			if err != nil {
-				return fmt.Errorf("invalid message_template_id: %w", err)
-			}
-
-			status := strings.ToUpper(strings.TrimSpace(upd.Event))
-			if err := s.repo.SetCategoryEnabledByMetaTemplateID(metaTemplateID, status); err != nil {
-				return err
-			}
 		}
 	}
 
