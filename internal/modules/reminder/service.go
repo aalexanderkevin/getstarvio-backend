@@ -374,8 +374,9 @@ func (s *Service) dispatchDueReminders(ctx context.Context, limit int) (int, int
 			To:           to,
 			TemplateName: templateName,
 			LanguageCode: "id",
-			Parameters:   []string{dctx.Reminder.CxName, dctx.Reminder.SvcName, dctx.Business.BizName},
+			Parameters:   parameters,
 			AccessToken:  dctx.Business.MetaAccessToken,
+			RefID:        rem.ID,
 		})
 		cancel()
 		if err != nil {
