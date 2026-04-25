@@ -1360,6 +1360,26 @@ const docTemplate = `{
                     "internal"
                 ],
                 "summary": "List WA templates (internal)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Template category filter (UTILITY, MARKETING, AUTHENTICATION)",
+                        "name": "category",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Template status filter (DRAFT, PENDING, APPROVED, REJECTED, PAUSED, FLAGGED)",
+                        "name": "status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Meta template name search (contains)",
+                        "name": "metaTemplateName",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

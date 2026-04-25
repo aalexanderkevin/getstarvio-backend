@@ -2031,6 +2031,20 @@ paths:
       - internal
   /v1/internal/wa-templates:
     get:
+      parameters:
+      - description: Template category filter (UTILITY, MARKETING, AUTHENTICATION)
+        in: query
+        name: category
+        type: string
+      - description: Template status filter (DRAFT, PENDING, APPROVED, REJECTED, PAUSED,
+          FLAGGED)
+        in: query
+        name: status
+        type: string
+      - description: Meta template name search (contains)
+        in: query
+        name: metaTemplateName
+        type: string
       produces:
       - application/json
       responses:

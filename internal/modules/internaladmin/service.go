@@ -281,8 +281,12 @@ func (s *Service) CreateDefaultCategory(req CreateDefaultCategoryRequest) (map[s
 	return map[string]interface{}{"ok": true, "id": m.ID}, nil
 }
 
-func (s *Service) ListWATemplates() ([]WATemplateItem, error) {
-	rows, err := s.repo.ListWATemplates()
+func (s *Service) ListWATemplates(category, status, metaTemplateName string) ([]WATemplateItem, error) {
+	category = strings.ToUpper(strings.TrimSpace(category))
+	status = strings.ToUpper(strings.TrimSpace(status))
+	metaTemplateName = strings.TrimSpace(metaTemplateName)
+
+	rows, err := s.repo.ListWATemplates(category, status, metaTemplateName)
 	if err != nil {
 		return nil, err
 	}

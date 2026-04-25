@@ -102,7 +102,11 @@ func (h *Handler) UpdatePlanConfig(c *gin.Context) {
 }
 
 func (h *Handler) ListWATemplates(c *gin.Context) {
-	res, err := h.svc.ListWATemplates()
+	res, err := h.svc.ListWATemplates(
+		c.Query("category"),
+		c.Query("status"),
+		c.Query("metaTemplateName"),
+	)
 	if err != nil {
 		response.Error(c, 500, err.Error())
 		return

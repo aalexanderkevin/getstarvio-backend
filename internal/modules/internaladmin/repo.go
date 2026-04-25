@@ -95,9 +95,19 @@ func (r *Repo) GetPrimaryBusiness() (*models.Business, error) {
 	return &b, nil
 }
 
-func (r *Repo) ListWATemplates() ([]models.WATemplate, error) {
+func (r *Repo) ListWATemplates(category, status, metaTemplateName string) ([]models.WATemplate, error) {
 	var out []models.WATemplate
-	err := r.db.Order("created_at desc").Find(&out).Error
+	dbq := r.db.Model(&models.WATemplate{})
+	if category != "" {
+		dbq = dbq.Where("category = ?", category)
+	}
+	if status != "" {
+		dbq = dbq.Where("status = ?", status)
+	}
+	if metaTemplateName != "" {
+		dbq = dbq.Where("meta_template_name ILIKE ?", "%"+metaTemplateName+"%")
+	}
+	err := dbq.Order("created_at desc").Find(&out).Error
 	return out, err
 }
 

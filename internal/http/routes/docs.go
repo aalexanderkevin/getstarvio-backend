@@ -976,6 +976,9 @@ func internalDefaultCategoriesPostDoc() {}
 // @Tags internal
 // @Security BearerAuth
 // @Produce json
+// @Param category query string false "Template category filter (UTILITY, MARKETING, AUTHENTICATION)"
+// @Param status query string false "Template status filter (DRAFT, PENDING, APPROVED, REJECTED, PAUSED, FLAGGED)"
+// @Param metaTemplateName query string false "Meta template name search (contains)"
 // @Success 200 {object} InternalWATemplateListResponseDoc
 // @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/internal/wa-templates [get]
