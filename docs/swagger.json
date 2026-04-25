@@ -1343,6 +1343,252 @@
                 }
             }
         },
+        "/v1/internal/wa-templates": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "internal"
+                ],
+                "summary": "List WA templates (internal)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.InternalWATemplateListResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "`status` must be `DRAFT` or `PENDING`. If `PENDING`, server calls Meta `/message_templates` first and stores `metaTemplateId`.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "internal"
+                ],
+                "summary": "Create WA template (internal)",
+                "parameters": [
+                    {
+                        "description": "WA template payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.InternalWATemplateCreateRequestDoc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/routes.InternalWATemplateCreateResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/internal/wa-templates/variables": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "internal"
+                ],
+                "summary": "List WA template variable options (internal)",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.InternalWATemplateVariableOptionsResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/internal/wa-templates/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "internal"
+                ],
+                "summary": "Get WA template by id (internal)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "WA template ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.InternalWATemplateGetResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "internal"
+                ],
+                "summary": "Delete WA template (internal)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "WA template ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.OKResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "internal"
+                ],
+                "summary": "Update WA template (internal)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "WA template ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "WA template payload",
+                        "name": "payload",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/routes.InternalWATemplateUpdateRequestDoc"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/routes.OKResponseDoc"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/routes.ErrorResponseDoc"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/me/bootstrap": {
             "get": {
                 "security": [
@@ -2913,6 +3159,254 @@
                 "topupPrice": {
                     "type": "integer",
                     "example": 1000
+                }
+            }
+        },
+        "routes.InternalWATemplateBodyExamplePreviewItemDoc": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string",
+                    "example": "customer_name"
+                },
+                "sample": {
+                    "type": "string",
+                    "example": "Pelanggan"
+                }
+            }
+        },
+        "routes.InternalWATemplateCreateRequestDoc": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string",
+                    "example": "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"
+                },
+                "bodyExample": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "customer_name",
+                        "days_since_last_visit",
+                        "service_name",
+                        "business_name"
+                    ]
+                },
+                "category": {
+                    "type": "string",
+                    "example": "UTILITY"
+                },
+                "language": {
+                    "type": "string",
+                    "example": "id"
+                },
+                "metaTemplateName": {
+                    "type": "string",
+                    "example": "facial_treatment_testing"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "PENDING"
+                },
+                "templateAlias": {
+                    "type": "string",
+                    "example": "Facial Reminder"
+                }
+            }
+        },
+        "routes.InternalWATemplateCreateResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "object",
+                    "properties": {
+                        "id": {
+                            "type": "string",
+                            "example": "9ec44c6a-c9d6-4ebd-9476-f6f5a0dca4c8"
+                        },
+                        "ok": {
+                            "type": "boolean",
+                            "example": true
+                        }
+                    }
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "routes.InternalWATemplateGetResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/routes.InternalWATemplateItemDoc"
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "routes.InternalWATemplateItemDoc": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string",
+                    "example": "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"
+                },
+                "bodyExample": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "customer_name",
+                        "days_since_last_visit",
+                        "service_name",
+                        "business_name",
+                        "last_visit_date"
+                    ]
+                },
+                "bodyExamplePreview": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/routes.InternalWATemplateBodyExamplePreviewItemDoc"
+                    }
+                },
+                "category": {
+                    "type": "string",
+                    "example": "UTILITY"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "example": "2026-04-25T03:20:00Z"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "9ec44c6a-c9d6-4ebd-9476-f6f5a0dca4c8"
+                },
+                "language": {
+                    "type": "string",
+                    "example": "id"
+                },
+                "metaTemplateId": {
+                    "type": "string",
+                    "example": "1744775703359541"
+                },
+                "metaTemplateName": {
+                    "type": "string",
+                    "example": "facial_treatment_testing"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "PENDING"
+                },
+                "templateAlias": {
+                    "type": "string",
+                    "example": "Facial Reminder"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "example": "2026-04-25T03:20:00Z"
+                }
+            }
+        },
+        "routes.InternalWATemplateListResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/routes.InternalWATemplateItemDoc"
+                    }
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "routes.InternalWATemplateUpdateRequestDoc": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "type": "string",
+                    "example": "Halo {{1}}! Ini template update."
+                },
+                "bodyExample": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "customer_name",
+                        "days_since_last_visit",
+                        "service_name",
+                        "business_name"
+                    ]
+                },
+                "category": {
+                    "type": "string",
+                    "example": "UTILITY"
+                },
+                "language": {
+                    "type": "string",
+                    "example": "id"
+                },
+                "metaTemplateId": {
+                    "type": "string",
+                    "example": "1744775703359541"
+                },
+                "metaTemplateName": {
+                    "type": "string",
+                    "example": "facial_treatment_testing_v2"
+                },
+                "status": {
+                    "type": "string",
+                    "example": "APPROVED"
+                },
+                "templateAlias": {
+                    "type": "string",
+                    "example": "Facial Reminder V2"
+                }
+            }
+        },
+        "routes.InternalWATemplateVariableOptionDoc": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "Nama customer/pelanggan."
+                },
+                "key": {
+                    "type": "string",
+                    "example": "customer_name"
+                },
+                "label": {
+                    "type": "string",
+                    "example": "Customer Name"
+                },
+                "sample": {
+                    "type": "string",
+                    "example": "Pelanggan"
+                }
+            }
+        },
+        "routes.InternalWATemplateVariableOptionsResponseDoc": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/routes.InternalWATemplateVariableOptionDoc"
+                    }
+                },
+                "error": {
+                    "type": "boolean",
+                    "example": false
                 }
             }
         },

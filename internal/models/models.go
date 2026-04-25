@@ -96,6 +96,22 @@ type DefaultCategory struct {
 
 func (DefaultCategory) TableName() string { return "default_categories" }
 
+type WATemplate struct {
+	ID               string    `gorm:"column:id;primaryKey"`
+	MetaTemplateName string    `gorm:"column:meta_template_name;not null"`
+	TemplateAlias    string    `gorm:"column:template_alias;not null"`
+	Category         string    `gorm:"column:category;not null"`
+	Language         string    `gorm:"column:language;not null"`
+	Status           string    `gorm:"column:status;not null"`
+	Body             string    `gorm:"column:body;not null"`
+	BodyExample      string    `gorm:"column:body_example;not null"`
+	MetaTemplateID   string    `gorm:"column:meta_template_id"`
+	CreatedAt        time.Time `gorm:"column:created_at;autoCreateTime"`
+	UpdatedAt        time.Time `gorm:"column:updated_at;autoUpdateTime"`
+}
+
+func (WATemplate) TableName() string { return "wa_templates" }
+
 type Customer struct {
 	ID          string    `gorm:"column:id;primaryKey"`
 	BusinessID  string    `gorm:"column:business_id;index;not null"`

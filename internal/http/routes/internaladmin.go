@@ -10,7 +10,7 @@ import (
 
 func registerInternalAdminRoutes(internal *gin.RouterGroup, c *app.Container) {
 	repo := internaladmin.NewRepo(c.DB)
-	svc := internaladmin.NewService(repo, c.Cfg)
+	svc := internaladmin.NewService(repo, c.Cfg, c.Meta)
 	h := internaladmin.NewHandler(svc)
 
 	internal.POST("/auth/login", h.Login)
@@ -21,6 +21,12 @@ func registerInternalAdminRoutes(internal *gin.RouterGroup, c *app.Container) {
 	authed.Use(middleware.InternalAuth())
 	authed.GET("/categories", h.ListDefaultCategories)
 	authed.POST("/categories", h.CreateDefaultCategory)
+	authed.GET("/wa-templates", h.ListWATemplates)
+	authed.GET("/wa-templates/variables", h.ListWATemplateVariables)
+	authed.GET("/wa-templates/:id", h.GetWATemplate)
+	authed.POST("/wa-templates", h.CreateWATemplate)
+	authed.PATCH("/wa-templates/:id", h.UpdateWATemplate)
+	authed.DELETE("/wa-templates/:id", h.DeleteWATemplate)
 	authed.GET("/plan-config", h.GetPlanConfig)
 	authed.PUT("/plan-config", h.UpdatePlanConfig)
 }

@@ -18,6 +18,7 @@ import (
 	"github.com/aalexanderkevin/getstarvio-backend/internal/models"
 	"github.com/aalexanderkevin/getstarvio-backend/internal/modules/shared"
 	"github.com/aalexanderkevin/getstarvio-backend/internal/platform/meta"
+	"gorm.io/gorm"
 )
 
 var ErrMetaWebhookUnauthorized = errors.New("meta webhook unauthorized")
@@ -180,12 +181,8 @@ func (s *Service) HandleMetaWebhook(raw []byte, signature string) error {
 				return fmt.Errorf("invalid message_template_id: %w", err)
 			}
 
-			enabled, shouldUpdate := categoryEnabledByTemplateEvent(upd.Event)
-			if !shouldUpdate {
-				continue
-			}
-
-			if err := s.repo.SetCategoryEnabledByMetaTemplateID(metaTemplateID, enabled); err != nil {
+			status := strings.ToUpper(strings.TrimSpace(upd.Event))
+			if err := s.repo.SetCategoryEnabledByMetaTemplateID(metaTemplateID, status); err != nil {
 				return err
 			}
 		}
@@ -344,6 +341,27 @@ func (s *Service) dispatchDueReminders(ctx context.Context, limit int) (int, int
 		if dctx.Category != nil && dctx.Category.TemplateID != "" {
 			templateName = dctx.Category.TemplateID
 		}
+		templateVariables := []string{"customer_name", "days_since_last_visit", "service_name", "business_name"}
+		if waTpl, err := s.repo.FindWATemplateByMetaTemplateName(templateName); err == nil {
+			var fromDB []string
+			if err := json.Unmarshal([]byte(waTpl.BodyExample), &fromDB); err == nil {
+				if len(fromDB) > 0 {
+					templateVariables = fromDB
+				}
+			}
+		} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+			_ = s.repo.MarkReminderFailed(rem.ID, fmt.Sprintf("fetch wa template failed: %v", err))
+			failed++
+			continue
+		}
+
+		parameters, err := resolveTemplateVariables(templateVariables, dctx, time.Now().UTC())
+		if err != nil {
+			_ = s.repo.MarkReminderFailed(rem.ID, err.Error())
+			failed++
+			continue
+		}
+
 		to := shared.NormalizePhone(dctx.Customer.PhoneNumber, "62")
 		if to == "" {
 			_ = s.repo.MarkReminderFailed(rem.ID, "customer wa is empty")
@@ -447,13 +465,73 @@ func parseMetaTemplateID(raw json.RawMessage) (string, error) {
 	return "", fmt.Errorf("unsupported type")
 }
 
-func categoryEnabledByTemplateEvent(event string) (bool, bool) {
-	switch strings.ToUpper(strings.TrimSpace(event)) {
-	case "APPROVED":
-		return true, true
-	case "REJECTED", "PENDING":
-		return false, true
-	default:
-		return false, false
+func resolveTemplateVariables(keys []string, dctx *DispatchContext, now time.Time) ([]string, error) {
+	if len(keys) == 0 {
+		return []string{}, nil
 	}
+	loc, err := time.LoadLocation(strings.TrimSpace(dctx.Business.Timezone))
+	if err != nil || loc == nil {
+		loc = time.FixedZone("Asia/Jakarta", 7*60*60)
+	}
+	var lastVisit *time.Time
+	if dctx.Category != nil && dctx.Category.IntervalDays > 0 {
+		t := dctx.Reminder.ScheduledAt.AddDate(0, 0, -dctx.Category.IntervalDays)
+		lastVisit = &t
+	}
+
+	out := make([]string, 0, len(keys))
+	for _, key := range keys {
+		k := strings.TrimSpace(key)
+		switch k {
+		case "customer_name":
+			v := strings.TrimSpace(dctx.Customer.Name)
+			if v == "" {
+				v = strings.TrimSpace(dctx.Reminder.CxName)
+			}
+			out = append(out, v)
+		case "service_name":
+			v := strings.TrimSpace(dctx.Reminder.SvcName)
+			if v == "" && dctx.Category != nil {
+				v = strings.TrimSpace(dctx.Category.Name)
+			}
+			out = append(out, v)
+		case "business_name":
+			out = append(out, strings.TrimSpace(dctx.Business.BizName))
+		case "days_since_last_visit":
+			if lastVisit == nil {
+				return nil, fmt.Errorf("cannot resolve days_since_last_visit: last visit date unavailable")
+			}
+			days := int(now.In(loc).Sub(lastVisit.In(loc)).Hours() / 24)
+			if days < 0 {
+				days = 0
+			}
+			out = append(out, strconv.Itoa(days))
+		case "last_visit_date":
+			if lastVisit == nil {
+				return nil, fmt.Errorf("cannot resolve last_visit_date: last visit date unavailable")
+			}
+			out = append(out, formatDateID(lastVisit.In(loc)))
+		default:
+			return nil, fmt.Errorf("unsupported template variable key: %s", k)
+		}
+	}
+	return out, nil
+}
+
+func formatDateID(t time.Time) string {
+	months := map[time.Month]string{
+		time.January:   "Januari",
+		time.February:  "Februari",
+		time.March:     "Maret",
+		time.April:     "April",
+		time.May:       "Mei",
+		time.June:      "Juni",
+		time.July:      "Juli",
+		time.August:    "Agustus",
+		time.September: "September",
+		time.October:   "Oktober",
+		time.November:  "November",
+		time.December:  "Desember",
+	}
+	return fmt.Sprintf("%02d %s %d", t.Day(), months[t.Month()], t.Year())
 }

@@ -885,6 +885,185 @@ definitions:
         example: 1000
         type: integer
     type: object
+  routes.InternalWATemplateBodyExamplePreviewItemDoc:
+    properties:
+      key:
+        example: customer_name
+        type: string
+      sample:
+        example: Pelanggan
+        type: string
+    type: object
+  routes.InternalWATemplateCreateRequestDoc:
+    properties:
+      body:
+        example: "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}.
+          Yuk balik lagi — kami tunggu! \U0001F60A"
+        type: string
+      bodyExample:
+        example:
+        - customer_name
+        - days_since_last_visit
+        - service_name
+        - business_name
+        items:
+          type: string
+        type: array
+      category:
+        example: UTILITY
+        type: string
+      language:
+        example: id
+        type: string
+      metaTemplateName:
+        example: facial_treatment_testing
+        type: string
+      status:
+        example: PENDING
+        type: string
+      templateAlias:
+        example: Facial Reminder
+        type: string
+    type: object
+  routes.InternalWATemplateCreateResponseDoc:
+    properties:
+      data:
+        properties:
+          id:
+            example: 9ec44c6a-c9d6-4ebd-9476-f6f5a0dca4c8
+            type: string
+          ok:
+            example: true
+            type: boolean
+        type: object
+      error:
+        example: false
+        type: boolean
+    type: object
+  routes.InternalWATemplateGetResponseDoc:
+    properties:
+      data:
+        $ref: '#/definitions/routes.InternalWATemplateItemDoc'
+      error:
+        example: false
+        type: boolean
+    type: object
+  routes.InternalWATemplateItemDoc:
+    properties:
+      body:
+        example: "Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}.
+          Yuk balik lagi — kami tunggu! \U0001F60A"
+        type: string
+      bodyExample:
+        example:
+        - customer_name
+        - days_since_last_visit
+        - service_name
+        - business_name
+        - last_visit_date
+        items:
+          type: string
+        type: array
+      bodyExamplePreview:
+        items:
+          $ref: '#/definitions/routes.InternalWATemplateBodyExamplePreviewItemDoc'
+        type: array
+      category:
+        example: UTILITY
+        type: string
+      createdAt:
+        example: "2026-04-25T03:20:00Z"
+        type: string
+      id:
+        example: 9ec44c6a-c9d6-4ebd-9476-f6f5a0dca4c8
+        type: string
+      language:
+        example: id
+        type: string
+      metaTemplateId:
+        example: "1744775703359541"
+        type: string
+      metaTemplateName:
+        example: facial_treatment_testing
+        type: string
+      status:
+        example: PENDING
+        type: string
+      templateAlias:
+        example: Facial Reminder
+        type: string
+      updatedAt:
+        example: "2026-04-25T03:20:00Z"
+        type: string
+    type: object
+  routes.InternalWATemplateListResponseDoc:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/routes.InternalWATemplateItemDoc'
+        type: array
+      error:
+        example: false
+        type: boolean
+    type: object
+  routes.InternalWATemplateUpdateRequestDoc:
+    properties:
+      body:
+        example: Halo {{1}}! Ini template update.
+        type: string
+      bodyExample:
+        example:
+        - customer_name
+        - days_since_last_visit
+        - service_name
+        - business_name
+        items:
+          type: string
+        type: array
+      category:
+        example: UTILITY
+        type: string
+      language:
+        example: id
+        type: string
+      metaTemplateId:
+        example: "1744775703359541"
+        type: string
+      metaTemplateName:
+        example: facial_treatment_testing_v2
+        type: string
+      status:
+        example: APPROVED
+        type: string
+      templateAlias:
+        example: Facial Reminder V2
+        type: string
+    type: object
+  routes.InternalWATemplateVariableOptionDoc:
+    properties:
+      description:
+        example: Nama customer/pelanggan.
+        type: string
+      key:
+        example: customer_name
+        type: string
+      label:
+        example: Customer Name
+        type: string
+      sample:
+        example: Pelanggan
+        type: string
+    type: object
+  routes.InternalWATemplateVariableOptionsResponseDoc:
+    properties:
+      data:
+        items:
+          $ref: '#/definitions/routes.InternalWATemplateVariableOptionDoc'
+        type: array
+      error:
+        example: false
+        type: boolean
+    type: object
   routes.MetaWebhookPayloadDoc:
     properties:
       entry:
@@ -1848,6 +2027,160 @@ paths:
       security:
       - BearerAuth: []
       summary: Update internal plan config
+      tags:
+      - internal
+  /v1/internal/wa-templates:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.InternalWATemplateListResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: List WA templates (internal)
+      tags:
+      - internal
+    post:
+      consumes:
+      - application/json
+      description: '`status` must be `DRAFT` or `PENDING`. If `PENDING`, server calls
+        Meta `/message_templates` first and stores `metaTemplateId`.'
+      parameters:
+      - description: WA template payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.InternalWATemplateCreateRequestDoc'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/routes.InternalWATemplateCreateResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: Create WA template (internal)
+      tags:
+      - internal
+  /v1/internal/wa-templates/{id}:
+    delete:
+      parameters:
+      - description: WA template ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.OKResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: Delete WA template (internal)
+      tags:
+      - internal
+    get:
+      parameters:
+      - description: WA template ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.InternalWATemplateGetResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: Get WA template by id (internal)
+      tags:
+      - internal
+    patch:
+      consumes:
+      - application/json
+      parameters:
+      - description: WA template ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: WA template payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          $ref: '#/definitions/routes.InternalWATemplateUpdateRequestDoc'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.OKResponseDoc'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: Update WA template (internal)
+      tags:
+      - internal
+  /v1/internal/wa-templates/variables:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/routes.InternalWATemplateVariableOptionsResponseDoc'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/routes.ErrorResponseDoc'
+      security:
+      - BearerAuth: []
+      summary: List WA template variable options (internal)
       tags:
       - internal
   /v1/me/bootstrap:

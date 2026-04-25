@@ -100,3 +100,59 @@ func (h *Handler) UpdatePlanConfig(c *gin.Context) {
 	}
 	response.Success(c, map[string]bool{"ok": true})
 }
+
+func (h *Handler) ListWATemplates(c *gin.Context) {
+	res, err := h.svc.ListWATemplates()
+	if err != nil {
+		response.Error(c, 500, err.Error())
+		return
+	}
+	response.Success(c, res)
+}
+
+func (h *Handler) GetWATemplate(c *gin.Context) {
+	res, err := h.svc.GetWATemplate(c.Param("id"))
+	if response.FetchErrorOrEmpty(c, err) {
+		return
+	}
+	response.Success(c, res)
+}
+
+func (h *Handler) CreateWATemplate(c *gin.Context) {
+	var req CreateWATemplateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Error(c, 400, err.Error())
+		return
+	}
+	res, err := h.svc.CreateWATemplate(req)
+	if err != nil {
+		response.Error(c, 400, err.Error())
+		return
+	}
+	response.Created(c, res)
+}
+
+func (h *Handler) UpdateWATemplate(c *gin.Context) {
+	var req UpdateWATemplateRequest
+	if err := c.ShouldBindJSON(&req); err != nil {
+		response.Error(c, 400, err.Error())
+		return
+	}
+	if err := h.svc.UpdateWATemplate(c.Param("id"), req); err != nil {
+		response.Error(c, 400, err.Error())
+		return
+	}
+	response.Success(c, map[string]bool{"ok": true})
+}
+
+func (h *Handler) DeleteWATemplate(c *gin.Context) {
+	if err := h.svc.DeleteWATemplate(c.Param("id")); err != nil {
+		response.Error(c, 400, err.Error())
+		return
+	}
+	response.Success(c, map[string]bool{"ok": true})
+}
+
+func (h *Handler) ListWATemplateVariables(c *gin.Context) {
+	response.Success(c, h.svc.ListWATemplateVariables())
+}

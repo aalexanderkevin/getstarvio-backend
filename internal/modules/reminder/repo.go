@@ -287,14 +287,23 @@ func (r *Repo) MarkReminderSentAndDeduct(reminderID, metaMessageID string) error
 	})
 }
 
-func (r *Repo) SetCategoryEnabledByMetaTemplateID(metaTemplateID string, isEnabled bool) error {
+func (r *Repo) SetCategoryEnabledByMetaTemplateID(metaTemplateID string, status string) error {
 	now := time.Now().UTC()
-	return r.db.Model(&models.Category{}).
+	return r.db.Model(&models.WATemplate{}).
 		Where("meta_template_id = ?", metaTemplateID).
 		Updates(map[string]interface{}{
-			"is_enabled": isEnabled,
+			"status":     status,
 			"updated_at": now,
 		}).Error
+}
+
+func (r *Repo) FindWATemplateByMetaTemplateName(templateName string) (*models.WATemplate, error) {
+	var row models.WATemplate
+	err := r.db.Where("meta_template_name = ?", templateName).First(&row).Error
+	if err != nil {
+		return nil, err
+	}
+	return &row, nil
 }
 
 func updateFailedTx(tx *gorm.DB, reminderID, reason string, now time.Time) error {

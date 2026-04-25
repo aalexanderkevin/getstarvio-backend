@@ -85,3 +85,40 @@ func (r *Repo) UpdatePlanConfig(businessID string, payload map[string]interface{
 	payload["updated_at"] = time.Now().UTC()
 	return r.db.Model(&models.PlanConfig{}).Where("business_id = ?", businessID).Updates(payload).Error
 }
+
+func (r *Repo) GetPrimaryBusiness() (*models.Business, error) {
+	var b models.Business
+	err := r.db.Order("created_at asc").First(&b).Error
+	if err != nil {
+		return nil, err
+	}
+	return &b, nil
+}
+
+func (r *Repo) ListWATemplates() ([]models.WATemplate, error) {
+	var out []models.WATemplate
+	err := r.db.Order("created_at desc").Find(&out).Error
+	return out, err
+}
+
+func (r *Repo) FindWATemplateByID(id string) (*models.WATemplate, error) {
+	var row models.WATemplate
+	err := r.db.Where("id = ?", id).First(&row).Error
+	if err != nil {
+		return nil, err
+	}
+	return &row, nil
+}
+
+func (r *Repo) CreateWATemplate(row models.WATemplate) error {
+	return r.db.Create(&row).Error
+}
+
+func (r *Repo) UpdateWATemplate(id string, payload map[string]interface{}) error {
+	payload["updated_at"] = time.Now().UTC()
+	return r.db.Model(&models.WATemplate{}).Where("id = ?", id).Updates(payload).Error
+}
+
+func (r *Repo) DeleteWATemplate(id string) error {
+	return r.db.Where("id = ?", id).Delete(&models.WATemplate{}).Error
+}

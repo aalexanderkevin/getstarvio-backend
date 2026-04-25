@@ -50,6 +50,8 @@ type GoogleConfig struct {
 type MetaConfig struct {
 	APIVersion         string
 	PhoneNumberID      string
+	WABAID             string
+	AccessToken        string
 	WebhookVerifyToken string
 	AppSecret          string
 	HTTPTimeoutSeconds int
@@ -119,6 +121,8 @@ func Load() (Config, error) {
 		Meta: MetaConfig{
 			APIVersion:         getEnv("META_API_VERSION", "v22.0"),
 			PhoneNumberID:      getEnv("META_PHONE_NUMBER_ID", ""),
+			WABAID:             getEnv("META_WABA_ID", getEnv("META_WABAID", "")),
+			AccessToken:        getEnv("META_ACCESS_TOKEN", ""),
 			WebhookVerifyToken: getEnv("META_WEBHOOK_VERIFY_TOKEN", ""),
 			AppSecret:          getEnv("META_APP_SECRET", ""),
 			HTTPTimeoutSeconds: getEnvAsInt("META_HTTP_TIMEOUT_SECONDS", 30),

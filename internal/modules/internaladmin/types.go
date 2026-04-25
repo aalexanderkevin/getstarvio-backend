@@ -68,3 +68,51 @@ type PlanConfigResponse struct {
 	Tier3Price int    `json:"tier3Price"`
 	Tier3Creds int    `json:"tier3Credits"`
 }
+
+type WATemplateItem struct {
+	ID                 string                             `json:"id"`
+	MetaTemplateName   string                             `json:"metaTemplateName"`
+	TemplateAlias      string                             `json:"templateAlias"`
+	Category           string                             `json:"category"`
+	Language           string                             `json:"language"`
+	Status             string                             `json:"status"`
+	Body               string                             `json:"body"`
+	BodyExample        []string                           `json:"bodyExample"`
+	BodyExamplePreview []WATemplateBodyExamplePreviewItem `json:"bodyExamplePreview"`
+	MetaTemplateID     string                             `json:"metaTemplateId"`
+	CreatedAt          string                             `json:"createdAt"`
+	UpdatedAt          string                             `json:"updatedAt"`
+}
+
+type WATemplateBodyExamplePreviewItem struct {
+	Key    string `json:"key"`
+	Sample string `json:"sample"`
+}
+
+type CreateWATemplateRequest struct {
+	MetaTemplateName string   `json:"metaTemplateName"`
+	TemplateAlias    string   `json:"templateAlias"`
+	Category         string   `json:"category"`
+	Language         string   `json:"language"`
+	Status           string   `json:"status"`
+	Body             string   `json:"body"`
+	BodyExample      []string `json:"bodyExample"`
+}
+
+type UpdateWATemplateRequest struct {
+	MetaTemplateName *string   `json:"metaTemplateName"`
+	TemplateAlias    *string   `json:"templateAlias"`
+	Category         *string   `json:"category"`
+	Language         *string   `json:"language"`
+	Status           *string   `json:"status"`
+	Body             *string   `json:"body"`
+	BodyExample      *[]string `json:"bodyExample"`
+	MetaTemplateID   *string   `json:"metaTemplateId"`
+}
+
+type WATemplateVariableOption struct {
+	Key         string `json:"key"`
+	Label       string `json:"label"`
+	Description string `json:"description"`
+	Sample      string `json:"sample"`
+}

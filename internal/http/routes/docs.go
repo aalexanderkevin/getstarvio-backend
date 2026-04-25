@@ -465,6 +465,77 @@ type InternalDefaultCategoryCreateResponseDoc struct {
 	} `json:"data"`
 }
 
+type InternalWATemplateItemDoc struct {
+	ID                 string                                        `json:"id" example:"9ec44c6a-c9d6-4ebd-9476-f6f5a0dca4c8"`
+	MetaTemplateName   string                                        `json:"metaTemplateName" example:"facial_treatment_testing"`
+	TemplateAlias      string                                        `json:"templateAlias" example:"Facial Reminder"`
+	Category           string                                        `json:"category" example:"UTILITY"`
+	Language           string                                        `json:"language" example:"id"`
+	Status             string                                        `json:"status" example:"PENDING"`
+	Body               string                                        `json:"body" example:"Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"`
+	BodyExample        []string                                      `json:"bodyExample" example:"customer_name,days_since_last_visit,service_name,business_name,last_visit_date"`
+	BodyExamplePreview []InternalWATemplateBodyExamplePreviewItemDoc `json:"bodyExamplePreview"`
+	MetaTemplateID     string                                        `json:"metaTemplateId" example:"1744775703359541"`
+	CreatedAt          string                                        `json:"createdAt" example:"2026-04-25T03:20:00Z"`
+	UpdatedAt          string                                        `json:"updatedAt" example:"2026-04-25T03:20:00Z"`
+}
+
+type InternalWATemplateBodyExamplePreviewItemDoc struct {
+	Key    string `json:"key" example:"customer_name"`
+	Sample string `json:"sample" example:"Pelanggan"`
+}
+
+type InternalWATemplateListResponseDoc struct {
+	Error bool                        `json:"error" example:"false"`
+	Data  []InternalWATemplateItemDoc `json:"data"`
+}
+
+type InternalWATemplateGetResponseDoc struct {
+	Error bool                      `json:"error" example:"false"`
+	Data  InternalWATemplateItemDoc `json:"data"`
+}
+
+type InternalWATemplateCreateRequestDoc struct {
+	MetaTemplateName string   `json:"metaTemplateName" example:"facial_treatment_testing"`
+	TemplateAlias    string   `json:"templateAlias" example:"Facial Reminder"`
+	Category         string   `json:"category" example:"UTILITY"`
+	Language         string   `json:"language" example:"id"`
+	Status           string   `json:"status" example:"PENDING"`
+	Body             string   `json:"body" example:"Halo {{1}}! Sudah {{2}} hari sejak {{3}} terakhir kamu di {{4}}. Yuk balik lagi — kami tunggu! 😊"`
+	BodyExample      []string `json:"bodyExample" example:"customer_name,days_since_last_visit,service_name,business_name"`
+}
+
+type InternalWATemplateUpdateRequestDoc struct {
+	MetaTemplateName *string   `json:"metaTemplateName" example:"facial_treatment_testing_v2"`
+	TemplateAlias    *string   `json:"templateAlias" example:"Facial Reminder V2"`
+	Category         *string   `json:"category" example:"UTILITY"`
+	Language         *string   `json:"language" example:"id"`
+	Status           *string   `json:"status" example:"APPROVED"`
+	Body             *string   `json:"body" example:"Halo {{1}}! Ini template update."`
+	BodyExample      *[]string `json:"bodyExample" example:"customer_name,days_since_last_visit,service_name,business_name"`
+	MetaTemplateID   *string   `json:"metaTemplateId" example:"1744775703359541"`
+}
+
+type InternalWATemplateCreateResponseDoc struct {
+	Error bool `json:"error" example:"false"`
+	Data  struct {
+		OK bool   `json:"ok" example:"true"`
+		ID string `json:"id" example:"9ec44c6a-c9d6-4ebd-9476-f6f5a0dca4c8"`
+	} `json:"data"`
+}
+
+type InternalWATemplateVariableOptionDoc struct {
+	Key         string `json:"key" example:"customer_name"`
+	Label       string `json:"label" example:"Customer Name"`
+	Description string `json:"description" example:"Nama customer/pelanggan."`
+	Sample      string `json:"sample" example:"Pelanggan"`
+}
+
+type InternalWATemplateVariableOptionsResponseDoc struct {
+	Error bool                                  `json:"error" example:"false"`
+	Data  []InternalWATemplateVariableOptionDoc `json:"data"`
+}
+
 // healthzDoc godoc
 // @Summary Health check
 // @Tags health
@@ -899,6 +970,77 @@ func internalDefaultCategoriesGetDoc() {}
 // @Failure 401 {object} ErrorResponseDoc
 // @Router /v1/internal/categories [post]
 func internalDefaultCategoriesPostDoc() {}
+
+// internalWATemplatesGetDoc godoc
+// @Summary List WA templates (internal)
+// @Tags internal
+// @Security BearerAuth
+// @Produce json
+// @Success 200 {object} InternalWATemplateListResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Router /v1/internal/wa-templates [get]
+func internalWATemplatesGetDoc() {}
+
+// internalWATemplateVariablesGetDoc godoc
+// @Summary List WA template variable options (internal)
+// @Tags internal
+// @Security BearerAuth
+// @Produce json
+// @Success 200 {object} InternalWATemplateVariableOptionsResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Router /v1/internal/wa-templates/variables [get]
+func internalWATemplateVariablesGetDoc() {}
+
+// internalWATemplateGetByIDDoc godoc
+// @Summary Get WA template by id (internal)
+// @Tags internal
+// @Security BearerAuth
+// @Produce json
+// @Param id path string true "WA template ID"
+// @Success 200 {object} InternalWATemplateGetResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Router /v1/internal/wa-templates/{id} [get]
+func internalWATemplateGetByIDDoc() {}
+
+// internalWATemplatesPostDoc godoc
+// @Summary Create WA template (internal)
+// @Description `status` must be `DRAFT` or `PENDING`. If `PENDING`, server calls Meta `/message_templates` first and stores `metaTemplateId`.
+// @Tags internal
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param payload body InternalWATemplateCreateRequestDoc true "WA template payload"
+// @Success 201 {object} InternalWATemplateCreateResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Router /v1/internal/wa-templates [post]
+func internalWATemplatesPostDoc() {}
+
+// internalWATemplatesPatchDoc godoc
+// @Summary Update WA template (internal)
+// @Tags internal
+// @Security BearerAuth
+// @Accept json
+// @Produce json
+// @Param id path string true "WA template ID"
+// @Param payload body InternalWATemplateUpdateRequestDoc true "WA template payload"
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Router /v1/internal/wa-templates/{id} [patch]
+func internalWATemplatesPatchDoc() {}
+
+// internalWATemplatesDeleteDoc godoc
+// @Summary Delete WA template (internal)
+// @Tags internal
+// @Security BearerAuth
+// @Produce json
+// @Param id path string true "WA template ID"
+// @Success 200 {object} OKResponseDoc
+// @Failure 400 {object} ErrorResponseDoc
+// @Failure 401 {object} ErrorResponseDoc
+// @Router /v1/internal/wa-templates/{id} [delete]
+func internalWATemplatesDeleteDoc() {}
 
 // internalPlanConfigGetDoc godoc
 // @Summary Get internal plan config
